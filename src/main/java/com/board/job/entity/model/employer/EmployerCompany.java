@@ -1,12 +1,15 @@
 package com.board.job.entity.model.employer;
 
 import com.board.job.entity.model.User;
+import com.board.job.entity.model.Vacancy;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -29,6 +32,11 @@ public class EmployerCompany {
     @JoinColumn(name = "owner_id")
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
+
+    @NotNull
+    @JsonManagedReference
+    @OneToMany(mappedBy = "employerCompany", cascade = CascadeType.ALL)
+    private List<Vacancy> vacancies;
 
     @Override
     public boolean equals(Object o) {
