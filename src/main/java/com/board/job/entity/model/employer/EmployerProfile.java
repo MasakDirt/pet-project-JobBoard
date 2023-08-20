@@ -2,7 +2,9 @@ package com.board.job.entity.model.employer;
 
 import com.board.job.entity.model.Image;
 import com.board.job.entity.model.User;
+import com.board.job.entity.model.Vacancy;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +12,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -57,6 +60,11 @@ public class EmployerProfile {
     @JoinColumn(name = "photo_id")
     @OneToOne(fetch = FetchType.EAGER)
     private Image photo;
+
+    @NotNull
+    @JsonManagedReference
+    @OneToMany(mappedBy = "employerProfile", cascade = CascadeType.ALL)
+    private List<Vacancy> vacancies;
 
     public EmployerProfile() {
         employerName = owner.getFirstName() + owner.getLastName();
