@@ -3,7 +3,7 @@ package com.board.job.model.entity;
 import com.board.job.model.entity.candidate.CandidateContacts;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +19,8 @@ public class PDF_File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Column(name = "file", nullable = false)
+    @NotBlank(message = "The file name cannot be 'blank', please write it!")
     private String filename;
 
     @Lob
