@@ -4,7 +4,7 @@ import com.board.job.model.entity.candidate.CandidateContacts;
 import com.board.job.model.entity.employer.EmployerProfile;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,9 +19,9 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
+    @NotBlank(message = "The file name cannot be 'blank', please write it!")
     @Column(name = "file", nullable = false)
-    private String fileName;
+    private String filename;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "photo", cascade = CascadeType.ALL)
@@ -33,8 +33,8 @@ public class Image {
 
     public Image(){}
 
-    public Image(String fileName) {
-        this.fileName = fileName;
+    public Image(String filename) {
+        this.filename = filename;
     }
 
     @Override
@@ -42,19 +42,19 @@ public class Image {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
-        return id == image.id && Objects.equals(fileName, image.fileName);
+        return id == image.id && Objects.equals(filename, image.filename);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fileName);
+        return Objects.hash(id, filename);
     }
 
     @Override
     public String toString() {
         return "Image{" +
                 "id=" + id +
-                ", fileName='" + fileName + '\'' +
+                ", fileName='" + filename + '\'' +
                 '}';
     }
 }
