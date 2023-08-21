@@ -20,7 +20,7 @@ public class Role {
     private long id;
 
     @NotNull
-    @Pattern(regexp = "^[A-Z._-]+$")
+    @Pattern(regexp = "^[A-Z._-]+$", message = "The role name must be in upper case!")
     @Column(unique = true, nullable = false)
     private String name;
 
