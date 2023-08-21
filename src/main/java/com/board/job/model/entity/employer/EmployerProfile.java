@@ -28,46 +28,43 @@ public class EmployerProfile {
     @Column(name = "employer_name")
     private String employerName;
 
-    @NotNull
     @Column(name = "position", nullable = false)
+    @NotBlank(message = "You must write your position")
     private String positionInCompany;
 
-    @NotNull
     @Column(name = "company", nullable = false)
+    @NotBlank(message = "You should write your company name")
     private String companyName;
 
     @NotNull
     @Pattern(regexp = "^@.*", message = "The telegram account must started with '@' character")
     private String telegram;
 
-    @NotNull
-    @Pattern(regexp = "^(\\\\+\\\\d{2})?\\\\(?\\\\d{3}\\\\)?-?\\\\d{3}-?\\\\d{2}-?\\\\d{2}$",
-            message = "Phone number must contain numbers and look like - 068xxx90xx or +38(068)-xxx-90-xx")
+    @NotBlank(message = "You must write valid phone number.")
     private String phone;
 
     @NotNull
     @Column(name = "linked_in", nullable = false)
+    @Pattern(regexp = "^www\\.linkedin\\.co.*$",
+            message = "Must be a valid LinkedIn link!")
     private String linkedInProfile;
 
-    @NotNull
     @JsonBackReference
     @JoinColumn(name = "owner_id")
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
 
-    @NotNull
     @JsonBackReference
     @JoinColumn(name = "photo_id")
     @OneToOne(fetch = FetchType.EAGER)
     private Image photo;
 
-    @NotNull
     @JsonManagedReference
     @OneToMany(mappedBy = "employerProfile", cascade = CascadeType.ALL)
     private List<Vacancy> vacancies;
 
     public EmployerProfile() {
-        employerName = Objects.requireNonNull(owner.getFirstName()) + Objects.requireNonNull(owner.getLastName());
+//        employerName = Objects.requireNonNull(owner.getFirstName()) + Objects.requireNonNull(owner.getLastName());
     }
 
     @Override
