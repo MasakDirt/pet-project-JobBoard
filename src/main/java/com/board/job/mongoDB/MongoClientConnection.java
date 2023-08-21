@@ -1,5 +1,6 @@
 package com.board.job.mongoDB;
 
+import com.board.job.model.entity.Feedback;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -15,10 +16,10 @@ public class MongoClientConnection {
     public static void connectToDB(String connection) {
         try(MongoClient mongoClient = MongoClients.create(connection)) {
             MongoDatabase database = mongoClient.getDatabase("messages");
-//            MongoCollection<Message> messagesBoardMongoCollection = database.getCollection("messages_job_board", Message.class);
+            MongoCollection<Feedback> feedbacks = database.getCollection("feedbacks", Feedback.class);
 
-            // it`s for having all-time limited number of objects, and not added already existing objects which have differences only with an id.
-//            messagesBoardMongoCollection.deleteMany(new Document());
+//          it`s for having all-time limited number of objects, and not added already existing objects which have differences only with an id.
+            feedbacks.deleteMany(new Document());
             log.info("Pinged your deployment. You successfully connected to MongoDB!");
         }catch (MongoException e) {
             log.error("Error connecting to MongoDB: {}", e.getMessage(), e);
