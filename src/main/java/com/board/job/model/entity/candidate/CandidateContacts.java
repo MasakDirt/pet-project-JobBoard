@@ -23,7 +23,7 @@ public class CandidateContacts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "The candidate name cannot be blank")
+    @NotBlank(message = "The candidate name cannot be 'blank'")
     @Column(name = "candidate_name")
     private String candidateName;
 
@@ -32,9 +32,7 @@ public class CandidateContacts {
     @Column(name = "e-mail", unique = true, nullable = false)
     private String email;
 
-    @NotNull
-    @Pattern(regexp = "^(\\\\+\\\\d{2})?\\\\(?\\\\d{3}\\\\)?-?\\\\d{3}-?\\\\d{2}-?\\\\d{2}$",
-            message = "Phone number must contain numbers and look like - 068xxx90xx or +38(068)-xxx-90-xx")
+    @NotBlank(message = "You must write valid phone number.")
     private String phone;
 
     @NotNull
@@ -43,35 +41,40 @@ public class CandidateContacts {
 
     @NotNull
     @Column(name = "linked_in", nullable = false)
+    @Pattern(regexp = "^www\\.linkedin\\.co.*$",
+            message = "Must be a valid LinkedIn link!")
     private String linkedInProfile;
 
     @NotNull
-    private String gitHubUrl;
+    @Column(name = "github", nullable = false)
+    @Pattern(regexp = "^www\\.github\\.co.*$",
+            message = "Must be a valid GitHub link!")
+    private String githubUrl;
 
     @NotNull
+    @Pattern(regexp = "^www\\.portfolio\\.co.*$",
+            message = "Must be a valid portfolio link!")
+    @Column(name = "portfolio_url", nullable = false)
     private String portfolioUrl;
 
-    @NotNull
     @JsonBackReference
     @JoinColumn(name = "pdf_id")
     @OneToOne(fetch = FetchType.EAGER)
     private PDF_File pdf;
 
-    @NotNull
     @JsonBackReference
     @JoinColumn(name = "photo_id")
     @OneToOne(fetch = FetchType.EAGER)
     private Image photo;
 
-    @NotNull
     @JsonBackReference
     @JoinColumn(name = "owner_id")
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
 
     public CandidateContacts() {
-        candidateName = owner.getFirstName() + owner.getLastName();
-        email = owner.getEmail();
+//        candidateName = owner.getFirstName() + owner.getLastName();
+//        email = owner.getEmail();
     }
 
     @Override
@@ -81,13 +84,13 @@ public class CandidateContacts {
         CandidateContacts that = (CandidateContacts) o;
         return id == that.id && Objects.equals(candidateName, that.candidateName) && Objects.equals(email, that.email) &&
                 Objects.equals(phone, that.phone) && Objects.equals(telegram, that.telegram) &&
-                Objects.equals(linkedInProfile, that.linkedInProfile) && Objects.equals(gitHubUrl, that.gitHubUrl)
+                Objects.equals(linkedInProfile, that.linkedInProfile) && Objects.equals(githubUrl, that.githubUrl)
                 && Objects.equals(portfolioUrl, that.portfolioUrl) && Objects.equals(pdf, that.pdf) && Objects.equals(photo, that.photo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, candidateName, email, phone, telegram, linkedInProfile, gitHubUrl, portfolioUrl, pdf, photo);
+        return Objects.hash(id, candidateName, email, phone, telegram, linkedInProfile, githubUrl, portfolioUrl, pdf, photo);
     }
 
     @Override
@@ -99,7 +102,7 @@ public class CandidateContacts {
                 ", phone='" + phone + '\'' +
                 ", telegram='" + telegram + '\'' +
                 ", linkedInProfile='" + linkedInProfile + '\'' +
-                ", gitHubUrl='" + gitHubUrl + '\'' +
+                ", gitHubUrl='" + githubUrl + '\'' +
                 ", portfolioUrl='" + portfolioUrl + '\'' +
                 ", pdf=" + pdf +
                 ", photo=" + photo +
