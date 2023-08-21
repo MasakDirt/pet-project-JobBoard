@@ -1,12 +1,13 @@
-package com.board.job.entity.model;
+package com.board.job.entity.model.entity;
 
-import com.board.job.entity.model.employer.EmployerCompany;
-import com.board.job.entity.model.employer.EmployerProfile;
+import com.board.job.entity.model.entity.employer.EmployerCompany;
+import com.board.job.entity.model.entity.employer.EmployerProfile;
 import com.board.job.entity.sample.Category;
 import com.board.job.entity.sample.JobDomain;
 import com.board.job.entity.sample.LanguageLevel;
 import com.board.job.entity.sample.WorkMode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -69,9 +71,13 @@ public class Vacancy {
     private EmployerProfile employerProfile;
 
     @JsonBackReference
-    @JoinColumn(name = "employer_profile_id")
+    @JoinColumn(name = "employer_company_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private EmployerCompany employerCompany;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL)
+    private List<Feedback> feedbacks;
 
     @Override
     public boolean equals(Object o) {
