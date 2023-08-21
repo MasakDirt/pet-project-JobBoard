@@ -1,11 +1,9 @@
 package com.board.job.model.entity.candidate;
 
-import com.board.job.model.entity.Feedback;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.sample.Category;
 import com.board.job.model.entity.sample.LanguageLevel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -44,33 +41,27 @@ public class CandidateProfile {
     @Column(name = "city_of_residence")
     private String cityOfResidence;
 
-    @NotNull
+    @NotNull(message = "You must pick one category")
     private Category category;
 
-    @NotNull
+    @NotNull(message = "You must select your level of english")
     @Column(name = "english_level")
     private LanguageLevel englishLevel;
 
-    @NotNull
+    @NotNull(message = "You must select your level of ukrainian")
     @Column(name = "ukrainian_level")
     private LanguageLevel ukrainianLevel;
 
-    @NotNull
+    @NotBlank(message = "Tell your experience here, if you have no, write about your study")
     @Column(name = "experience_explanation")
     private String experienceExplanation;
 
-    @NotNull
     private String achievements;
 
-    @NotNull
     @JsonBackReference
     @JoinColumn(name = "owner_id")
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "candidateProfile", cascade = CascadeType.ALL)
-    private List<Feedback> feedbacks;
 
     public CandidateProfile() {
     }

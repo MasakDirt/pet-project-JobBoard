@@ -5,7 +5,6 @@ import com.board.job.model.entity.Vacancy;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,13 +26,11 @@ public class EmployerCompany {
     @Column(name = "web_site", nullable = false)
     private String webSite;
 
-    @NotNull
     @JsonBackReference
     @JoinColumn(name = "owner_id")
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
 
-    @NotNull
     @JsonManagedReference
     @OneToMany(mappedBy = "employerCompany", cascade = CascadeType.ALL)
     private List<Vacancy> vacancies;

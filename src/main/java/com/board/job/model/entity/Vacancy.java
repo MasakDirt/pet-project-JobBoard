@@ -7,7 +7,6 @@ import com.board.job.model.entity.sample.JobDomain;
 import com.board.job.model.entity.sample.LanguageLevel;
 import com.board.job.model.entity.sample.WorkMode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +14,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -45,7 +43,6 @@ public class Vacancy {
     @Column(name = "work_mode", nullable = false)
     private WorkMode workMode;
 
-    @NotNull
     @NotBlank(message = "You should declare country where candidate must be work.")
     private String country;
 
@@ -74,10 +71,6 @@ public class Vacancy {
     @JoinColumn(name = "employer_company_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private EmployerCompany employerCompany;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL)
-    private List<Feedback> feedbacks;
 
     @Override
     public boolean equals(Object o) {

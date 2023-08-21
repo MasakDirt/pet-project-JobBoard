@@ -28,13 +28,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
+    @NotNull(message = "Write the first name!")
     @Column(nullable = false)
     @Pattern(regexp = NAME_REGEXP,
             message = "First name must start with a capital letter and followed by one or more lowercase")
     private String firstName;
 
-    @NotNull
+    @NotNull(message = "Write the last name!")
     @Column(nullable = false)
     @Pattern(regexp = NAME_REGEXP,
             message = "Last name must start with a capital letter and followed by one or more lowercase")
