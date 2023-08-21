@@ -1,4 +1,4 @@
-package com.board.job.entity.sample;
+package com.board.job.model.entity.sample;
 
 public enum LanguageLevel {
     NO("You have no language knowledge"),

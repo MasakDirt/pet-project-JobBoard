@@ -1,6 +1,6 @@
-package com.board.job.entity.model.entity;
+package com.board.job.model.entity;
 
-import com.board.job.entity.model.entity.candidate.CandidateProfile;
+import com.board.job.model.entity.candidate.CandidateProfile;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

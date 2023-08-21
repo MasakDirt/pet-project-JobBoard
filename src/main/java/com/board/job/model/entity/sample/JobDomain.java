@@ -1,4 +1,4 @@
-package com.board.job.entity.sample;
+package com.board.job.model.entity.sample;
 
 public enum JobDomain {
     ADULT, ADVERTISING_MARKETING, AUTOMOTIVE, BLOCKCHAIN_CRYPTO, DATING, E_COMMERCE_MARKETPLACE, EDUCATION, FINTECH, GAMBLING, GAMEDEV, HARDWARE,

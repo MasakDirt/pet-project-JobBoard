@@ -1,4 +1,4 @@
-package com.board.job.entity.model.entity;
+package com.board.job.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

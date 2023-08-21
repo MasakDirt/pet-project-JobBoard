@@ -1,11 +1,11 @@
-package com.board.job.entity.model.entity;
+package com.board.job.model.entity;
 
-import com.board.job.entity.model.entity.employer.EmployerCompany;
-import com.board.job.entity.model.entity.employer.EmployerProfile;
-import com.board.job.entity.sample.Category;
-import com.board.job.entity.sample.JobDomain;
-import com.board.job.entity.sample.LanguageLevel;
-import com.board.job.entity.sample.WorkMode;
+import com.board.job.model.entity.employer.EmployerCompany;
+import com.board.job.model.entity.employer.EmployerProfile;
+import com.board.job.model.entity.sample.Category;
+import com.board.job.model.entity.sample.JobDomain;
+import com.board.job.model.entity.sample.LanguageLevel;
+import com.board.job.model.entity.sample.WorkMode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

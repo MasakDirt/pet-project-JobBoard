@@ -1,9 +1,9 @@
-package com.board.job.entity.model.entity.candidate;
+package com.board.job.model.entity.candidate;
 
-import com.board.job.entity.model.entity.Feedback;
-import com.board.job.entity.model.entity.User;
-import com.board.job.entity.sample.Category;
-import com.board.job.entity.sample.LanguageLevel;
+import com.board.job.model.entity.Feedback;
+import com.board.job.model.entity.User;
+import com.board.job.model.entity.sample.Category;
+import com.board.job.model.entity.sample.LanguageLevel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
