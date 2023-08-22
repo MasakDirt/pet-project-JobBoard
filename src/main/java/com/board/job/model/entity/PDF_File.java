@@ -3,7 +3,6 @@ package com.board.job.model.entity;
 import com.board.job.model.entity.candidate.CandidateContacts;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,10 +18,6 @@ public class PDF_File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "file", nullable = false)
-    @NotBlank(message = "The file name cannot be 'blank', please write it!")
-    private String filename;
-
     @Lob
     @Column(name = "content", nullable = false)
     private byte[] fileContent;
@@ -36,12 +31,12 @@ public class PDF_File {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PDF_File pdfFile = (PDF_File) o;
-        return Objects.equals(id, pdfFile.id) && Objects.equals(filename, pdfFile.filename) && Arrays.equals(fileContent, pdfFile.fileContent);
+        return Objects.equals(id, pdfFile.id) && Arrays.equals(fileContent, pdfFile.fileContent);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, filename);
+        int result = Objects.hash(id);
         result = 31 * result + Arrays.hashCode(fileContent);
         return result;
     }
@@ -50,7 +45,6 @@ public class PDF_File {
     public String toString() {
         return "PDF_File{" +
                 "id=" + id +
-                ", filename='" + filename + '\'' +
                 ", fileContent=" + Arrays.toString(fileContent) +
                 ", candidateContacts=" + candidateContacts +
                 '}';
