@@ -30,6 +30,7 @@ public class Vacancy {
     private String lookingFor;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private JobDomain domain;
 
     @Column(name = "description", nullable = false)
@@ -37,9 +38,11 @@ public class Vacancy {
     private String detailDescription;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "work_mode", nullable = false)
     private WorkMode workMode;
 
@@ -59,6 +62,7 @@ public class Vacancy {
     private double workExperience;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "english_level")
     private LanguageLevel englishLevel;
 
