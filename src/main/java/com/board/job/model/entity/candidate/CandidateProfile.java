@@ -33,29 +33,33 @@ public class CandidateProfile {
     @Min(value = 0, message = "The work experience must be at least 0 years.")
     private double workExperience;
 
-    @NotBlank(message = "The country of residence cannot be 'blank'")
     @Column(name = "country_of_residence")
+    @NotBlank(message = "The country of residence cannot be 'blank'")
     private String countryOfResidence;
 
-    @NotBlank(message = "The city of residence cannot be 'blank'")
     @Column(name = "city_of_residence")
+    @NotBlank(message = "The city of residence cannot be 'blank'")
     private String cityOfResidence;
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "You must pick one category")
     private Category category;
 
-    @NotNull(message = "You must select your level of english")
+    @Enumerated(EnumType.STRING)
     @Column(name = "english_level")
+    @NotNull(message = "You must select your level of english")
     private LanguageLevel englishLevel;
 
-    @NotNull(message = "You must select your level of ukrainian")
+    @Enumerated(EnumType.STRING)
     @Column(name = "ukrainian_level")
+    @NotNull(message = "You must select your level of ukrainian")
     private LanguageLevel ukrainianLevel;
 
+    @Column(name = "experience_explanation", columnDefinition = "TEXT")
     @NotBlank(message = "Tell your experience here, if you have no, write about your study")
-    @Column(name = "experience_explanation")
     private String experienceExplanation;
 
+    @Column(columnDefinition = "TEXT")
     private String achievements;
 
     @JsonBackReference
