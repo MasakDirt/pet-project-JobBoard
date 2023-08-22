@@ -1,6 +1,5 @@
 package com.board.job.model.entity.candidate;
 
-import com.board.job.model.entity.Image;
 import com.board.job.model.entity.PDF_File;
 import com.board.job.model.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -57,15 +56,15 @@ public class CandidateContacts {
     @Column(name = "portfolio_url", nullable = false)
     private String portfolioUrl;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "profile_picture")
+    private byte[] profilePicture;
+
     @JsonBackReference
     @JoinColumn(name = "pdf_id")
     @OneToOne(fetch = FetchType.EAGER)
     private PDF_File pdf;
-
-    @JsonBackReference
-    @JoinColumn(name = "photo_id")
-    @OneToOne(fetch = FetchType.EAGER)
-    private Image photo;
 
     @JsonBackReference
     @JoinColumn(name = "owner_id")
@@ -85,12 +84,12 @@ public class CandidateContacts {
         return id == that.id && Objects.equals(candidateName, that.candidateName) && Objects.equals(email, that.email) &&
                 Objects.equals(phone, that.phone) && Objects.equals(telegram, that.telegram) &&
                 Objects.equals(linkedInProfile, that.linkedInProfile) && Objects.equals(githubUrl, that.githubUrl)
-                && Objects.equals(portfolioUrl, that.portfolioUrl) && Objects.equals(pdf, that.pdf) && Objects.equals(photo, that.photo);
+                && Objects.equals(portfolioUrl, that.portfolioUrl) && Objects.equals(pdf, that.pdf);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, candidateName, email, phone, telegram, linkedInProfile, githubUrl, portfolioUrl, pdf, photo);
+        return Objects.hash(id, candidateName, email, phone, telegram, linkedInProfile, githubUrl, portfolioUrl, pdf);
     }
 
     @Override
@@ -105,7 +104,6 @@ public class CandidateContacts {
                 ", gitHubUrl='" + githubUrl + '\'' +
                 ", portfolioUrl='" + portfolioUrl + '\'' +
                 ", pdf=" + pdf +
-                ", photo=" + photo +
                 '}';
     }
 }

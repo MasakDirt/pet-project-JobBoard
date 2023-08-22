@@ -1,6 +1,5 @@
 package com.board.job.model.entity.employer;
 
-import com.board.job.model.entity.Image;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.Vacancy;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -54,10 +53,10 @@ public class EmployerProfile {
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
 
-    @JsonBackReference
-    @JoinColumn(name = "photo_id")
-    @OneToOne(fetch = FetchType.EAGER)
-    private Image photo;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "profile_picture")
+    private byte[] profilePicture;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "employerProfile", cascade = CascadeType.ALL)
