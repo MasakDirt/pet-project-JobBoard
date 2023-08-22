@@ -28,6 +28,12 @@ public class Role {
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     List<User> users;
 
+    public Role() {}
+
+    public Role(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
