@@ -17,9 +17,10 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
-    public User create(User user, Role role) {
-        user.setRole(role);
+    public User create(User user, List<Role> roles) {
+        user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -34,6 +35,12 @@ public class UserService {
                 new EntityNotFoundException(String.format("User with email %s not found", email)));
     }
 
+    public User update(User updated) {
+        readById(updated.getId());
+
+        return userRepository.save(updated);
+    }
+
     public User update(User updated, String oldPassword) {
         var oldUser = readById(updated.getId());
 
@@ -44,11 +51,23 @@ public class UserService {
         updated.setId(oldUser.getId());
         updated.setEmail(oldUser.getEmail());
 
-        return create(updated, oldUser.getRole());
+        return create(updated, oldUser.getRoles());
     }
 
     public void delete(long id) {
         userRepository.delete(readById(id));
+    }
+
+    public User updateUserRolesAndGetUser(long ownerId, String roleName) {
+        var owner = readById(ownerId);
+        var role = roleService.readByName(roleName);
+
+        if (!owner.getRoles().contains(role)) {
+            owner.getRoles().add(role);
+            return update(owner);
+        }
+
+        return owner;
     }
 
     public List<User> getAll() {
@@ -56,7 +75,7 @@ public class UserService {
     }
 
     public List<User> getAllByRoleName(String name) {
-        return userRepository.findAllByRoleName(name);
+        return userRepository.findAllByRolesName(name);
     }
 
     public List<User> getAllByFirstName(String firstName) {
