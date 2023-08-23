@@ -20,7 +20,7 @@ public class EmployerCompany {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "about_company", nullable = false)
+    @Column(name = "about_company", columnDefinition = "TEXT", nullable = false)
     private String aboutCompany;
 
     @Column(name = "web_site", nullable = false)
