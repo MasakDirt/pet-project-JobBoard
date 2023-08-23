@@ -20,7 +20,7 @@ public class ImageCandidateService {
     private final CandidateContactsService candidateContactsService;
 
     public Image generateImage(CandidateContacts candidateContacts) {
-        StreamResource streamResource = new StreamResource(candidateContacts.getCandidateName(), () -> {
+        var streamResource = new StreamResource(candidateContacts.getCandidateName(), () -> {
             var attached = candidateContactsService.getWithPropertyPictureAttachedById(candidateContacts.getId());
             return new ByteArrayInputStream(attached.getProfilePicture());
         });
@@ -31,8 +31,8 @@ public class ImageCandidateService {
     }
 
     public void initUploadedImage(long id) {
-        MultiFileMemoryBuffer memoryBuffer = new MultiFileMemoryBuffer();
-        Upload upload = new Upload(memoryBuffer);
+        var memoryBuffer = new MultiFileMemoryBuffer();
+        var upload = new Upload(memoryBuffer);
         upload.setAcceptedFileTypes("image/jpg", "image/jpeg", "image/png", "image/gif");
 
         upload.addSucceededListener(event -> {
