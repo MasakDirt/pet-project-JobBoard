@@ -1,10 +1,14 @@
 package com.board.job.service;
 
+import com.board.job.exception.UserIsNotEmployer;
 import com.board.job.model.entity.Role;
 import com.board.job.model.entity.User;
+import com.board.job.model.entity.employer.EmployerCompany;
+import com.board.job.model.entity.employer.EmployerProfile;
 import com.board.job.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.apache.cassandra.utils.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,16 +62,28 @@ public class UserService {
         userRepository.delete(readById(id));
     }
 
-    public User updateUserRolesAndGetUser(long ownerId, String roleName) {
-        var owner = readById(ownerId);
+    public User updateUserRolesAndGetUser(long id, String roleName) {
+        var user = readById(id);
         var role = roleService.readByName(roleName);
 
-        if (!owner.getRoles().contains(role)) {
-            owner.getRoles().add(role);
-            return update(owner);
+        if (!user.getRoles().contains(role)) {
+            user.getRoles().add(role);
+            return update(user);
         }
 
-        return owner;
+        return user;
+    }
+
+    public Pair<EmployerCompany, EmployerProfile> getEmployerData(long id) {
+        var user = readById(id);
+        var employerCompany = user.getEmployerCompany();
+        var employerProfile = user.getEmployerProfile();
+
+        if (employerCompany == null || employerProfile == null) {
+            throw new UserIsNotEmployer("Please create your employer profile, then you will be permitted to create a vacancy");
+        }
+
+        return Pair.create(employerCompany, employerProfile);
     }
 
     public List<User> getAll() {
