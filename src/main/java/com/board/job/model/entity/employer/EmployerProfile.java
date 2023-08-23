@@ -48,22 +48,22 @@ public class EmployerProfile {
             message = "Must be a valid LinkedIn link!")
     private String linkedInProfile;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
+    private byte[] profilePicture;
+
     @JsonBackReference
     @JoinColumn(name = "owner_id")
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
-
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "profile_picture")
-    private byte[] profilePicture;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "employerProfile", cascade = CascadeType.ALL)
     private List<Vacancy> vacancies;
 
     public EmployerProfile() {
-//        employerName = Objects.requireNonNull(owner.getFirstName()) + Objects.requireNonNull(owner.getLastName());
+
     }
 
     @Override
@@ -93,5 +93,10 @@ public class EmployerProfile {
                 ", linkedInProfile='" + linkedInProfile + '\'' +
                 ", owner=" + owner +
                 '}';
+    }
+
+    public void setOwnerWithName(User owner) {
+        this.owner = owner;
+        this.employerName = String.format("%s %s", owner.getFirstName(), owner.getLastName());
     }
 }
