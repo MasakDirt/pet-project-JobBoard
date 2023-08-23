@@ -2,6 +2,7 @@ package com.board.job.service.candidate;
 
 import com.board.job.model.entity.candidate.CandidateContacts;
 import com.board.job.repository.candidate.CandidateContactsRepository;
+import com.board.job.service.PDFService;
 import com.board.job.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -11,10 +12,16 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class CandidateContactsService {
     private final UserService userService;
+    private final PDFService pdfService;
     private final CandidateContactsRepository candidateContactsRepository;
 
-    public CandidateContacts create(long ownerId, CandidateContacts candidateContacts) {
-        candidateContacts.setOwner(userService.readById(ownerId));
+    public CandidateContacts create(String filename, long ownerId, CandidateContacts candidateContacts) {
+        if (filename != null) {
+            candidateContacts.setPdf(pdfService.create(filename));
+        }
+
+        var owner = userService.readById(ownerId);
+        candidateContacts.setOwnerWithFields(owner);
 
         return candidateContactsRepository.save(candidateContacts);
     }
@@ -30,7 +37,7 @@ public class CandidateContactsService {
         return updated;
     }
 
-    public void delete(long id){
+    public void delete(long id) {
         candidateContactsRepository.delete(readById(id));
     }
 
