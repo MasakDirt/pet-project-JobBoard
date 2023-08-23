@@ -25,7 +25,7 @@ public class Role {
     private String name;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
     List<User> users;
 
     public Role() {}

@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -50,9 +51,13 @@ public class User {
     private String password;
 
     @JsonBackReference
-    @JoinColumn(name = "role_id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
@@ -96,5 +101,9 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public String getName() {
+        return String.format("%s %s", firstName, lastName);
     }
 }
