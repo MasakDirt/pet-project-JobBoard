@@ -19,7 +19,8 @@ public class PDF_File {
     private Long id;
 
     @Lob
-    @Column(name = "content", nullable = false)
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "content", columnDefinition = "LONGBLOB", nullable = false)
     private byte[] fileContent;
 
     @JsonManagedReference
