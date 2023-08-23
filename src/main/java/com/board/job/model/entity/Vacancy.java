@@ -33,7 +33,7 @@ public class Vacancy {
     @Enumerated(EnumType.STRING)
     private JobDomain domain;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", columnDefinition = "TEXT", nullable = false)
     @NotBlank(message = "Your vacancy description must contain detailed description of this.")
     private String detailDescription;
 
