@@ -22,7 +22,9 @@ public class EmployerProfileService {
             employerProfile.setProfilePicture(setImageContent(photoFileName));
         }
 
-        employerProfile.setOwnerWithName(userService.readById(ownerId));
+        employerProfile.setOwnerWithName(
+                userService.updateUserRolesAndGetUser(ownerId, "EMPLOYER")
+        );
         return employerProfileRepository.save(employerProfile);
     }
 
