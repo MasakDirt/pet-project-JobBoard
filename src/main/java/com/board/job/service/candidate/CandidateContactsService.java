@@ -8,6 +8,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 @Service
 @AllArgsConstructor
 public class CandidateContactsService {
@@ -15,14 +19,16 @@ public class CandidateContactsService {
     private final PDFService pdfService;
     private final CandidateContactsRepository candidateContactsRepository;
 
-    public CandidateContacts create(String filename, long ownerId, CandidateContacts candidateContacts) {
-        if (filename != null) {
-            candidateContacts.setPdf(pdfService.create(filename));
+    public CandidateContacts create(String pdfFilename, String photoFilename, long ownerId, CandidateContacts candidateContacts) {
+        if (pdfFilename != null) {
+            candidateContacts.setPdf(pdfService.create(pdfFilename));
         }
 
-        var owner = userService.readById(ownerId);
-        candidateContacts.setOwnerWithFields(owner);
+        if (photoFilename != null) {
+            candidateContacts.setProfilePicture(setImageContent(photoFilename));
+        }
 
+        candidateContacts.setOwnerWithFields(userService.readById(ownerId));
         return candidateContactsRepository.save(candidateContacts);
     }
 
@@ -42,7 +48,8 @@ public class CandidateContactsService {
     }
 
     public CandidateContacts getWithPropertyPictureAttachedById(long id) {
-        return candidateContactsRepository.findWithPropertyPictureAttachedById(id);
+        return candidateContactsRepository.findWithPropertyPictureAttachedById(id).orElseThrow(() ->
+                new EntityNotFoundException("Candidate not found"));
     }
 
     public void saveProfilePicture(long id, byte[] imageBytes) {
@@ -50,5 +57,13 @@ public class CandidateContactsService {
         candidateContacts.setProfilePicture(imageBytes);
 
         candidateContactsRepository.save(candidateContacts);
+    }
+
+    private byte[] setImageContent(String filename) {
+        try {
+            return Files.readAllBytes(Path.of(filename));
+        } catch (IOException io) {
+            throw new IllegalArgumentException(String.format("File with name %s not found", filename));
+        }
     }
 }
