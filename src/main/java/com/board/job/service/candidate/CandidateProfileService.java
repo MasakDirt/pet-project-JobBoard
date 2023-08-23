@@ -16,7 +16,9 @@ public class CandidateProfileService {
     private final UserService userService;
 
     public CandidateProfile create(long ownerId, CandidateProfile candidateProfile) {
-        candidateProfile.setOwner(userService.readById(ownerId));
+        candidateProfile.setOwner(
+                userService.updateUserRolesAndGetUser(ownerId, "CANDIDATE")
+        );
 
         return candidateProfileRepository.save(candidateProfile);
     }
