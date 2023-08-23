@@ -28,7 +28,7 @@ public class CandidateContacts {
 
     @NotNull
     @Pattern(regexp = "[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}", message = "Must be a valid e-mail address")
-    @Column(name = "e-mail", unique = true, nullable = false)
+    @Column(name = "e_mail", unique = true, nullable = false)
     private String email;
 
     @NotBlank(message = "You must write valid phone number.")
@@ -58,7 +58,7 @@ public class CandidateContacts {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "profile_picture")
+    @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
 
     @JsonBackReference
@@ -72,8 +72,7 @@ public class CandidateContacts {
     private User owner;
 
     public CandidateContacts() {
-//        candidateName = owner.getFirstName() + owner.getLastName();
-//        email = owner.getEmail();
+
     }
 
     @Override
@@ -105,5 +104,11 @@ public class CandidateContacts {
                 ", portfolioUrl='" + portfolioUrl + '\'' +
                 ", pdf=" + pdf +
                 '}';
+    }
+
+    public void setOwnerWithFields(User owner) {
+        this.owner = owner;
+        this.candidateName = String.format("%s %s", owner.getFirstName(), owner.getLastName());
+        this.email = owner.getEmail();
     }
 }
