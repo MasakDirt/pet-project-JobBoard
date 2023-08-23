@@ -108,7 +108,7 @@ public class CandidateContacts {
 
     public void setOwnerWithFields(User owner) {
         this.owner = owner;
-        this.candidateName = String.format("%s %s", owner.getFirstName(), owner.getLastName());
+        this.candidateName = owner.getName();
         this.email = owner.getEmail();
     }
 }

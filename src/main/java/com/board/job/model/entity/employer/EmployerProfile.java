@@ -97,6 +97,6 @@ public class EmployerProfile {
 
     public void setOwnerWithName(User owner) {
         this.owner = owner;
-        this.employerName = String.format("%s %s", owner.getFirstName(), owner.getLastName());
+        this.employerName = owner.getName();
     }
 }
