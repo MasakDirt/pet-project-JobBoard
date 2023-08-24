@@ -1,9 +1,11 @@
 package com.board.job.model.entity.candidate;
 
+import com.board.job.model.entity.Messenger;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.sample.Category;
 import com.board.job.model.entity.sample.LanguageLevel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -66,6 +69,10 @@ public class CandidateProfile {
     @JoinColumn(name = "owner_id")
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<Messenger> messengers;
 
     public CandidateProfile() {
     }
