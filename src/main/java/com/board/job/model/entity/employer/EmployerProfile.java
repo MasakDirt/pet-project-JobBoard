@@ -1,6 +1,5 @@
 package com.board.job.model.entity.employer;
 
-import com.board.job.model.entity.Image;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.Vacancy;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -49,22 +48,22 @@ public class EmployerProfile {
             message = "Must be a valid LinkedIn link!")
     private String linkedInProfile;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
+    private byte[] profilePicture;
+
     @JsonBackReference
     @JoinColumn(name = "owner_id")
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
-
-    @JsonBackReference
-    @JoinColumn(name = "photo_id")
-    @OneToOne(fetch = FetchType.EAGER)
-    private Image photo;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "employerProfile", cascade = CascadeType.ALL)
     private List<Vacancy> vacancies;
 
     public EmployerProfile() {
-//        employerName = Objects.requireNonNull(owner.getFirstName()) + Objects.requireNonNull(owner.getLastName());
+
     }
 
     @Override
@@ -94,5 +93,10 @@ public class EmployerProfile {
                 ", linkedInProfile='" + linkedInProfile + '\'' +
                 ", owner=" + owner +
                 '}';
+    }
+
+    public void setOwnerWithName(User owner) {
+        this.owner = owner;
+        this.employerName = owner.getName();
     }
 }

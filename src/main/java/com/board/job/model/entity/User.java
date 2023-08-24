@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -42,7 +43,7 @@ public class User {
 
     @NotNull
     @Pattern(regexp = "[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}", message = "Must be a valid e-mail address")
-    @Column(name = "e-mail", unique = true, nullable = false)
+    @Column(name = "e_mail", unique = true, nullable = false)
     private String email;
 
     @NotBlank(message = "The password cannot be 'blank'")
@@ -50,9 +51,13 @@ public class User {
     private String password;
 
     @JsonBackReference
-    @JoinColumn(name = "role_id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
@@ -96,5 +101,9 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public String getName() {
+        return String.format("%s %s", firstName, lastName);
     }
 }

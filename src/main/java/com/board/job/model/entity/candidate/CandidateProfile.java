@@ -1,9 +1,11 @@
 package com.board.job.model.entity.candidate;
 
+import com.board.job.model.entity.Messenger;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.sample.Category;
 import com.board.job.model.entity.sample.LanguageLevel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -33,35 +36,43 @@ public class CandidateProfile {
     @Min(value = 0, message = "The work experience must be at least 0 years.")
     private double workExperience;
 
-    @NotBlank(message = "The country of residence cannot be 'blank'")
     @Column(name = "country_of_residence")
+    @NotBlank(message = "The country of residence cannot be 'blank'")
     private String countryOfResidence;
 
-    @NotBlank(message = "The city of residence cannot be 'blank'")
     @Column(name = "city_of_residence")
+    @NotBlank(message = "The city of residence cannot be 'blank'")
     private String cityOfResidence;
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "You must pick one category")
     private Category category;
 
-    @NotNull(message = "You must select your level of english")
+    @Enumerated(EnumType.STRING)
     @Column(name = "english_level")
+    @NotNull(message = "You must select your level of english")
     private LanguageLevel englishLevel;
 
-    @NotNull(message = "You must select your level of ukrainian")
+    @Enumerated(EnumType.STRING)
     @Column(name = "ukrainian_level")
+    @NotNull(message = "You must select your level of ukrainian")
     private LanguageLevel ukrainianLevel;
 
+    @Column(name = "experience_explanation", columnDefinition = "TEXT")
     @NotBlank(message = "Tell your experience here, if you have no, write about your study")
-    @Column(name = "experience_explanation")
     private String experienceExplanation;
 
+    @Column(columnDefinition = "TEXT")
     private String achievements;
 
     @JsonBackReference
     @JoinColumn(name = "owner_id")
     @OneToOne(fetch = FetchType.EAGER)
     private User owner;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<Messenger> messengers;
 
     public CandidateProfile() {
     }

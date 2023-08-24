@@ -25,8 +25,14 @@ public class Role {
     private String name;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
     List<User> users;
+
+    public Role() {}
+
+    public Role(String name) {
+        this.name = name;
+    }
 
     @Override
     public boolean equals(Object o) {

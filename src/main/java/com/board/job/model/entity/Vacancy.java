@@ -7,6 +7,7 @@ import com.board.job.model.entity.sample.JobDomain;
 import com.board.job.model.entity.sample.LanguageLevel;
 import com.board.job.model.entity.sample.WorkMode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Table
@@ -30,16 +32,19 @@ public class Vacancy {
     private String lookingFor;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private JobDomain domain;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", columnDefinition = "TEXT", nullable = false)
     @NotBlank(message = "Your vacancy description must contain detailed description of this.")
     private String detailDescription;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "work_mode", nullable = false)
     private WorkMode workMode;
 
@@ -59,6 +64,7 @@ public class Vacancy {
     private double workExperience;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "english_level")
     private LanguageLevel englishLevel;
 
@@ -71,6 +77,10 @@ public class Vacancy {
     @JoinColumn(name = "employer_company_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private EmployerCompany employerCompany;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL)
+    private List<Messenger> messengers;
 
     @Override
     public boolean equals(Object o) {
