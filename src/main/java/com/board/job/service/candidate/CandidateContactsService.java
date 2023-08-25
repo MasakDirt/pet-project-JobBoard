@@ -47,9 +47,9 @@ public class CandidateContactsService {
         candidateContactsRepository.delete(readById(id));
     }
 
-    public CandidateContacts getWithPropertyPictureAttachedById(long id) {
-        return candidateContactsRepository.findWithPropertyPictureAttachedById(id).orElseThrow(() ->
-                new EntityNotFoundException("Candidate not found"));
+    public byte[] getWithPropertyPictureAttachedById(long id) {
+        byte[] profilePicture = candidateContactsRepository.findWithPropertyPictureAttachedById(id);
+        return profilePicture == null ? new byte[]{} : profilePicture;
     }
 
     public void saveProfilePicture(long id, byte[] imageBytes) {

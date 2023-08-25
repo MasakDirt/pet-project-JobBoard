@@ -43,9 +43,9 @@ public class EmployerProfileService {
         employerProfileRepository.delete(readById(id));
     }
 
-    public EmployerProfile getWithPropertyPictureAttachedById(long id) {
-        return employerProfileRepository.findWithPropertyPictureAttachedById(id).orElseThrow(() ->
-                new EntityNotFoundException("Employer profile not found"));
+    public byte[] getWithPropertyPictureAttachedById(long id) {
+        byte[] profilePicture = employerProfileRepository.findWithPropertyPictureAttachedById(id);
+        return profilePicture == null ? new byte[]{} : profilePicture;
     }
 
     public void saveProfilePicture(long id, byte[] imageBytes) {
