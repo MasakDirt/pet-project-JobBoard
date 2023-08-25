@@ -3,12 +3,7 @@ package com.board.job.model;
 import com.board.job.model.entity.PDF_File;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.stream.Stream;
 
 import static com.board.job.model.ValidationHelper.getViolation;
 import static org.junit.jupiter.api.Assertions.*;
