@@ -22,7 +22,7 @@ public class ImageCandidateService {
     public Image generateImage(CandidateContacts candidateContacts) {
         var streamResource = new StreamResource(candidateContacts.getCandidateName(), () -> {
             var attached = candidateContactsService.getWithPropertyPictureAttachedById(candidateContacts.getId());
-            return new ByteArrayInputStream(attached.getProfilePicture());
+            return new ByteArrayInputStream(attached);
         });
         streamResource.setContentType("image/png");
         Image image = new Image(streamResource, "profile-picture");
