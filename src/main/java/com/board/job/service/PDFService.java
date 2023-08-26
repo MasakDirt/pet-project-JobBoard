@@ -16,10 +16,7 @@ public class PDFService {
     private final PDFRepository pdfRepository;
 
     public PDF_File create(String filename) {
-        var pdfFile = new PDF_File();
-
-        setFileContent(pdfFile, filename);
-        return pdfRepository.save(pdfFile);
+        return pdfRepository.save(setFileContent(filename));
     }
 
     public PDF_File readById(long id) {
@@ -30,7 +27,7 @@ public class PDFService {
     public PDF_File update(long id, String newFile) {
         var update = readById(id);
 
-        setFileContent(update, newFile);
+        update.setFileContent(setFileContent(newFile).getFileContent());
         return pdfRepository.save(update);
     }
 
@@ -38,11 +35,13 @@ public class PDFService {
         pdfRepository.delete(readById(id));
     }
 
-    private void setFileContent(PDF_File pdfFile, String filename){
+    private PDF_File setFileContent(String filename){
+        var pdfFile = new PDF_File();
         try {
             pdfFile.setFileContent(Files.readAllBytes(Path.of(filename)));
         } catch (IOException io) {
             throw new IllegalArgumentException(String.format("File with name %s not found", filename));
         }
+        return pdfFile;
     }
 }
