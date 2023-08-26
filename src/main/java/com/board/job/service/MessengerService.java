@@ -7,6 +7,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class MessengerService {
@@ -30,5 +32,9 @@ public class MessengerService {
 
     public void delete(long id) {
         messengerRepository.delete(readById(id));
+    }
+
+    public List<Messenger> getAll() {
+        return messengerRepository.findAll();
     }
 }
