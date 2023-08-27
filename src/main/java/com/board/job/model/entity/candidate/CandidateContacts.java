@@ -13,10 +13,10 @@ import lombok.Setter;
 import java.util.Objects;
 
 
-@Table
 @Entity
 @Getter
 @Setter
+@Table(name = "candidate_contacts")
 public class CandidateContacts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

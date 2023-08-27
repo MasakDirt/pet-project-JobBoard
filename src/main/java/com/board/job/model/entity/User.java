@@ -17,11 +17,11 @@ import lombok.Setter;
 import java.util.List;
 import java.util.Objects;
 
-@Table
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
+@Table(name = "users")
 public class User {
     public static final String NAME_REGEXP = "[A-Z][a-z]+(-[A-Z][a-z]+){0,1}";
 
