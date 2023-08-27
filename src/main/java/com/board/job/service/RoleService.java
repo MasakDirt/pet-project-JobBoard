@@ -38,6 +38,7 @@ public class RoleService {
 
         var old = readById(id);
         old.setName(newName);
+
         return roleRepository.save(old);
     }
 
