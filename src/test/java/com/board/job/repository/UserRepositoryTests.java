@@ -64,7 +64,7 @@ public class UserRepositoryTests {
         List<User> actual = userRepository.findAllByRolesName(name);
 
         assertFalse(actual.isEmpty(),
-                "We must get false because in this employer company users are available.");
+                "We must get false because in this list users are available.");
         assertTrue(userRepository.findAll().size() > actual.size(),
                 "Actual users size must be smaller than all users");
         assertEquals(expected.size(), actual.size(),
@@ -89,7 +89,7 @@ public class UserRepositoryTests {
         List<User> actual = userRepository.findAllByFirstName(firstname);
 
         assertFalse(actual.isEmpty(),
-                "We must get false because in this employer company users are available.");
+                "We must get false because in this list users are available.");
         assertTrue(userRepository.findAll().size() > actual.size(),
                 "Actual users size must be smaller than all users");
         assertEquals(expected.size(), actual.size(),
@@ -114,7 +114,7 @@ public class UserRepositoryTests {
         List<User> actual = userRepository.findAllByLastName(lastname);
 
         assertFalse(actual.isEmpty(),
-                "We must get false because in this employer company users are available.");
+                "We must get false because in this list users are available.");
         assertTrue(userRepository.findAll().size() > actual.size(),
                 "Actual users size must be smaller than all users");
         assertEquals(expected.size(), actual.size(),
@@ -141,7 +141,7 @@ public class UserRepositoryTests {
         List<User> actual = userRepository.findAllByFirstNameAndLastName(firstname, lastname);
 
         assertFalse(actual.isEmpty(),
-                "We must get false because in this employer company users are available.");
+                "We must get false because in this list users are available.");
         assertTrue(userRepository.findAll().size() > actual.size(),
                 "Actual users size must be smaller than all users");
         assertEquals(expected.size(), actual.size(),
