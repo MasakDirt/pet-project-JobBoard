@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -65,9 +66,12 @@ public class UserService {
     public User updateUserRolesAndGetUser(long id, String roleName) {
         var user = readById(id);
         var role = roleService.readByName(roleName);
+        var roles = new ArrayList<>(user.getRoles());
 
-        if (!user.getRoles().contains(role)) {
-            user.getRoles().add(role);
+        if (!roles.contains(role)) {
+            roles.add(role);
+
+            user.setRoles(roles);
             return update(user);
         }
 
