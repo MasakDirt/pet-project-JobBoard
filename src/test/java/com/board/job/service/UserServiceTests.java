@@ -1,10 +1,13 @@
 package com.board.job.service;
 
+import com.board.job.exception.UserIsNotEmployer;
 import com.board.job.model.entity.Role;
 import com.board.job.model.entity.User;
+import com.board.job.model.entity.employer.EmployerCompany;
+import com.board.job.model.entity.employer.EmployerProfile;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.cassandra.utils.Pair;
 import org.assertj.core.api.AssertionsForClassTypes;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +47,14 @@ public class UserServiceTests {
     public void test_Injected_Components() {
         AssertionsForClassTypes.assertThat(userService).isNotNull();
         AssertionsForClassTypes.assertThat(users).isNotNull();
+    }
+
+    @Test
+    public void test_GetAll() {
+        assertFalse(userService.getAll().isEmpty(),
+                "All users list must be not empty.");
+        assertEquals(users, userService.getAll(),
+                "Lists of all users must be the same");
     }
 
     @Test
@@ -103,7 +114,7 @@ public class UserServiceTests {
     @Test
     public void test_Invalid_ReadById() {
         assertThrows(EntityNotFoundException.class, () -> userService.readById(0),
-                "We have no user with id 0, so entity not found exception will be thrown.0");
+                "We have no user with id 0, so entity not found exception will be thrown.");
     }
 
     @Test
@@ -219,14 +230,167 @@ public class UserServiceTests {
 
     @Test
     public void test_Valid_UpdateUserRolesAndGetUser() {
-        long userId = 1L;
         String roleName = "USER";
 
-        User unexpected = userService.readById(userId);
+        User unexpected = new User();
+
+        unexpected.setFirstName("First");
+        unexpected.setLastName("Last");
+        unexpected.setEmail("email@mail.co");
+        unexpected.setPassword("pass");
+        unexpected.setRoles(List.of(roleService.readById(1), roleService.readById(3), roleService.readById(4)));
         List<Role> roles = unexpected.getRoles();
 
-        User actual = userService.updateUserRolesAndGetUser(userId, roleName);
+        unexpected = userService.create(unexpected, roles);
+        User actual = userService.updateUserRolesAndGetUser(unexpected.getId(), roleName);
 
-        assertNotEquals(roles, actual.getRoles());
+        assertNotEquals(roles, actual.getRoles(),
+        "We must get list of roles with new role 'USER'");
+    }
+
+    @Test
+    public void test_Invalid_UpdateUserRolesAndGetUser() {
+        User user = userService.readById(2L);
+        String role = "USER";
+
+        assertEquals(user, userService.updateUserRolesAndGetUser(user.getId(), role),
+                "We already have this role in this user, so here must return same user");
+
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUserRolesAndGetUser(user.getId(), ""),
+                "Entity not found exception will be thrown because we have no this role!");
+
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUserRolesAndGetUser(0, role),
+                "Entity not found exception will be thrown because we have no this user!");
+    }
+
+    @Test
+    public void test_Valid_GetEmployerData() {
+        long id = 1L;
+        User user = userService.readById(id);
+        Pair<EmployerCompany, EmployerProfile> expected = Pair.create(user.getEmployerCompany(), user.getEmployerProfile());
+
+        Pair<EmployerCompany, EmployerProfile> actual = userService.getEmployerData(id);
+
+        assertEquals(expected, actual,
+                "Pairs reads by one user id`s so they must be sames");
+    }
+
+    @Test
+    public void test_Invalid_GetEmployerData() {
+        assertThrows(UserIsNotEmployer.class, () -> userService.getEmployerData(5L),
+                "User have no employer profile or company so here must be exception.");
+        assertThrows(EntityNotFoundException.class, () -> userService.getEmployerData(0),
+                "We have no user with id 0, so entity not found exception will be thrown.");
+    }
+
+    @Test
+    public void test_Valid_GetAllByRoleName() {
+        String name = "USER";
+
+        List<User> expected = userService.getAll()
+                .stream()
+                .filter(user -> user.getRoles()
+                        .stream()
+                        .anyMatch(role -> role.getName().equals(name))
+                )
+                .toList();
+
+        List<User> actual = userService.getAllByRoleName(name);
+
+        assertFalse(actual.isEmpty(),
+                "We must get false because in this list users are available.");
+        assertTrue(userService.getAll().size() > actual.size(),
+                "Actual users size must be smaller than all users");
+        assertEquals(expected.size(), actual.size(),
+                "Expected and actual lists must be the same because it`s read by same role name!");
+    }
+
+    @Test
+    public void test_Invalid_GetAllByRolesName() {
+        assertTrue(userService.getAllByRoleName("").isEmpty(),
+                "We have no user with role name '', so here must be empty list!");
+    }
+
+    @Test
+    public void test_Valid_GetAllByFirstName() {
+        String firstname = "Nikole";
+
+        List<User> expected = userService.getAll()
+                .stream()
+                .filter(user -> user.getFirstName().equals(firstname))
+                .toList();
+
+        List<User> actual = userService.getAllByFirstName(firstname);
+
+        assertFalse(actual.isEmpty(),
+                "We must get false because in this list users are available.");
+        assertTrue(userService.getAll().size() > actual.size(),
+                "Actual users size must be smaller than all users");
+        assertEquals(expected.size(), actual.size(),
+                "Expected and actual lists must be the same because it`s read by same first name!");
+    }
+
+    @Test
+    public void test_Invalid_GetAllByFirstName() {
+        assertTrue(userService.getAllByFirstName("").isEmpty(),
+                "We have no user with first name '', so here must be empty list!");
+    }
+
+    @Test
+    public void test_Valid_GetAllByLastName() {
+        String lastname = "Jackson";
+
+        List<User> expected = userService.getAll()
+                .stream()
+                .filter(user -> user.getLastName().equals(lastname))
+                .toList();
+
+        List<User> actual = userService.getAllByLastName(lastname);
+
+        assertFalse(actual.isEmpty(),
+                "We must get false because in this list users are available.");
+        assertTrue(userService.getAll().size() > actual.size(),
+                "Actual users size must be smaller than all users");
+        assertEquals(expected.size(), actual.size(),
+                "Expected and actual lists must be the same because it`s read by same last name!");
+    }
+
+    @Test
+    public void test_Invalid_GetAllByLastName() {
+        assertTrue(userService.getAllByLastName("").isEmpty(),
+                "We have no user with last name '', so here must be empty list!");
+    }
+
+    @Test
+    public void test_Valid_GetAllByFirstNameAndLastName() {
+        String firstname = "Nikole";
+        String lastname = "Jackson";
+
+        List<User> expected = userService.getAll()
+                .stream()
+                .filter(user -> user.getFirstName().equals(firstname) &&
+                        user.getLastName().equals(lastname))
+                .toList();
+
+        List<User> actual = userService.getAllByFirstNameAndLastName(firstname, lastname);
+
+        assertFalse(actual.isEmpty(),
+                "We must get false because in this list users are available.");
+        assertTrue(userService.getAll().size() > actual.size(),
+                "Actual users size must be smaller than all users");
+        assertEquals(expected.size(), actual.size(),
+                "Expected and actual lists must be the same because it`s read by same first and last names!");
+    }
+
+    @Test
+    public void test_Invalid_GetAllByFirstNameAndLastName() {
+        assertTrue(userService.getAllByFirstNameAndLastName("", "").isEmpty(),
+                "We have no user with first and last blank names, so here must be empty list!");
+
+        assertTrue(userService.getAllByFirstNameAndLastName("", "Jackson").isEmpty(),
+                "We have no user with first blank name, so here must be empty list!");
+
+        assertTrue(userService.getAllByFirstNameAndLastName("Jackson", "").isEmpty(),
+                "We have no user with last blank name, so here must be empty list!");
     }
 }
