@@ -9,10 +9,10 @@ import lombok.Setter;
 import java.util.Arrays;
 import java.util.Objects;
 
-@Table
 @Entity
 @Getter
 @Setter
+@Table(name = "pdf_files")
 public class PDF_File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -102,10 +102,10 @@ public class JobBoardApplication implements CommandLineRunner {
     }
 
     private void createTables() {
-        Role admin = roleService.create(new Role("ADMIN"));
-        Role user = roleService.create(new Role("USER"));
-        Role candidate = roleService.create(new Role("CANDIDATE"));
-        Role employer = roleService.create(new Role("EMPLOYER"));
+        Role admin = roleService.create("ADMIN");
+        Role user = roleService.create("USER");
+        Role candidate = roleService.create("CANDIDATE");
+        Role employer = roleService.create("EMPLOYER");
 
 //     !!!!  USERS  !!!!
         User userAdmin = createUser("Admin", "Carol", "admin@mail.co", "1111", admin);

@@ -14,10 +14,10 @@ import lombok.Setter;
 import java.util.List;
 import java.util.Objects;
 
-@Table
 @Entity
 @Getter
 @Setter
+@Table(name = "employer_profiles")
 public class EmployerProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

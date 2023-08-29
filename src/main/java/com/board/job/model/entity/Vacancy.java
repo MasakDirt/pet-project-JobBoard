@@ -18,10 +18,10 @@ import lombok.Setter;
 import java.util.List;
 import java.util.Objects;
 
-@Table
 @Entity
 @Getter
 @Setter
+@Table(name = "vacancies")
 public class Vacancy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

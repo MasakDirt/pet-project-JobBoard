@@ -22,7 +22,7 @@ public class ImageEmployerService {
     public Image generateImage(EmployerProfile employerProfile) {
         var streamResource = new StreamResource(employerProfile.getEmployerName(), () -> {
             var attached = employerProfileService.getWithPropertyPictureAttachedById(employerProfile.getId());
-            return new ByteArrayInputStream(attached.getProfilePicture());
+            return new ByteArrayInputStream(attached);
         });
         streamResource.setContentType("image/png");
         var image = new Image(streamResource, "profile-picture");

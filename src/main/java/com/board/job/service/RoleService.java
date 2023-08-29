@@ -13,8 +13,12 @@ import java.util.List;
 public class RoleService {
     private final RoleRepository roleRepository;
 
-    public Role create(Role role) {
-        return roleRepository.save(role);
+    public Role create(String name) {
+        if (name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Role name must contain letters!");
+        }
+
+        return roleRepository.save(new Role(name));
     }
 
     public Role readById(long id) {
@@ -27,9 +31,15 @@ public class RoleService {
                 new EntityNotFoundException(String.format("Role with name %s not found", name)));
     }
 
-    public Role update(Role updated) {
-        readById(updated.getId());
-        return create(updated);
+    public Role update(long id, String newName) {
+        if (newName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Role name must contain letters!");
+        }
+
+        var old = readById(id);
+        old.setName(newName);
+
+        return roleRepository.save(old);
     }
 
     public void delete(long id) {

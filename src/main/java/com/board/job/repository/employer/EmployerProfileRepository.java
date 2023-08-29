@@ -6,10 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface EmployerProfileRepository extends JpaRepository<EmployerProfile, Long> {
-    @Query("SELECT e FROM EmployerProfile e LEFT JOIN FETCH e.profilePicture WHERE e.id = :id")
-    Optional<EmployerProfile> findWithPropertyPictureAttachedById(@Param("id") long id);
+    @Query("SELECT e.profilePicture FROM EmployerProfile e WHERE e.id = :id")
+    byte[] findWithPropertyPictureAttachedById(@Param("id") long id);
 }
