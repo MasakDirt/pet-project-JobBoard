@@ -179,7 +179,7 @@ public class EmployerProfileServiceTests {
     }
 
     @Test
-    public void test_Invalid_SaveProfilePicture() throws Exception {
+    public void test_Invalid_SaveProfilePicture() {
         assertThrows(EntityNotFoundException.class, () -> employerProfileService.saveProfilePicture(
                 0, Files.readAllBytes(Path.of("files/photos/nicolas.jpg"))),
         "Entity not found exception will be thrown because we have no employer profile with id 0.");
