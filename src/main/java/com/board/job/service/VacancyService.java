@@ -15,8 +15,10 @@ public class VacancyService {
     private final UserService userService;
 
     public Vacancy create(long ownerId, Vacancy vacancy) {
-        vacancy.setEmployerCompany(userService.getEmployerData(ownerId).left);
-        vacancy.setEmployerProfile(userService.getEmployerData(ownerId).right);
+        var employerData = userService.getEmployerData(ownerId);
+
+        vacancy.setEmployerCompany(employerData.left);
+        vacancy.setEmployerProfile(employerData.right);
 
         return vacancyRepository.save(vacancy);
     }
