@@ -26,10 +26,11 @@ public class FeedbackService {
                 new EntityNotFoundException("Feedback not found"));
     }
 
-    public Feedback update(Feedback updated) {
-        readById(updated.getId());
+    public Feedback update(String id, String text) {
+        var feedback = readById(id);
+        feedback.setText(text);
 
-        return feedbackRepository.save(updated);
+        return feedbackRepository.save(feedback);
     }
 
     public void delete(String id) {
