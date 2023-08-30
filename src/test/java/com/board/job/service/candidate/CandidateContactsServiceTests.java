@@ -162,7 +162,8 @@ public class CandidateContactsServiceTests {
         long id = 3L;
         candidateContactsService.delete(id);
 
-        assertThrows(EntityNotFoundException.class, () -> candidateContactsService.readById(id));
+        assertThrows(EntityNotFoundException.class, () -> candidateContactsService.readById(id),
+                "Entity not found exception will be thrown because we already delete this candidate.");
     }
 
     @Test
