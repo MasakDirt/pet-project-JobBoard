@@ -40,7 +40,7 @@ public class CandidateContactsService {
     public CandidateContacts update(CandidateContacts updated) {
         readById(updated.getId());
 
-        return updated;
+        return candidateContactsRepository.save(updated);
     }
 
     public void delete(long id) {
