@@ -17,11 +17,11 @@ import java.io.IOException;
 @Service
 @AllArgsConstructor
 public class ImageCandidateService {
-    private final CandidateContactsService candidateContactsService;
+    private final CandidateContactService candidateContactService;
 
     public Image generateImage(CandidateContact candidateContact) {
         var streamResource = new StreamResource(candidateContact.getCandidateName(), () -> {
-            var attached = candidateContactsService.getWithPropertyPictureAttachedById(candidateContact.getId());
+            var attached = candidateContactService.getWithPropertyPictureAttachedById(candidateContact.getId());
             return new ByteArrayInputStream(attached);
         });
         streamResource.setContentType("image/png");
@@ -41,7 +41,7 @@ public class ImageCandidateService {
                 BufferedImage inputImage = ImageIO.read(memoryBuffer.getInputStream(attachedName));
                 ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
                 ImageIO.write(inputImage, "png", pngContent);
-                candidateContactsService.saveProfilePicture(id, pngContent.toByteArray());
+                candidateContactService.saveProfilePicture(id, pngContent.toByteArray());
             } catch (IOException e) {
                 e.printStackTrace();
             }

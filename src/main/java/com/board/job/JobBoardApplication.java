@@ -14,7 +14,7 @@ import com.board.job.model.entity.sample.LanguageLevel;
 import com.board.job.model.entity.sample.WorkMode;
 import com.board.job.mongoDB.MongoClientConnection;
 import com.board.job.service.*;
-import com.board.job.service.candidate.CandidateContactsService;
+import com.board.job.service.candidate.CandidateContactService;
 import com.board.job.service.candidate.CandidateProfileService;
 import com.board.job.service.employer.EmployerCompanyService;
 import com.board.job.service.employer.EmployerProfileService;
@@ -40,7 +40,7 @@ public class JobBoardApplication implements CommandLineRunner {
     private final RoleService roleService;
     private final UserService userService;
     private final CandidateProfileService candidateProfileService;
-    private final CandidateContactsService candidateContactsService;
+    private final CandidateContactService candidateContactService;
     private final EmployerProfileService employerProfileService;
     private final EmployerCompanyService employerCompanyService;
     private final VacancyService vacancyService;
@@ -272,7 +272,7 @@ public class JobBoardApplication implements CommandLineRunner {
         candidateContacts.setGithubUrl(githubUrl);
         candidateContacts.setPortfolioUrl(portfolioUrl);
 
-        candidateContacts = candidateContactsService.create(pdfFilename, photoFilename, ownerId, candidateContacts);
+        candidateContacts = candidateContactService.create(pdfFilename, photoFilename, ownerId, candidateContacts);
         log.info("Candidate contacts for user {} successfully created", candidateContacts.getCandidateName());
 
         return candidateContacts;

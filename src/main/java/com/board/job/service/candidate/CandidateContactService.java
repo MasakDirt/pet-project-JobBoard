@@ -14,7 +14,7 @@ import java.nio.file.Path;
 
 @Service
 @AllArgsConstructor
-public class CandidateContactsService {
+public class CandidateContactService {
     private final UserService userService;
     private final PDFService pdfService;
     private final CandidateContactRepository candidateContactRepository;
