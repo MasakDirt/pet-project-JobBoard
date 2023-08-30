@@ -1,8 +1,8 @@
 package com.board.job.service.candidate;
 
 import com.board.job.model.entity.PDF_File;
-import com.board.job.model.entity.candidate.CandidateContacts;
-import com.board.job.repository.candidate.CandidateContactsRepository;
+import com.board.job.model.entity.candidate.CandidateContact;
+import com.board.job.repository.candidate.CandidateContactRepository;
 import com.board.job.service.PDFService;
 import com.board.job.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,20 +27,20 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-public class CandidateContactsServiceTests {
+public class CandidateContactServiceTests {
     private final UserService userService;
     private final PDFService pdfService;
     private final CandidateContactsService candidateContactsService;
-    private final CandidateContactsRepository candidateContactsRepository;
+    private final CandidateContactRepository candidateContactRepository;
 
     @Autowired
-    public CandidateContactsServiceTests(UserService userService, PDFService pdfService,
-                                         CandidateContactsService candidateContactsService,
-                                         CandidateContactsRepository candidateContactsRepository) {
+    public CandidateContactServiceTests(UserService userService, PDFService pdfService,
+                                        CandidateContactsService candidateContactsService,
+                                        CandidateContactRepository candidateContactRepository) {
         this.userService = userService;
         this.pdfService = pdfService;
         this.candidateContactsService = candidateContactsService;
-        this.candidateContactsRepository = candidateContactsRepository;
+        this.candidateContactRepository = candidateContactRepository;
     }
 
     @Test
@@ -48,12 +48,12 @@ public class CandidateContactsServiceTests {
         AssertionsForClassTypes.assertThat(userService).isNotNull();
         AssertionsForClassTypes.assertThat(pdfService).isNotNull();
         AssertionsForClassTypes.assertThat(candidateContactsService).isNotNull();
-        AssertionsForClassTypes.assertThat(candidateContactsRepository).isNotNull();
+        AssertionsForClassTypes.assertThat(candidateContactRepository).isNotNull();
     }
 
     @Test
     public void test_Valid_Create() throws Exception {
-        List<CandidateContacts> before = candidateContactsRepository.findAll();
+        List<CandidateContact> before = candidateContactRepository.findAll();
 
         String pdfFilename = "files/pdf/CV_Maksym_Korniev.pdf";
         String photoFileName = "files/photos/adminPhoto.jpg";
@@ -61,7 +61,7 @@ public class CandidateContactsServiceTests {
 
         PDF_File pdfFile = pdfService.create(pdfFilename);
 
-        CandidateContacts expected = new CandidateContacts();
+        CandidateContact expected = new CandidateContact();
         expected.setPhone("new phone");
         expected.setTelegram("@telegram");
         expected.setLinkedInProfile("www.linkedin.co/rkgrgjropeigmpo");
@@ -71,9 +71,9 @@ public class CandidateContactsServiceTests {
         expected.setPdf(pdfFile);
         expected.setOwner(userService.readById(ownerId));
 
-        CandidateContacts actual = candidateContactsService.create(pdfFilename, photoFileName, 2L, expected);
+        CandidateContact actual = candidateContactsService.create(pdfFilename, photoFileName, 2L, expected);
 
-        List<CandidateContacts> after = candidateContactsRepository.findAll();
+        List<CandidateContact> after = candidateContactRepository.findAll();
         expected.setId(actual.getId());
 
         assertTrue(before.size() < after.size(),
@@ -86,27 +86,27 @@ public class CandidateContactsServiceTests {
         String pdfFilename = "files/pdf/CV_Maksym_Korniev.pdf";
         String photoFileName = "files/photos/adminPhoto.jpg";
         long ownerId = 2L;
-        CandidateContacts candidateContacts = candidateContactsService.readById(2L);
+        CandidateContact candidateContact = candidateContactsService.readById(2L);
 
-        assertThrows(IllegalArgumentException.class, () -> candidateContactsService.create("", photoFileName, ownerId, candidateContacts),
+        assertThrows(IllegalArgumentException.class, () -> candidateContactsService.create("", photoFileName, ownerId, candidateContact),
                 "Illegal argument exception will be thrown, because we have no pdfFile with empty name.");
 
-        assertThrows(IllegalArgumentException.class, () -> candidateContactsService.create(pdfFilename, "", ownerId, candidateContacts),
+        assertThrows(IllegalArgumentException.class, () -> candidateContactsService.create(pdfFilename, "", ownerId, candidateContact),
                 "Illegal argument exception will be thrown, because we have no photo file with empty name.");
 
-        assertThrows(EntityNotFoundException.class, () -> candidateContactsService.create(pdfFilename, photoFileName, 0, candidateContacts),
+        assertThrows(EntityNotFoundException.class, () -> candidateContactsService.create(pdfFilename, photoFileName, 0, candidateContact),
                 "Entity not found exception will be thrown, because we have no user with id 0.");
 
         assertThrows(NullPointerException.class, () -> candidateContactsService.create(pdfFilename, photoFileName, ownerId, null),
                 "Null pointer exception will be thrown, because we pass null user to method create.");
 
-        assertThrows(ConstraintViolationException.class, () -> candidateContactsService.create(pdfFilename, photoFileName, ownerId, new CandidateContacts()),
+        assertThrows(ConstraintViolationException.class, () -> candidateContactsService.create(pdfFilename, photoFileName, ownerId, new CandidateContact()),
                 "Constraint violation exception will be thrown, because we pass empty user.");
     }
 
     @Test
     public void test_Valid_ReadById() {
-        CandidateContacts expected = new CandidateContacts();
+        CandidateContact expected = new CandidateContact();
         expected.setPhone("new phone");
         expected.setTelegram("@telegram");
         expected.setLinkedInProfile("www.linkedin.co/rkgrgjropeigmpo");
@@ -116,7 +116,7 @@ public class CandidateContactsServiceTests {
         expected = candidateContactsService.create("files/pdf/CV_Maksym_Korniev.pdf", "files/photos/violetPhoto.jpg",
                 2L, expected);
 
-        CandidateContacts actual = candidateContactsService.readById(expected.getId());
+        CandidateContact actual = candidateContactsService.readById(expected.getId());
 
         assertEquals(expected, actual);
     }
@@ -132,14 +132,14 @@ public class CandidateContactsServiceTests {
         String newTelegram = "@new";
         String newName = "Charly Puer";
 
-        CandidateContacts unexpected = candidateContactsService.readById(2L);
+        CandidateContact unexpected = candidateContactsService.readById(2L);
         String oldTelegram = unexpected.getTelegram();
         String oldName = unexpected.getCandidateName();
 
         unexpected.setTelegram(newTelegram);
         unexpected.setCandidateName(newName);
 
-        CandidateContacts actual = candidateContactsService.update(unexpected);
+        CandidateContact actual = candidateContactsService.update(unexpected);
 
         assertAll(
                 () -> assertEquals(unexpected.getId(), actual.getId()),
@@ -153,7 +153,7 @@ public class CandidateContactsServiceTests {
         assertThrows(NullPointerException.class, () -> candidateContactsService.update(null),
                 "Null pointer exception will be thrown, because we pass null user to method update.");
 
-        assertThrows(EntityNotFoundException.class, () -> candidateContactsService.update(new CandidateContacts()),
+        assertThrows(EntityNotFoundException.class, () -> candidateContactsService.update(new CandidateContact()),
                 "Entity not found exception will be thrown because we have no this candidate.");
     }
 
@@ -175,7 +175,7 @@ public class CandidateContactsServiceTests {
     @Test
     public void test_Valid_GetWithPropertyPictureAttachedById() {
         long id = 3L;
-        byte[] expected = candidateContactsRepository.findWithPropertyPictureAttachedById(id);
+        byte[] expected = candidateContactRepository.findWithPropertyPictureAttachedById(id);
 
         byte[] actual = candidateContactsService.getWithPropertyPictureAttachedById(id);
 
@@ -192,12 +192,12 @@ public class CandidateContactsServiceTests {
     @Test
     public void test_Valid_SaveProfilePicture() throws Exception {
         long id = 3L;
-        CandidateContacts candidateContacts = candidateContactsService.readById(id);
-        byte[] unexpected = candidateContacts.getProfilePicture();
+        CandidateContact candidateContact = candidateContactsService.readById(id);
+        byte[] unexpected = candidateContact.getProfilePicture();
 
         candidateContactsService.saveProfilePicture(id, Files.readAllBytes(Path.of("files/photos/nicolas.jpg")));
 
-        byte[] actual = candidateContacts.getProfilePicture();
+        byte[] actual = candidateContact.getProfilePicture();
 
         assertNotEquals(Arrays.toString(unexpected), Arrays.toString(actual),
                 "We added new profile picture so 'unexpected' array must be empty");

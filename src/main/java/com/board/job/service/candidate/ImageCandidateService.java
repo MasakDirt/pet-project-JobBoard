@@ -1,6 +1,6 @@
 package com.board.job.service.candidate;
 
-import com.board.job.model.entity.candidate.CandidateContacts;
+import com.board.job.model.entity.candidate.CandidateContact;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
@@ -19,9 +19,9 @@ import java.io.IOException;
 public class ImageCandidateService {
     private final CandidateContactsService candidateContactsService;
 
-    public Image generateImage(CandidateContacts candidateContacts) {
-        var streamResource = new StreamResource(candidateContacts.getCandidateName(), () -> {
-            var attached = candidateContactsService.getWithPropertyPictureAttachedById(candidateContacts.getId());
+    public Image generateImage(CandidateContact candidateContact) {
+        var streamResource = new StreamResource(candidateContact.getCandidateName(), () -> {
+            var attached = candidateContactsService.getWithPropertyPictureAttachedById(candidateContact.getId());
             return new ByteArrayInputStream(attached);
         });
         streamResource.setContentType("image/png");

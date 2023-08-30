@@ -1,6 +1,6 @@
 package com.board.job.model.entity;
 
-import com.board.job.model.entity.candidate.CandidateContacts;
+import com.board.job.model.entity.candidate.CandidateContact;
 import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.model.entity.employer.EmployerCompany;
 import com.board.job.model.entity.employer.EmployerProfile;
@@ -64,8 +64,8 @@ public class User {
     private CandidateProfile candidateProfile;
 
     @JsonManagedReference
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
-    private CandidateContacts candidateContacts;
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CandidateContact candidateContact;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)

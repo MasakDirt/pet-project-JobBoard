@@ -68,14 +68,14 @@ public class Vacancy {
     @Column(name = "english_level")
     private LanguageLevel englishLevel;
 
+    @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "employer_profile_id")
-    @ManyToOne(fetch = FetchType.EAGER)
     private EmployerProfile employerProfile;
 
+    @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "employer_company_id")
-    @ManyToOne(fetch = FetchType.EAGER)
     private EmployerCompany employerCompany;
 
     @JsonManagedReference

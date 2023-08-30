@@ -4,7 +4,7 @@ import com.board.job.model.entity.Feedback;
 import com.board.job.model.entity.Role;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.Vacancy;
-import com.board.job.model.entity.candidate.CandidateContacts;
+import com.board.job.model.entity.candidate.CandidateContact;
 import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.model.entity.employer.EmployerCompany;
 import com.board.job.model.entity.employer.EmployerProfile;
@@ -130,21 +130,21 @@ public class JobBoardApplication implements CommandLineRunner {
                 Strings.getHelenExperienceExplanation(), "");
 
 //     !!!! CANDIDATES CONTACTS !!!!
-        CandidateContacts candidateContactsAdmin = createCandidateContacts(userAdmin.getId(), "0798764532",
+        CandidateContact candidateContactAdmin = createCandidateContacts(userAdmin.getId(), "0798764532",
                 "@admin.telegram", "www.linkedin.co/AdminkoDKFfijif", "www.github.co/adminious",
                 "www.portfolio.co/CarolsFKfkffk", "files/pdf/CV_Maksym_Korniev.pdf", null);
 
-        CandidateContacts candidateContactsNikole = createCandidateContacts(userNikole.getId(), "0603457012",
+        CandidateContact candidateContactNikole = createCandidateContacts(userNikole.getId(), "0603457012",
                 "@nikoliasias", "www.linkedin.co/lfpeflefepff", "www.github.co/NikoleStrike",
                 "www.portfolio.co/12KMkfmkgmf", "files/pdf/Certificate_Maksym_Korniev.pdf",
                 "files/photos/nicolas.jpg");
 
-        CandidateContacts candidateContactsDonald = createCandidateContacts(userDonald.getId(), "0560987654",
+        CandidateContact candidateContactDonald = createCandidateContacts(userDonald.getId(), "0560987654",
                 "@donaldc++", "www.linkedin.co/donaldino", "www.github.co/DonaldC++",
                 "www.portfolio.co/pkgprkrogkokg", "files/pdf/Certificate_Maksym_Korniev.pdf",
                 "files/photos/donaldPicture.jpg");
 
-        CandidateContacts candidateContactsHelen = createCandidateContacts(userHelen.getId(), "0670987865",
+        CandidateContact candidateContactHelen = createCandidateContacts(userHelen.getId(), "0670987865",
                 "@beginner_developer", "www.linkedin.co/ODOJFOGG", "www.github.co/Helen_Begin",
                 "www.portfolio.co/:DKDKojfj2434", null,
                 "files/photos/helenPicture.jpg");
@@ -222,6 +222,8 @@ public class JobBoardApplication implements CommandLineRunner {
         Feedback feedbackDonald = createFeedback(donaldAndVioletCompany, Strings.textDonald());
 
         Feedback feedbackHelen = createFeedback(helenAndLarryCompany, Strings.textHelen());
+
+        userService.delete(admin.getId());
     }
 
     private User createUser(String firstName, String lastName, String email, String password, Role role) {
@@ -259,11 +261,11 @@ public class JobBoardApplication implements CommandLineRunner {
         return candidateProfile;
     }
 
-    private CandidateContacts createCandidateContacts(long ownerId, String phone,
-                                                      String telegram, String linkedIn, String githubUrl, String portfolioUrl,
-                                                      String pdfFilename, String photoFilename) {
+    private CandidateContact createCandidateContacts(long ownerId, String phone,
+                                                     String telegram, String linkedIn, String githubUrl, String portfolioUrl,
+                                                     String pdfFilename, String photoFilename) {
 
-        var candidateContacts = new CandidateContacts();
+        var candidateContacts = new CandidateContact();
         candidateContacts.setPhone(phone);
         candidateContacts.setTelegram(telegram);
         candidateContacts.setLinkedInProfile(linkedIn);

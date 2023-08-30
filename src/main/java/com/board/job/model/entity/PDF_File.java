@@ -1,6 +1,6 @@
 package com.board.job.model.entity;
 
-import com.board.job.model.entity.candidate.CandidateContacts;
+import com.board.job.model.entity.candidate.CandidateContact;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class PDF_File {
 
     @JsonManagedReference
     @OneToOne(mappedBy = "pdf", cascade = CascadeType.ALL)
-    private CandidateContacts candidateContacts;
+    private CandidateContact candidateContact;
 
     @Override
     public boolean equals(Object o) {
@@ -47,7 +47,7 @@ public class PDF_File {
         return "PDF_File{" +
                 "id=" + id +
                 ", fileContent=" + Arrays.toString(fileContent) +
-                ", candidateContacts=" + candidateContacts +
+                ", candidateContacts=" + candidateContact +
                 '}';
     }
 }
