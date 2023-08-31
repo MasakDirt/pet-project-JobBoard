@@ -14,8 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -50,21 +50,21 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @ManyToMany
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles;
+    private Set<Role> roles;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
     private CandidateProfile candidateProfile;
 
     @JsonManagedReference
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
     private CandidateContact candidateContact;
 
     @JsonManagedReference
