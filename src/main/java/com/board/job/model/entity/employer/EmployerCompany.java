@@ -26,9 +26,9 @@ public class EmployerCompany {
     @Column(name = "web_site", nullable = false)
     private String webSite;
 
+    @OneToOne
     @JsonBackReference
     @JoinColumn(name = "owner_id")
-    @OneToOne(fetch = FetchType.EAGER)
     private User owner;
 
     @JsonManagedReference

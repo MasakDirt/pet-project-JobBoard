@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,7 +26,7 @@ public class Role {
 
     @JsonManagedReference
     @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
-    List<User> users;
+    private Set<User> users;
 
     public Role() {}
 

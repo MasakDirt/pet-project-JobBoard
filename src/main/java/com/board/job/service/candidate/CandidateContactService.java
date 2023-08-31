@@ -1,7 +1,7 @@
 package com.board.job.service.candidate;
 
-import com.board.job.model.entity.candidate.CandidateContacts;
-import com.board.job.repository.candidate.CandidateContactsRepository;
+import com.board.job.model.entity.candidate.CandidateContact;
+import com.board.job.repository.candidate.CandidateContactRepository;
 import com.board.job.service.PDFService;
 import com.board.job.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,41 +14,41 @@ import java.nio.file.Path;
 
 @Service
 @AllArgsConstructor
-public class CandidateContactsService {
+public class CandidateContactService {
     private final UserService userService;
     private final PDFService pdfService;
-    private final CandidateContactsRepository candidateContactsRepository;
+    private final CandidateContactRepository candidateContactRepository;
 
-    public CandidateContacts create(String pdfFilename, String photoFilename, long ownerId, CandidateContacts candidateContacts) {
+    public CandidateContact create(String pdfFilename, String photoFilename, long ownerId, CandidateContact candidateContact) {
         if (pdfFilename != null) {
-            candidateContacts.setPdf(pdfService.create(pdfFilename));
+            candidateContact.setPdf(pdfService.create(pdfFilename));
         }
 
         if (photoFilename != null) {
-            candidateContacts.setProfilePicture(setImageContent(photoFilename));
+            candidateContact.setProfilePicture(setImageContent(photoFilename));
         }
 
-        candidateContacts.setOwnerWithFields(userService.readById(ownerId));
-        return candidateContactsRepository.save(candidateContacts);
+        candidateContact.setOwnerWithFields(userService.readById(ownerId));
+        return candidateContactRepository.save(candidateContact);
     }
 
-    public CandidateContacts readById(long id) {
-        return candidateContactsRepository.findById(id).orElseThrow(() ->
+    public CandidateContact readById(long id) {
+        return candidateContactRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Candidate not found"));
     }
 
-    public CandidateContacts update(CandidateContacts updated) {
+    public CandidateContact update(CandidateContact updated) {
         readById(updated.getId());
 
-        return updated;
+        return candidateContactRepository.save(updated);
     }
 
     public void delete(long id) {
-        candidateContactsRepository.delete(readById(id));
+        candidateContactRepository.delete(readById(id));
     }
 
     public byte[] getWithPropertyPictureAttachedById(long id) {
-        byte[] profilePicture = candidateContactsRepository.findWithPropertyPictureAttachedById(id);
+        byte[] profilePicture = candidateContactRepository.findWithPropertyPictureAttachedById(id);
         return profilePicture == null ? new byte[]{} : profilePicture;
     }
 
@@ -56,7 +56,7 @@ public class CandidateContactsService {
         var candidateContacts = readById(id);
         candidateContacts.setProfilePicture(imageBytes);
 
-        candidateContactsRepository.save(candidateContacts);
+        candidateContactRepository.save(candidateContacts);
     }
 
     private byte[] setImageContent(String filename) {

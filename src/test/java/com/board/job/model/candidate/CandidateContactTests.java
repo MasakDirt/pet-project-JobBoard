@@ -1,6 +1,6 @@
 package com.board.job.model.candidate;
 
-import com.board.job.model.entity.candidate.CandidateContacts;
+import com.board.job.model.entity.candidate.CandidateContact;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,116 +14,116 @@ import static com.board.job.model.ValidationHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class CandidateContactsTests {
-    private static CandidateContacts candidateContacts;
+public class CandidateContactTests {
+    private static CandidateContact candidateContact;
 
     @BeforeAll
     public static void init() {
-        candidateContacts = new CandidateContacts();
-        candidateContacts.setId(1L);
-        candidateContacts.setCandidateName("Paula Flore");
-        candidateContacts.setEmail("candidate@mail.co");
-        candidateContacts.setPhone("098xxx98xx");
-        candidateContacts.setTelegram("@candidate234");
-        candidateContacts.setLinkedInProfile("www.linkedin.co/giregoijeigru");
-        candidateContacts.setGithubUrl("www.github.com/MasakDirt");
-        candidateContacts.setPortfolioUrl("www.portfolio.co/fmgogo");
+        candidateContact = new CandidateContact();
+        candidateContact.setId(1L);
+        candidateContact.setCandidateName("Paula Flore");
+        candidateContact.setEmail("candidate@mail.co");
+        candidateContact.setPhone("098xxx98xx");
+        candidateContact.setTelegram("@candidate234");
+        candidateContact.setLinkedInProfile("www.linkedin.co/giregoijeigru");
+        candidateContact.setGithubUrl("www.github.com/MasakDirt");
+        candidateContact.setPortfolioUrl("www.portfolio.co/fmgogo");
     }
 
     @Test
     public void test_Valid_CandidateContacts() {
-        assertEquals(0, getViolation(candidateContacts).size());
+        assertEquals(0, getViolation(candidateContact).size());
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
     public void test_Invalid_CandidateContacts_CandidateName(String candidateName, String error) {
-        candidateContacts.setCandidateName(candidateName);
+        candidateContact.setCandidateName(candidateName);
 
-        assertEquals(1, getViolation(candidateContacts).size());
-        assertEquals(error, getViolation(candidateContacts).iterator().next().getInvalidValue());
+        assertEquals(1, getViolation(candidateContact).size());
+        assertEquals(error, getViolation(candidateContact).iterator().next().getInvalidValue());
         assertEquals("The candidate name cannot be 'blank'",
-                getViolation(candidateContacts).iterator().next().getMessage());
+                getViolation(candidateContact).iterator().next().getMessage());
 
-        candidateContacts.setCandidateName("Paula Flore");
+        candidateContact.setCandidateName("Paula Flore");
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForEmail")
     public void test_Invalid_Email(String email, String error) {
-        candidateContacts.setEmail(email);
+        candidateContact.setEmail(email);
 
-        assertEquals(1, getViolation(candidateContacts).size());
-        assertEquals(error, getViolation(candidateContacts).iterator().next().getInvalidValue());
+        assertEquals(1, getViolation(candidateContact).size());
+        assertEquals(error, getViolation(candidateContact).iterator().next().getInvalidValue());
         assertEquals("Must be a valid e-mail address",
-                getViolation(candidateContacts).iterator().next().getMessage());
+                getViolation(candidateContact).iterator().next().getMessage());
 
-        candidateContacts.setEmail("candidate@mail.co");
+        candidateContact.setEmail("candidate@mail.co");
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
     public void test_Invalid_CandidateContacts_Phone(String phone, String error) {
-        candidateContacts.setPhone(phone);
+        candidateContact.setPhone(phone);
 
-        assertEquals(1, getViolation(candidateContacts).size());
-        assertEquals(error, getViolation(candidateContacts).iterator().next().getInvalidValue());
+        assertEquals(1, getViolation(candidateContact).size());
+        assertEquals(error, getViolation(candidateContact).iterator().next().getInvalidValue());
         assertEquals("You must write valid phone number.",
-                getViolation(candidateContacts).iterator().next().getMessage());
+                getViolation(candidateContact).iterator().next().getMessage());
 
-        candidateContacts.setPhone("098xxx98xx");
+        candidateContact.setPhone("098xxx98xx");
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForTelegram")
     public void test_Invalid_CandidateContacts_Telegram(String telegram, String error) {
-        candidateContacts.setTelegram(telegram);
+        candidateContact.setTelegram(telegram);
 
-        assertEquals(1, getViolation(candidateContacts).size());
-        assertEquals(error, getViolation(candidateContacts).iterator().next().getInvalidValue());
+        assertEquals(1, getViolation(candidateContact).size());
+        assertEquals(error, getViolation(candidateContact).iterator().next().getInvalidValue());
         assertEquals("The telegram account must started with '@' character",
-                getViolation(candidateContacts).iterator().next().getMessage());
+                getViolation(candidateContact).iterator().next().getMessage());
 
-        candidateContacts.setTelegram("@candidate234");
+        candidateContact.setTelegram("@candidate234");
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForLinkedIn")
     public void test_Invalid_CandidateContacts_LinkedIn(String linkedIn, String error) {
-        candidateContacts.setLinkedInProfile(linkedIn);
+        candidateContact.setLinkedInProfile(linkedIn);
 
-        assertEquals(1, getViolation(candidateContacts).size());
-        assertEquals(error, getViolation(candidateContacts).iterator().next().getInvalidValue());
+        assertEquals(1, getViolation(candidateContact).size());
+        assertEquals(error, getViolation(candidateContact).iterator().next().getInvalidValue());
         assertEquals("Must be a valid LinkedIn link!",
-                getViolation(candidateContacts).iterator().next().getMessage());
+                getViolation(candidateContact).iterator().next().getMessage());
 
-        candidateContacts.setLinkedInProfile("www.linkedin.co/giregoijeigru");
+        candidateContact.setLinkedInProfile("www.linkedin.co/giregoijeigru");
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForGitHub")
     public void test_Invalid_CandidateContacts_GitHub(String github, String error) {
-        candidateContacts.setGithubUrl(github);
+        candidateContact.setGithubUrl(github);
 
-        assertEquals(1, getViolation(candidateContacts).size());
-        assertEquals(error, getViolation(candidateContacts).iterator().next().getInvalidValue());
+        assertEquals(1, getViolation(candidateContact).size());
+        assertEquals(error, getViolation(candidateContact).iterator().next().getInvalidValue());
         assertEquals("Must be a valid GitHub link!",
-                getViolation(candidateContacts).iterator().next().getMessage());
+                getViolation(candidateContact).iterator().next().getMessage());
 
-        candidateContacts.setGithubUrl("www.github.com/MasakDirt");
+        candidateContact.setGithubUrl("www.github.com/MasakDirt");
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForPortfolio")
     public void test_Invalid_CandidateContacts_Portfolio(String portfolio, String error) {
-        candidateContacts.setPortfolioUrl(portfolio);
+        candidateContact.setPortfolioUrl(portfolio);
 
-        assertEquals(1, getViolation(candidateContacts).size());
-        assertEquals(error, getViolation(candidateContacts).iterator().next().getInvalidValue());
+        assertEquals(1, getViolation(candidateContact).size());
+        assertEquals(error, getViolation(candidateContact).iterator().next().getInvalidValue());
         assertEquals("Must be a valid portfolio link!",
-                getViolation(candidateContacts).iterator().next().getMessage());
+                getViolation(candidateContact).iterator().next().getMessage());
 
-        candidateContacts.setPortfolioUrl("www.portfolio.co/fmgogo");
+        candidateContact.setPortfolioUrl("www.portfolio.co/fmgogo");
     }
 
     private static Stream<Arguments> argumentsForStrings() {

@@ -49,4 +49,8 @@ public class RoleService {
     public List<Role> getAll() {
         return roleRepository.findAll();
     }
+
+    public List<Role> getAllByUserId(long id) {
+        return roleRepository.findAllByUsersId(id);
+    }
 }

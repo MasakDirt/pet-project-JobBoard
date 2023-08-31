@@ -17,7 +17,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Table(name = "candidate_contacts")
-public class CandidateContacts {
+public class CandidateContact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -61,25 +61,24 @@ public class CandidateContacts {
     @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
 
+    @OneToOne
     @JsonBackReference
     @JoinColumn(name = "pdf_id")
-    @OneToOne(fetch = FetchType.EAGER)
     private PDF_File pdf;
 
+    @OneToOne
     @JsonBackReference
     @JoinColumn(name = "owner_id")
-    @OneToOne(fetch = FetchType.EAGER)
     private User owner;
 
-    public CandidateContacts() {
-
+    public CandidateContact() {
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CandidateContacts that = (CandidateContacts) o;
+        CandidateContact that = (CandidateContact) o;
         return id == that.id && Objects.equals(candidateName, that.candidateName) && Objects.equals(email, that.email) &&
                 Objects.equals(phone, that.phone) && Objects.equals(telegram, that.telegram) &&
                 Objects.equals(linkedInProfile, that.linkedInProfile) && Objects.equals(githubUrl, that.githubUrl)

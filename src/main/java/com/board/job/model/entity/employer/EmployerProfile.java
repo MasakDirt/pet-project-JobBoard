@@ -53,9 +53,9 @@ public class EmployerProfile {
     @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
 
+    @OneToOne
     @JsonBackReference
     @JoinColumn(name = "owner_id")
-    @OneToOne(fetch = FetchType.EAGER)
     private User owner;
 
     @JsonManagedReference

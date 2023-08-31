@@ -1,6 +1,6 @@
 package com.board.job.repository;
 
-import com.board.job.repository.candidate.CandidateContactsRepository;
+import com.board.job.repository.candidate.CandidateContactRepository;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,31 +16,31 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-public class CandidateContactsRepositoryTests {
-    private final CandidateContactsRepository candidateContactsRepository;
+public class CandidateContactRepositoryTests {
+    private final CandidateContactRepository candidateContactRepository;
 
     @Autowired
-    public CandidateContactsRepositoryTests(CandidateContactsRepository candidateContactsRepository) {
-        this.candidateContactsRepository = candidateContactsRepository;
+    public CandidateContactRepositoryTests(CandidateContactRepository candidateContactRepository) {
+        this.candidateContactRepository = candidateContactRepository;
     }
 
     @Test
     public void test_Injected_Component() {
-        AssertionsForClassTypes.assertThat(candidateContactsRepository).isNotNull();
+        AssertionsForClassTypes.assertThat(candidateContactRepository).isNotNull();
     }
 
     @Test
     public void test_Valid_FindWithPropertyPictureAttachedById() {
         long id = 3L;
 
-        byte[] expected = candidateContactsRepository.findAll()
+        byte[] expected = candidateContactRepository.findAll()
                 .stream()
                 .filter(candidateContacts -> candidateContacts.getId() == id)
                 .findFirst()
                 .get()
                 .getProfilePicture();
 
-        byte[] actual = candidateContactsRepository.findWithPropertyPictureAttachedById(id);
+        byte[] actual = candidateContactRepository.findWithPropertyPictureAttachedById(id);
 
         assertNotEquals(0, actual.length,
                 "We must get false because we have candidate contact with that id.");
@@ -50,7 +50,7 @@ public class CandidateContactsRepositoryTests {
 
     @Test
     public void test_Invalid_FindWithPropertyPictureAttachedById() {
-        assertNull(candidateContactsRepository.findWithPropertyPictureAttachedById(0),
+        assertNull(candidateContactRepository.findWithPropertyPictureAttachedById(0),
                 "Array must be null because we have no candidate contacts with 0 id.");
     }
 }

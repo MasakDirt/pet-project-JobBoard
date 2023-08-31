@@ -1,6 +1,6 @@
 package com.board.job.model.entity;
 
-import com.board.job.model.entity.candidate.CandidateContacts;
+import com.board.job.model.entity.candidate.CandidateContact;
 import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.model.entity.employer.EmployerCompany;
 import com.board.job.model.entity.employer.EmployerProfile;
@@ -14,8 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -50,14 +50,14 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @ManyToMany
     @JsonBackReference
-    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles;
+    private Set<Role> roles;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
@@ -65,7 +65,7 @@ public class User {
 
     @JsonManagedReference
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
-    private CandidateContacts candidateContacts;
+    private CandidateContact candidateContact;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)

@@ -18,7 +18,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,7 +68,7 @@ public class UserServiceTests {
         expected.setLastName("Last");
         expected.setEmail("user@mail.co");
         expected.setPassword("pass");
-        expected.setRoles(List.of(role));
+        expected.setRoles(Set.of(role));
 
         User actual = userService.create(expected, List.of(role));
         expected.setId(actual.getId());
@@ -88,10 +90,7 @@ public class UserServiceTests {
                         "Null pointer exception will be thrown because we pass null user value to method."),
 
                 () -> assertThrows(IllegalArgumentException.class, () -> userService.create(new User(), List.of(role)),
-                        "Illegal argument exception will be thrown because we pass invalid user value to method."),
-
-                () -> assertThrows(UnsupportedOperationException.class, () -> userService.create(user, List.of()),
-                        "Unsupported operation exception will be thrown because we pass empty list of roles to method.")
+                        "Illegal argument exception will be thrown because we pass invalid user value to method.")
         );
     }
 
@@ -238,10 +237,10 @@ public class UserServiceTests {
         unexpected.setLastName("Last");
         unexpected.setEmail("email@mail.co");
         unexpected.setPassword("pass");
-        unexpected.setRoles(List.of(roleService.readById(1), roleService.readById(3), roleService.readById(4)));
-        List<Role> roles = unexpected.getRoles();
+        unexpected.setRoles(Set.of(roleService.readById(1), roleService.readById(3), roleService.readById(4)));
+        Set<Role> roles = unexpected.getRoles();
 
-        unexpected = userService.create(unexpected, roles);
+        unexpected = userService.create(unexpected, new ArrayList<>(roles));
         User actual = userService.updateUserRolesAndGetUser(unexpected.getId(), roleName);
 
         assertNotEquals(roles, actual.getRoles(),

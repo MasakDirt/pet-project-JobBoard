@@ -22,9 +22,9 @@ public class Messenger {
     @ManyToOne(fetch = FetchType.EAGER)
     private Vacancy vacancy;
 
+    @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "candidate_id")
-    @ManyToOne(fetch = FetchType.EAGER)
     private CandidateProfile candidate;
 
     public Messenger() {

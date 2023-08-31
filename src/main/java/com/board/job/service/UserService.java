@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -25,14 +25,14 @@ public class UserService {
     private final RoleService roleService;
 
     public User create(User user, List<Role> roles) {
-        user.setRoles(roles);
+        user.setRoles(new HashSet<>(roles));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     public User readById(long id) {
         return userRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("User with id %d not found"));
+                new EntityNotFoundException("User not found"));
     }
 
     public User readByEmail(String email) {
@@ -56,7 +56,7 @@ public class UserService {
         updated.setId(oldUser.getId());
         updated.setEmail(oldUser.getEmail());
 
-        return create(updated, oldUser.getRoles());
+        return create(updated, roleService.getAllByUserId(oldUser.getId()));
     }
 
     public void delete(long id) {
@@ -66,12 +66,12 @@ public class UserService {
     public User updateUserRolesAndGetUser(long id, String roleName) {
         var user = readById(id);
         var role = roleService.readByName(roleName);
-        var roles = new ArrayList<>(user.getRoles());
+        var roles = roleService.getAllByUserId(id);
 
         if (!roles.contains(role)) {
             roles.add(role);
 
-            user.setRoles(roles);
+            user.setRoles(new HashSet<>(roles));
             return update(user);
         }
 

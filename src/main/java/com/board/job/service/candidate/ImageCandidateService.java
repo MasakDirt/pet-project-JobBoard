@@ -1,6 +1,6 @@
 package com.board.job.service.candidate;
 
-import com.board.job.model.entity.candidate.CandidateContacts;
+import com.board.job.model.entity.candidate.CandidateContact;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
@@ -17,11 +17,11 @@ import java.io.IOException;
 @Service
 @AllArgsConstructor
 public class ImageCandidateService {
-    private final CandidateContactsService candidateContactsService;
+    private final CandidateContactService candidateContactService;
 
-    public Image generateImage(CandidateContacts candidateContacts) {
-        var streamResource = new StreamResource(candidateContacts.getCandidateName(), () -> {
-            var attached = candidateContactsService.getWithPropertyPictureAttachedById(candidateContacts.getId());
+    public Image generateImage(CandidateContact candidateContact) {
+        var streamResource = new StreamResource(candidateContact.getCandidateName(), () -> {
+            var attached = candidateContactService.getWithPropertyPictureAttachedById(candidateContact.getId());
             return new ByteArrayInputStream(attached);
         });
         streamResource.setContentType("image/png");
@@ -41,7 +41,7 @@ public class ImageCandidateService {
                 BufferedImage inputImage = ImageIO.read(memoryBuffer.getInputStream(attachedName));
                 ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
                 ImageIO.write(inputImage, "png", pngContent);
-                candidateContactsService.saveProfilePicture(id, pngContent.toByteArray());
+                candidateContactService.saveProfilePicture(id, pngContent.toByteArray());
             } catch (IOException e) {
                 e.printStackTrace();
             }

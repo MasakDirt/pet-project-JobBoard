@@ -65,9 +65,9 @@ public class CandidateProfile {
     @Column(columnDefinition = "TEXT")
     private String achievements;
 
+    @OneToOne
     @JsonBackReference
     @JoinColumn(name = "owner_id")
-    @OneToOne(fetch = FetchType.EAGER)
     private User owner;
 
     @JsonManagedReference
