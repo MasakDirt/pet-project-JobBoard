@@ -38,7 +38,7 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Wrong password");
         }
 
-        log.info("=== POST-LOGIN-EMAIL === auth - {} === time - {}.", userDetails.getEmail(), LocalDateTime.now());
+        log.info("=== POST-LOGIN === auth - {} === time - {}.", userDetails.getEmail(), LocalDateTime.now());
 
         return jwtUtils.generateTokenFromEmail(userDetails.getEmail());
     }
@@ -48,7 +48,7 @@ public class AuthController {
     public UserResponse create(@RequestBody @Valid UserCreateRequest createRequest) {
         var user = userService.create(mapper.getUserFromUserCreate(createRequest), Set.of(roleService.readByName("USER")));
 
-        log.info("=== POST-REGISTER === reg.name - {} === time - {}.", user.getUsername(), LocalDateTime.now());
+        log.info("=== POST-REGISTER === register - {} === time - {}.", user.getUsername(), LocalDateTime.now());
         return mapper.getUserResponseFromUser(user);
     }
 }
