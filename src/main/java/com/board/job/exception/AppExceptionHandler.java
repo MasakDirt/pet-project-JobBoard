@@ -1,6 +1,6 @@
 package com.board.job.exception;
 
-import com.board.job.model.dto.ErrorResponse;
+import com.board.job.model.dto.error.ErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
