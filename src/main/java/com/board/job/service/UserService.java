@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -24,8 +25,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
 
-    public User create(User user, List<Role> roles) {
-        user.setRoles(new HashSet<>(roles));
+    public User create(User user, Set<Role> roles) {
+        user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -56,7 +57,7 @@ public class UserService {
         updated.setId(oldUser.getId());
         updated.setEmail(oldUser.getEmail());
 
-        return create(updated, roleService.getAllByUserId(oldUser.getId()));
+        return create(updated, new HashSet<>(roleService.getAllByUserId(oldUser.getId())));
     }
 
     public void delete(long id) {
