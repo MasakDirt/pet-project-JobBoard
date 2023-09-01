@@ -41,14 +41,16 @@ public class UserService {
                 new EntityNotFoundException(String.format("User with email %s not found", email)));
     }
 
-    public User update(User updated) {
-        readById(updated.getId());
+    public User update(long id, User updated) {
+        var user = readById(id);
+        user.setFirstName(updated.getFirstName());
+        user.setLastName(updated.getLastName());
 
-        return userRepository.save(updated);
+        return userRepository.save(user);
     }
 
-    public User update(User updated, String oldPassword) {
-        var oldUser = readById(updated.getId());
+    public User update(long id, User updated, String oldPassword) {
+        var oldUser = readById(id);
 
         if (!passwordEncoder.matches(oldPassword, oldUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong old password!");
@@ -73,7 +75,7 @@ public class UserService {
             roles.add(role);
 
             user.setRoles(new HashSet<>(roles));
-            return update(user);
+            return update(user.getId(), user);
         }
 
         return user;
