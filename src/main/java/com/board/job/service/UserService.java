@@ -41,7 +41,13 @@ public class UserService {
                 new EntityNotFoundException(String.format("User with email %s not found", email)));
     }
 
-    public User update(long id, User updated) {
+    public User update(User updated) {
+        readById(updated.getId());
+
+        return userRepository.save(updated);
+    }
+
+    public User updateNames(long id, User updated) {
         var user = readById(id);
         user.setFirstName(updated.getFirstName());
         user.setLastName(updated.getLastName());
@@ -49,7 +55,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User update(long id, User updated, String oldPassword) {
+    public User updateNames(long id, User updated, String oldPassword) {
         var oldUser = readById(id);
 
         if (!passwordEncoder.matches(oldPassword, oldUser.getPassword())) {
@@ -75,7 +81,7 @@ public class UserService {
             roles.add(role);
 
             user.setRoles(new HashSet<>(roles));
-            return update(user.getId(), user);
+            return update(user);
         }
 
         return user;
