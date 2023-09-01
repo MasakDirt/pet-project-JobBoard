@@ -80,7 +80,7 @@ public class UserController {
     public ResponseEntity<String> update(@PathVariable long id, Authentication authentication,
                                          @RequestBody @Valid UserUpdateRequestWithPassword request) {
 
-        var updated = userService.update(id,
+        var updated = userService.updateNames(id,
                 mapper.getUserFromUserUpdateRequestPass(request), request.getOldPassword());
         log.info("=== PUT-USER === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
 
@@ -92,7 +92,7 @@ public class UserController {
     public ResponseEntity<String> updateNames(@PathVariable long id, Authentication authentication,
                                          @RequestBody @Valid UserUpdateRequest request) {
 
-        var updated = userService.update(id, mapper.getUserFromUserUpdateRequest(request));
+        var updated = userService.updateNames(id, mapper.getUserFromUserUpdateRequest(request));
         log.info("=== PUT-USER === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
 
         return ResponseEntity.ok(String.format("User with name %s successfully updated", updated.getName()));
