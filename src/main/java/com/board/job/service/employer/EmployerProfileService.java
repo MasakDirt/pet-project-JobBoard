@@ -7,21 +7,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 @Service
 @AllArgsConstructor
 public class EmployerProfileService {
     private final UserService userService;
     private final EmployerProfileRepository employerProfileRepository;
 
-    public EmployerProfile create(String photoFileName, long ownerId, EmployerProfile employerProfile) {
-        if (photoFileName != null) {
-            employerProfile.setProfilePicture(setImageContent(photoFileName));
-        }
-
+    public EmployerProfile create(long ownerId, EmployerProfile employerProfile) {
         employerProfile.setOwnerWithName(
                 userService.updateUserRolesAndGetUser(ownerId, "EMPLOYER")
         );
@@ -41,25 +33,5 @@ public class EmployerProfileService {
 
     public void delete(long id) {
         employerProfileRepository.delete(readById(id));
-    }
-
-    public byte[] getWithPropertyPictureAttachedById(long id) {
-        byte[] profilePicture = employerProfileRepository.findWithPropertyPictureAttachedById(id);
-        return profilePicture == null ? new byte[]{} : profilePicture;
-    }
-
-    public void saveProfilePicture(long id, byte[] imageBytes) {
-        var employerProfile = readById(id);
-        employerProfile.setProfilePicture(imageBytes);
-
-        employerProfileRepository.save(employerProfile);
-    }
-
-    private byte[] setImageContent(String filename) {
-        try {
-            return Files.readAllBytes(Path.of(filename));
-        } catch (IOException io) {
-            throw new IllegalArgumentException(String.format("File with name %s not found", filename));
-        }
     }
 }
