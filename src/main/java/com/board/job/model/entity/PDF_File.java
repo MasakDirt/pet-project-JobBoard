@@ -1,6 +1,7 @@
 package com.board.job.model.entity;
 
 import com.board.job.model.entity.candidate.CandidateContact;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,16 +17,17 @@ import java.util.Objects;
 public class PDF_File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "content", columnDefinition = "LONGBLOB", nullable = false)
+    @Column(name = "content", columnDefinition = "LONGBLOB")
     private byte[] fileContent;
 
-    @JsonManagedReference
-    @OneToOne(mappedBy = "pdf", cascade = CascadeType.ALL)
-    private CandidateContact candidateContact;
+    @OneToOne
+    @JsonBackReference
+    @JoinColumn(name = "candidate_contact_id")
+    private CandidateContact contact;
 
     @Override
     public boolean equals(Object o) {
@@ -47,7 +49,7 @@ public class PDF_File {
         return "PDF_File{" +
                 "id=" + id +
                 ", fileContent=" + Arrays.toString(fileContent) +
-                ", candidateContacts=" + candidateContact +
+                ", candidateContacts=" + contact +
                 '}';
     }
 }
