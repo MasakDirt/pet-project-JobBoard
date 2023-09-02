@@ -1,8 +1,10 @@
 package com.board.job.model.entity.candidate;
 
+import com.board.job.model.entity.Image;
 import com.board.job.model.entity.PDF_File;
 import com.board.job.model.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -56,14 +58,12 @@ public class CandidateContact {
     @Column(name = "portfolio_url", nullable = false)
     private String portfolioUrl;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
-    private byte[] profilePicture;
+    @JsonManagedReference
+    @OneToOne(mappedBy = "contact", cascade = CascadeType.ALL)
+    private Image image;
 
-    @OneToOne
-    @JsonBackReference
-    @JoinColumn(name = "pdf_id")
+    @JsonManagedReference
+    @OneToOne(mappedBy = "contact", cascade = CascadeType.ALL)
     private PDF_File pdf;
 
     @OneToOne
