@@ -55,7 +55,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateNames(long id, User updated, String oldPassword) {
+    public User update(long id, User updated, String oldPassword) {
         var oldUser = readById(id);
 
         if (!passwordEncoder.matches(oldPassword, oldUser.getPassword())) {

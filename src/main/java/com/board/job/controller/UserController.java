@@ -80,7 +80,7 @@ public class UserController {
     public ResponseEntity<String> update(@PathVariable long id, Authentication authentication,
                                          @RequestBody @Valid UserUpdateRequestWithPassword request) {
 
-        var updated = userService.updateNames(id,
+        var updated = userService.update(id,
                 mapper.getUserFromUserUpdateRequestPass(request), request.getOldPassword());
         log.info("=== PUT-USER === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
 
