@@ -1,5 +1,6 @@
 package com.board.job.model.entity.employer;
 
+import com.board.job.model.entity.Image;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.Vacancy;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -48,10 +49,9 @@ public class EmployerProfile {
             message = "Must be a valid LinkedIn link!")
     private String linkedInProfile;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
-    private byte[] profilePicture;
+    @JsonManagedReference
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
+    private Image image;
 
     @OneToOne
     @JsonBackReference
