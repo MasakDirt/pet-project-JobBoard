@@ -2,6 +2,7 @@ package com.board.job.service;
 
 import com.board.job.model.entity.PDF_File;
 import com.board.job.repository.PDFRepository;
+import com.board.job.service.candidate.CandidateContactService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,16 @@ import java.nio.file.Path;
 @AllArgsConstructor
 public class PDFService {
     private final PDFRepository pdfRepository;
+    private final CandidateContactService candidateContactService;
 
-    public PDF_File create(String filename) {
-        return pdfRepository.save(setFileContent(filename));
+    public PDF_File create(long candidateId, String filename) {
+        var pdf = new PDF_File();
+        pdf.setContact(candidateContactService.readById(candidateId));
+        if (filename != null) {
+            pdf.setFileContent(setContent(filename));
+        }
+
+        return pdfRepository.save(pdf);
     }
 
     public PDF_File readById(long id) {
@@ -27,7 +35,7 @@ public class PDFService {
     public PDF_File update(long id, String newFile) {
         var update = readById(id);
 
-        update.setFileContent(setFileContent(newFile).getFileContent());
+        update.setFileContent(setContent(newFile));
         return pdfRepository.save(update);
     }
 
@@ -35,13 +43,11 @@ public class PDFService {
         pdfRepository.delete(readById(id));
     }
 
-    private PDF_File setFileContent(String filename){
-        var pdfFile = new PDF_File();
+    private byte[] setContent(String filename){
         try {
-            pdfFile.setFileContent(Files.readAllBytes(Path.of(filename)));
+            return Files.readAllBytes(Path.of(filename));
         } catch (IOException io) {
             throw new IllegalArgumentException(String.format("File with name %s not found", filename));
         }
-        return pdfFile;
     }
 }
