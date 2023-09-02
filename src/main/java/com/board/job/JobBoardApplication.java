@@ -1,9 +1,6 @@
 package com.board.job;
 
-import com.board.job.model.entity.Feedback;
-import com.board.job.model.entity.Role;
-import com.board.job.model.entity.User;
-import com.board.job.model.entity.Vacancy;
+import com.board.job.model.entity.*;
 import com.board.job.model.entity.candidate.CandidateContact;
 import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.model.entity.employer.EmployerCompany;
@@ -27,9 +24,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 @Slf4j
 @AllArgsConstructor
@@ -46,6 +43,8 @@ public class JobBoardApplication implements CommandLineRunner {
     private final VacancyService vacancyService;
     private final MessengerService messengerService;
     private final FeedbackService feedbackService;
+    private final ImageService imageService;
+    private final PDFService pdfService;
 
     private static void setToProperties() {
         String username = System.getenv("username");
@@ -132,35 +131,32 @@ public class JobBoardApplication implements CommandLineRunner {
 //     !!!! CANDIDATES CONTACTS !!!!
         CandidateContact candidateContactAdmin = createCandidateContacts(userAdmin.getId(), "0798764532",
                 "@admin.telegram", "www.linkedin.co/AdminkoDKFfijif", "www.github.co/adminious",
-                "www.portfolio.co/CarolsFKfkffk", "files/pdf/CV_Maksym_Korniev.pdf", null);
+                "www.portfolio.co/CarolsFKfkffk");
 
         CandidateContact candidateContactNikole = createCandidateContacts(userNikole.getId(), "0603457012",
                 "@nikoliasias", "www.linkedin.co/lfpeflefepff", "www.github.co/NikoleStrike",
-                "www.portfolio.co/12KMkfmkgmf", "files/pdf/Certificate_Maksym_Korniev.pdf",
-                "files/photos/nicolas.jpg");
+                "www.portfolio.co/12KMkfmkgmf");
 
         CandidateContact candidateContactDonald = createCandidateContacts(userDonald.getId(), "0560987654",
                 "@donaldc++", "www.linkedin.co/donaldino", "www.github.co/DonaldC++",
-                "www.portfolio.co/pkgprkrogkokg", "files/pdf/Certificate_Maksym_Korniev.pdf",
-                "files/photos/donaldPicture.jpg");
+                "www.portfolio.co/pkgprkrogkokg");
 
         CandidateContact candidateContactHelen = createCandidateContacts(userHelen.getId(), "0670987865",
                 "@beginner_developer", "www.linkedin.co/ODOJFOGG", "www.github.co/Helen_Begin",
-                "www.portfolio.co/:DKDKojfj2434", null,
-                "files/photos/helenPicture.jpg");
+                "www.portfolio.co/:DKDKojfj2434");
+
+//        userService.delete(userAdmin.getId());
+//        log.info("AFTER CREATING CANDIDATES CONTACTS DELETE FINISHED SUCCESSFULLY");
 
 //     !!!! EMPLOYER PROFILES !!!!
         EmployerProfile employerProfileAdmin = createEmployerProfile(userAdmin.getId(), "HR manager", "SoftServe",
-                "@admin.telegram", "0798764532", "www.linkedin.co/AdminkoDKFfijif",
-                "files/photos/adminPhoto.jpg");
+                "@admin.telegram", "0798764532", "www.linkedin.co/AdminkoDKFfijif");
 
         EmployerProfile employerProfileLarry = createEmployerProfile(userLarry.getId(), "Lead Engineer", "Technologies",
-                "@larriesfun", "0456879809", "www.linkedin.co/KOFjfeojfoLarry",
-                null);
+                "@larriesfun", "0456879809", "www.linkedin.co/KOFjfeojfoLarry");
 
         EmployerProfile employerProfileViolet = createEmployerProfile(userViolet.getId(), "CEO", "Wikipedia",
-                "@violettoni", "0566542310", "www.linkedin.co/DEKFMfemf",
-                "files/photos/violetPhoto.jpg");
+                "@violettoni", "0566542310", "www.linkedin.co/DEKFMfemf");
 
 //      !!!! EMPLOYER COMPANIES !!!!
         EmployerCompany employerCompanyAdmin = createEmployerCompany(userAdmin.getId(), Strings.aboutSoftServe(),
@@ -205,6 +201,32 @@ public class JobBoardApplication implements CommandLineRunner {
                 Strings.detailDescriptionVioletQAVacancy(), Category.QA, WorkMode.ONLY_OFFICE,
                 "Ukraine", "Kyiv", 1000, 3000, 2, LanguageLevel.PRE_INTERMEDIATE);
 
+        //      !!!! IMAGES !!!!
+        Image imageAdminCandidate = createImageForCandidate(candidateContactAdmin.getId(), null);
+
+        Image imageNikole = createImageForCandidate(candidateContactNikole.getId(), "files/photos/nicolas.jpg");
+
+        Image imageDonald = createImageForCandidate(candidateContactDonald.getId(), "files/photos/donaldPicture.jpg");
+
+        Image imageHelen = createImageForCandidate(candidateContactHelen.getId(), "files/photos/helenPicture.jpg");
+
+        imageService.updateProfile(imageAdminCandidate.getId(), employerProfileAdmin.getId());
+
+        Image imageAdminEmployer = imageService.update(imageAdminCandidate.getId(),"files/photos/adminPhoto.jpg");
+
+        Image imageLarry = createImageForEmployer(employerProfileLarry.getId(), null);
+
+        Image imageViolet = createImageForEmployer(employerProfileViolet.getId(), "files/photos/violetPhoto.jpg");
+
+//      !!!! PDF FILES !!!!
+        PDF_File pdfAdmin = createPDF(candidateContactAdmin.getId(), "files/pdf/CV_Maksym_Korniev.pdf");
+
+        PDF_File pdfNikole = createPDF(candidateContactNikole.getId(), "files/pdf/Certificate_Maksym_Korniev.pdf");
+
+        PDF_File pdfDonald = createPDF(candidateContactDonald.getId(), "files/pdf/Certificate_Maksym_Korniev.pdf");
+
+        PDF_File pdfHelen = createPDF(candidateContactHelen.getId(), null);
+
 //      !!!! MESSENGERS !!!!
         long adminAndVioletCompany = createMessenger(vacancyQAViolet.getId(), candidateProfileAdmin.getId());
 
@@ -223,7 +245,7 @@ public class JobBoardApplication implements CommandLineRunner {
 
         Feedback feedbackHelen = createFeedback(helenAndLarryCompany, Strings.textHelen());
 
-        userService.delete(admin.getId());
+//        userService.delete(admin.getId());
     }
 
     private User createUser(String firstName, String lastName, String email, String password, Role role) {
@@ -233,7 +255,7 @@ public class JobBoardApplication implements CommandLineRunner {
         user.setEmail(email);
         user.setPassword(password);
 
-        user = userService.create(user, List.of(role));
+        user = userService.create(user, Set.of(role));
         log.info("User with name {} successfully created", user.getName());
 
         return user;
@@ -262,8 +284,7 @@ public class JobBoardApplication implements CommandLineRunner {
     }
 
     private CandidateContact createCandidateContacts(long ownerId, String phone,
-                                                     String telegram, String linkedIn, String githubUrl, String portfolioUrl,
-                                                     String pdfFilename, String photoFilename) {
+                                                     String telegram, String linkedIn, String githubUrl, String portfolioUrl) {
 
         var candidateContacts = new CandidateContact();
         candidateContacts.setPhone(phone);
@@ -272,14 +293,14 @@ public class JobBoardApplication implements CommandLineRunner {
         candidateContacts.setGithubUrl(githubUrl);
         candidateContacts.setPortfolioUrl(portfolioUrl);
 
-        candidateContacts = candidateContactService.create(pdfFilename, photoFilename, ownerId, candidateContacts);
+        candidateContacts = candidateContactService.create(ownerId, candidateContacts);
         log.info("Candidate contacts for user {} successfully created", candidateContacts.getCandidateName());
 
         return candidateContacts;
     }
 
     private EmployerProfile createEmployerProfile(long ownerId, String positionInCompany, String companyName,
-                                                  String telegram, String phone, String linkedIn, String photoFilename) {
+                                                  String telegram, String phone, String linkedIn) {
 
         var employerProfile = new EmployerProfile();
         employerProfile.setPositionInCompany(positionInCompany);
@@ -288,7 +309,7 @@ public class JobBoardApplication implements CommandLineRunner {
         employerProfile.setPhone(phone);
         employerProfile.setLinkedInProfile(linkedIn);
 
-        employerProfile = employerProfileService.create(photoFilename, ownerId, employerProfile);
+        employerProfile = employerProfileService.create(ownerId, employerProfile);
         log.info("Employer profile for user {} successfully created", employerProfile.getEmployerName());
 
         return employerProfile;
@@ -343,6 +364,27 @@ public class JobBoardApplication implements CommandLineRunner {
         log.info("Feedback for messenger {} successfully created", messengerId);
 
         return feedback;
+    }
+
+    private Image createImageForCandidate(long candidateId, String filename) {
+        var image = imageService.createWithCandidate(candidateId, filename);
+        log.info("Image for candidate {} successfully created", candidateId);
+
+        return image;
+    }
+
+    private Image createImageForEmployer(long employerId, String filename) {
+        var image = imageService.createWithEmployer(employerId, filename);
+        log.info("Image for employer {} successfully created", employerId);
+
+        return image;
+    }
+
+    private PDF_File createPDF(long candidateId, String filename) {
+        var pdf = pdfService.create(candidateId, filename);
+        log.info("PDF file for candidate {} successfully created", candidateId);
+
+        return pdf;
     }
 
 
@@ -558,7 +600,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Participate in code reviews to maintain code quality and standards.
                     Contribute to architectural discussions and technical design decisions.
                     Stay updated with the latest trends and best practices in PHP development.
-                    
+                                        
                     Requirements:                
                     Minimum of 1.5 years of professional experience in PHP development.
                     Proficiency in PHP, MySQL, HTML, CSS, and JavaScript.
@@ -567,7 +609,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Strong problem-solving skills and attention to detail.
                     Excellent communication and teamwork skills.
                     Bachelor's degree in Computer Science, Engineering, or related field is a plus.
-                    
+                                        
                     What We Offer: 
                     Competitive salary in the range of $500 - $1500 based on experience and skillset.
                     Opportunities for professional growth and career advancement.
@@ -600,7 +642,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Participate in code reviews, debugging, and troubleshooting to ensure high-quality software.
                     Learn and apply new technologies and frameworks to enhance your development skills.
                     Contribute to the entire software development lifecycle, from requirements gathering to deployment and testing.
-                    
+                                        
                     Qualifications:                                                             
                     Bachelor's degree in Computer Science, Software Engineering, or a related field.
                     Minimum of 0.5 years of experience in software development, with a focus on TypeScript or JavaScript.
@@ -609,7 +651,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Experience with version control systems (Git) and code collaboration tools.
                     Solid problem-solving skills and the ability to learn new technologies quickly.
                     Effective communication skills and the ability to work well within a team.
-                    
+                                        
                     Benefits:                                                               
                     Competitive salary within the range of $400 - $900 per month, based on experience and skills.
                     Opportunities for professional growth and career advancement.
@@ -643,7 +685,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Optimize application performance and ensure scalability for future growth.
                     Stay up-to-date with industry trends and emerging technologies, applying them to enhance development processes.
                     Contribute to architectural decisions and technical discussions within the team.
-                    
+                                        
                     Qualifications:                 
                     Bachelor's degree in Computer Science, Software Engineering, or a related field.
                     Minimum of 5 years of professional software development experience, with a strong focus on Kotlin.
@@ -653,7 +695,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Strong problem-solving skills and the ability to tackle complex technical challenges.
                     Proven track record of successfully delivering high-quality software projects on time.
                     Excellent communication skills and the ability to collaborate effectively within a team environment.
-                    
+                                        
                     Benefits:                 
                     Competitive salary within the range of $2000 - $4000 per month, based on experience and skills.
                     Opportunities for professional growth and advancement within a forward-thinking technology company.
@@ -687,7 +729,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Stay updated with the latest Java technologies, trends, and emerging tools.
                     Continuously enhance your technical skills and share knowledge within the team.
                     Embrace a hybrid work mode, alternating between on-site and remote work as needed.
-                    
+                                        
                     Qualifications:                  
                     Bachelor's degree in Computer Science, Software Engineering, or a related field.
                     Minimum of 1 year of professional experience in Java development.
@@ -697,7 +739,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Strong problem-solving skills and a passion for learning new technologies.
                     Excellent teamwork and communication skills.
                     Ability to work independently and collaborate effectively in a remote work setting.
-                    
+                                        
                     Benefits:             
                     Competitive salary within the range of $700 - $2000 per month, based on experience and skills.
                     Hybrid work mode offering flexibility between on-site and remote work.
@@ -733,7 +775,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Work closely with cross-functional teams to understand project requirements and deliver solutions.
                     Attend training sessions and workshops to enhance your technical skills and knowledge.
                     Embrace the office-based work mode and engage in daily team activities and interactions.
-                    
+                                        
                     Qualifications:
                     Bachelor's degree in Computer Science, Software Engineering, or a related field.
                     No prior professional experience required; fresh graduates and entry-level candidates are welcome to apply.
@@ -741,7 +783,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Eagerness to learn and a proactive attitude towards acquiring new skills.
                     Good communication skills and the ability to collaborate effectively within a team.
                     Passion for technology and a strong desire to grow as a software developer.
-                    
+                                        
                     Benefits:
                     Competitive monthly salary within the range of $300 - $500, commensurate with experience and skills.
                     Hands-on training and mentorship from experienced developers to accelerate your learning curve.
@@ -779,7 +821,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Act as a subject matter expert in C++ development, advocating for best practices.
                     Collaborate with stakeholders to gather and analyze requirements for new features.
                     Drive continuous improvement in coding practices, development processes, and tools.
-                    
+                                        
                     Qualifications:
                     Bachelor's degree in Computer Science, Software Engineering, or a related field.
                     Minimum of 6.5 years of hands-on experience in C++ software development.
@@ -790,7 +832,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Ability to collaborate effectively with cross-functional teams and stakeholders.
                     Passion for open-source development and contributing to the broader community.
                     Prior experience in the tech industry or with online platforms is a plus.
-                    
+                                        
                     Benefits:
                     Competitive monthly salary within the range of $3500 - $7000, based on experience and expertise.
                     Opportunity to lead a team of talented C++ developers and drive impactful projects.
@@ -826,7 +868,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Contribute to the continuous improvement of development processes and tools.
                     Stay updated with emerging trends and technologies in the Python development ecosystem.
                     Provide mentorship and guidance to junior developers when necessary.
-                    
+                                        
                     Qualifications:
                     Bachelor's degree in Computer Science, Software Engineering, or a related field.
                     1.7 years of professional experience as a Python developer, with a proven track record of delivering successful projects.
@@ -836,7 +878,7 @@ public class JobBoardApplication implements CommandLineRunner {
                     Strong problem-solving skills and the ability to analyze complex technical challenges.
                     Excellent communication skills and the ability to work effectively within a team.
                     Passion for open-source projects and contributing to the global knowledge-sharing community.
-                    
+                                        
                     Benefits:
                     Competitive monthly salary within the range of $1000 - $2000, commensurate with experience and skills.
                     Opportunity to contribute to a world-renowned platform dedicated to free knowledge sharing.
@@ -848,52 +890,52 @@ public class JobBoardApplication implements CommandLineRunner {
         }
 
         private static String detailDescriptionVioletQAVacancy() {
-           return """
-                   About Us:
-                   Wikipedia Company is a globally recognized technology organization dedicated to providing 
-                   accurate and reliable information to millions of users around the world. With a rich history of 
-                   empowering knowledge seekers, we are seeking a skilled and passionate Quality Assurance Engineer to 
-                   join our team. As a QA professional, you will play a vital role in ensuring the quality and 
-                   reliability of our platforms, enabling users to access trustworthy information.
-                                      
-                   Job Description:
-                   We are excited to welcome a talented and experienced Quality Assurance Engineer to our 
-                   team. As a QA Engineer at Wikipedia Company, you will be responsible for ensuring that our platforms 
-                   and applications meet the highest standards of quality, accuracy, and functionality. 
-                   You will collaborate with cross-functional teams to test, validate, and enhance the user 
-                   experience, contributing to the integrity of the information shared on our platforms.
-                                      
-                   Responsibilities:         
-                   Collaborate with development and product teams to understand project requirements and user stories.
-                   Design, develop, and execute comprehensive test plans, test cases, and test scripts for web and mobile applications.
-                   Conduct functional, regression, and performance testing to identify defects and ensure optimal user experience.
-                   Participate in the identification and documentation of software defects and track their resolution process.
-                   Perform exploratory testing to uncover hidden issues and ensure the reliability of our platforms.
-                   Contribute to the continuous improvement of QA processes, methodologies, and best practices.
-                   Automate test cases using testing frameworks and tools to streamline the testing process.
-                   Monitor and report testing progress, results, and metrics to project stakeholders.
-                   Collaborate with cross-functional teams to provide input on user experience improvements and feature enhancements.
-                   Provide mentorship and guidance to junior QA team members when necessary.
-                   
-                   Qualifications:                   
-                   Bachelor's degree in Computer Science, Software Engineering, or a related field.
-                   Minimum of 2 years of professional experience in software quality assurance.
-                   Strong understanding of QA methodologies, best practices, and testing techniques.
-                   Experience with manual and automated testing of web and mobile applications.
-                   Proficiency in writing test plans, test cases, and test scripts to ensure comprehensive coverage.
-                   Familiarity with testing frameworks and tools for automated testing (e.g., Selenium, JUnit).
-                   Detail-oriented mindset with the ability to identify, document, and track defects effectively.
-                   Excellent problem-solving skills and a proactive approach to identifying potential issues.
-                   Strong communication skills and the ability to collaborate with cross-functional teams.
-                   
-                   Benefits:          
-                   Competitive monthly salary within the range of $1000 - $3000, based on experience and skills.
-                   Opportunity to work with a globally recognized company dedicated to providing accurate and reliable information.
-                   Collaborative work environment that values knowledge sharing and innovation.
-                   Professional growth and development opportunities through training and skill enhancement.
-                   Impactful role contributing to the quality and reliability of platforms used by millions of users.
-                   Comprehensive benefits package including health insurance, retirement plans, and more.
-                   """;
+            return """
+                    About Us:
+                    Wikipedia Company is a globally recognized technology organization dedicated to providing 
+                    accurate and reliable information to millions of users around the world. With a rich history of 
+                    empowering knowledge seekers, we are seeking a skilled and passionate Quality Assurance Engineer to 
+                    join our team. As a QA professional, you will play a vital role in ensuring the quality and 
+                    reliability of our platforms, enabling users to access trustworthy information.
+                                       
+                    Job Description:
+                    We are excited to welcome a talented and experienced Quality Assurance Engineer to our 
+                    team. As a QA Engineer at Wikipedia Company, you will be responsible for ensuring that our platforms 
+                    and applications meet the highest standards of quality, accuracy, and functionality. 
+                    You will collaborate with cross-functional teams to test, validate, and enhance the user 
+                    experience, contributing to the integrity of the information shared on our platforms.
+                                       
+                    Responsibilities:         
+                    Collaborate with development and product teams to understand project requirements and user stories.
+                    Design, develop, and execute comprehensive test plans, test cases, and test scripts for web and mobile applications.
+                    Conduct functional, regression, and performance testing to identify defects and ensure optimal user experience.
+                    Participate in the identification and documentation of software defects and track their resolution process.
+                    Perform exploratory testing to uncover hidden issues and ensure the reliability of our platforms.
+                    Contribute to the continuous improvement of QA processes, methodologies, and best practices.
+                    Automate test cases using testing frameworks and tools to streamline the testing process.
+                    Monitor and report testing progress, results, and metrics to project stakeholders.
+                    Collaborate with cross-functional teams to provide input on user experience improvements and feature enhancements.
+                    Provide mentorship and guidance to junior QA team members when necessary.
+                                       
+                    Qualifications:                   
+                    Bachelor's degree in Computer Science, Software Engineering, or a related field.
+                    Minimum of 2 years of professional experience in software quality assurance.
+                    Strong understanding of QA methodologies, best practices, and testing techniques.
+                    Experience with manual and automated testing of web and mobile applications.
+                    Proficiency in writing test plans, test cases, and test scripts to ensure comprehensive coverage.
+                    Familiarity with testing frameworks and tools for automated testing (e.g., Selenium, JUnit).
+                    Detail-oriented mindset with the ability to identify, document, and track defects effectively.
+                    Excellent problem-solving skills and a proactive approach to identifying potential issues.
+                    Strong communication skills and the ability to collaborate with cross-functional teams.
+                                       
+                    Benefits:          
+                    Competitive monthly salary within the range of $1000 - $3000, based on experience and skills.
+                    Opportunity to work with a globally recognized company dedicated to providing accurate and reliable information.
+                    Collaborative work environment that values knowledge sharing and innovation.
+                    Professional growth and development opportunities through training and skill enhancement.
+                    Impactful role contributing to the quality and reliability of platforms used by millions of users.
+                    Comprehensive benefits package including health insurance, retirement plans, and more.
+                    """;
         }
 
         private static String textAdmin() {
