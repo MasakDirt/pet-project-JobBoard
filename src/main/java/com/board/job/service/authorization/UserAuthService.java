@@ -22,7 +22,7 @@ public class UserAuthService {
         return isAdmin(authEmail) || getUser(authEmail).getEmail().equals(email);
     }
 
-    private boolean isAdmin(String email) {
+    public boolean isAdmin(String email) {
        return getUser(email).getRoles()
                 .stream()
                 .anyMatch(role -> role.getName().equals("ADMIN"));

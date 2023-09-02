@@ -2,7 +2,6 @@ package com.board.job.model.entity;
 
 import com.board.job.model.entity.candidate.CandidateContact;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
