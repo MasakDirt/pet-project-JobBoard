@@ -2,7 +2,7 @@ package com.board.job.controller.candidate;
 
 import com.board.job.model.dto.candidate_contact.CandidateContactRequest;
 import com.board.job.model.dto.candidate_contact.CandidateContactResponse;
-import com.board.job.model.mapper.CandidateContactMapper;
+import com.board.job.model.mapper.candidate.CandidateContactMapper;
 import com.board.job.service.candidate.CandidateContactService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

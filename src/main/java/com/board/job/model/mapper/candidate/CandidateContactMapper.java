@@ -1,4 +1,4 @@
-package com.board.job.model.mapper;
+package com.board.job.model.mapper.candidate;
 
 import com.board.job.model.dto.candidate_contact.CandidateContactRequest;
 import com.board.job.model.dto.candidate_contact.CandidateContactResponse;
