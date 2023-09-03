@@ -104,10 +104,4 @@ public class CandidateContact {
                 ", pdf=" + pdf +
                 '}';
     }
-
-    public void setOwnerWithFields(User owner) {
-        this.owner = owner;
-        this.candidateName = owner.getName();
-        this.email = owner.getEmail();
-    }
 }
