@@ -14,7 +14,17 @@ public class CandidateContactService {
     private final CandidateContactRepository candidateContactRepository;
 
     public CandidateContact create(long ownerId, CandidateContact candidateContact) {
-        candidateContact.setOwnerWithFields(userService.readById(ownerId));
+        var owner = userService.readById(ownerId);
+        candidateContact.setOwner(owner);
+        var candidateName = candidateContact.getCandidateName();
+        var candidateEmail = candidateContact.getEmail();
+
+        if (candidateName == null || candidateName.trim().isEmpty())
+            candidateContact.setCandidateName(owner.getName());
+
+        if (candidateEmail == null || candidateEmail.trim().isEmpty())
+            candidateContact.setEmail(owner.getEmail());
+
         return candidateContactRepository.save(candidateContact);
     }
 
@@ -23,10 +33,9 @@ public class CandidateContactService {
                 new EntityNotFoundException("Candidate not found"));
     }
 
-    public CandidateContact update(CandidateContact updated) {
-        readById(updated.getId());
-
-        return candidateContactRepository.save(updated);
+    public CandidateContact update(long id, CandidateContact updated) {
+        updated.setId(id);
+        return create(readById(id).getOwner().getId(), updated);
     }
 
     public void delete(long id) {
