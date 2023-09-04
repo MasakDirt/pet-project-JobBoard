@@ -15,7 +15,7 @@ import lombok.Getter;
 @Data
 @Getter
 @Builder
-public class CandidateProfileResponse {
+public class FullCandidateProfileResponse {
     private long id;
 
     @NotBlank(message = "The position cannot be 'blank'")
