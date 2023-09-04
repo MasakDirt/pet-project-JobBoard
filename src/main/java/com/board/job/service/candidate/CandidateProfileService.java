@@ -32,9 +32,11 @@ public class CandidateProfileService {
                 new EntityNotFoundException("CandidateProfile not found"));
     }
 
-    public CandidateProfile update(CandidateProfile updated) {
-        readById(updated.getId());
-
+    public CandidateProfile update(long id, CandidateProfile updated) {
+        var old = readById(id);
+        updated.setId(id);
+        updated.setOwner(old.getOwner());
+        updated.setMessengers(old.getMessengers());
         return candidateProfileRepository.save(updated);
     }
 
