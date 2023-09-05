@@ -25,8 +25,12 @@ public class EmployerProfileService {
                 new EntityNotFoundException("Employer profile not found"));
     }
 
-    public EmployerProfile update(EmployerProfile updated) {
-        readById(updated.getId());
+    public EmployerProfile update(long id, EmployerProfile updated) {
+        var old = readById(id);
+        updated.setId(id);
+        updated.setImage(old.getImage());
+        updated.setOwner(old.getOwner());
+        updated.setVacancies(old.getVacancies());
 
         return employerProfileRepository.save(updated);
     }
