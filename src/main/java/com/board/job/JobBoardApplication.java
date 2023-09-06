@@ -321,7 +321,7 @@ public class JobBoardApplication implements CommandLineRunner {
         employerCompany.setAboutCompany(aboutCompany);
         employerCompany.setWebSite(webSite);
 
-        employerCompany = employerCompanyService.create(ownerId, employerCompany);
+        employerCompany = employerCompanyService.create(ownerId, aboutCompany, webSite);
         log.info("Employer company for user {} successfully created", employerCompany.getOwner().getName());
 
         return employerCompany;
