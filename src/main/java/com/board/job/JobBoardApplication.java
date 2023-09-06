@@ -24,6 +24,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
@@ -381,10 +383,21 @@ public class JobBoardApplication implements CommandLineRunner {
     }
 
     private PDF_File createPDF(long candidateId, String filename) {
-        var pdf = pdfService.create(candidateId, filename);
+        var pdf = pdfService.create(candidateId, setContent(filename));
         log.info("PDF file for candidate {} successfully created", candidateId);
 
         return pdf;
+    }
+
+    private byte[] setContent(String filename) {
+        if (filename != null) {
+            try {
+                return Files.readAllBytes(Path.of(filename));
+            } catch (IOException io) {
+                throw new IllegalArgumentException(String.format("File with name %s not found", filename));
+            }
+        }
+        return null;
     }
 
 
