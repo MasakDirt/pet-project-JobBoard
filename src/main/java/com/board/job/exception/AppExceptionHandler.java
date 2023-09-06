@@ -37,8 +37,8 @@ public class AppExceptionHandler {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException ex) {
+    @ExceptionHandler({ConstraintViolationException.class, UserHaveNoPDF.class})
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
@@ -52,8 +52,8 @@ public class AppExceptionHandler {
         return getErrorResponse(request, HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundExceptions(HttpServletRequest request, EntityNotFoundException ex) {
+    @ExceptionHandler({EntityNotFoundException.class, InvalidFile.class})
+    public ResponseEntity<ErrorResponse> handleNotFoundExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
