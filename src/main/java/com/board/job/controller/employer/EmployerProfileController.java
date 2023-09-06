@@ -19,7 +19,7 @@ import static org.springframework.http.ResponseEntity.*;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/users/{owner-id}/employer-profile")
+@RequestMapping("/api/users/{owner-id}/employer-profiles")
 public class EmployerProfileController {
     private final EmployerProfileMapper mapper;
     private final EmployerProfileService employerProfileService;

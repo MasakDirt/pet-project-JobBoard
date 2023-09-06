@@ -18,7 +18,7 @@ import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/users/{owner-id}/candidate-contact")
+@RequestMapping("/api/users/{owner-id}/candidate-contacts")
 public class CandidateContactController {
     private final CandidateContactMapper mapper;
     private final CandidateContactService candidateContactService;

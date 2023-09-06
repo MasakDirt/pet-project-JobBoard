@@ -23,7 +23,7 @@ import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/users/{owner-id}/candidate-profile")
+@RequestMapping("/api/users/{owner-id}/candidate-profiles")
 public class CandidateProfileController {
     private final CandidateProfileMapper mapper;
     private final CandidateProfileService candidateProfileService;

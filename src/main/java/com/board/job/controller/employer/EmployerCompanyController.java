@@ -17,7 +17,7 @@ import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/users/{owner-id}/employer-company")
+@RequestMapping("/api/users/{owner-id}/employer-companies")
 public class EmployerCompanyController {
     private final EmployerCompanyMapper mapper;
     private final EmployerCompanyService employerCompanyService;
