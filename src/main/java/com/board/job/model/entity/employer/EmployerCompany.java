@@ -35,6 +35,14 @@ public class EmployerCompany {
     @OneToMany(mappedBy = "employerCompany", cascade = CascadeType.ALL)
     private List<Vacancy> vacancies;
 
+    public EmployerCompany() {
+    }
+
+    public EmployerCompany(String aboutCompany, String webSite) {
+        this.aboutCompany = aboutCompany;
+        this.webSite = webSite;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
