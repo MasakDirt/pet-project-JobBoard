@@ -13,8 +13,11 @@ public class EmployerCompanyService {
     private final UserService userService;
     private final EmployerCompanyRepository employerCompanyRepository;
 
-    public EmployerCompany create(long ownerId, EmployerCompany employerCompany) {
+    public EmployerCompany create(long ownerId, String aboutCompany, String webSite) {
+
+        var employerCompany = new EmployerCompany(aboutCompany, webSite);
         employerCompany.setOwner(userService.readById(ownerId));
+
         return employerCompanyRepository.save(employerCompany);
     }
 
@@ -23,10 +26,12 @@ public class EmployerCompanyService {
                 new EntityNotFoundException("Employer company not found!"));
     }
 
-    public EmployerCompany update(EmployerCompany updated) {
-        readById(updated.getId());
+    public EmployerCompany update(long id, EmployerCompany updated) {
+        var oldCompany = readById(id);
+        oldCompany.setAboutCompany(updated.getAboutCompany());
+        oldCompany.setWebSite(updated.getWebSite());
 
-        return employerCompanyRepository.save(updated);
+        return employerCompanyRepository.save(oldCompany);
     }
 
     public void delete(long id) {
