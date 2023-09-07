@@ -2,6 +2,7 @@ package com.board.job.controller.candidate;
 
 import com.board.job.model.dto.candidate_profile.CandidateProfileRequest;
 import com.board.job.model.dto.candidate_profile.CutCandidateProfileResponse;
+import com.board.job.model.dto.candidate_profile.FullCandidateProfileResponse;
 import com.board.job.model.mapper.candidate.CandidateProfileMapper;
 import com.board.job.service.candidate.CandidateProfileService;
 import jakarta.validation.Valid;
@@ -59,6 +60,16 @@ public class CandidateProfileController {
         log.info("=== GET-SORTED-CANDIDATE_PROFILES === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
         return candidateProfiles;
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    public FullCandidateProfileResponse getById(@PathVariable long id,
+                                                Authentication authentication) {
+        var profile = mapper.getCandidateProfileResponseFromCandidateProfile(candidateProfileService.readById(id));
+        log.info("=== GET_CANDIDATE_PROFILE === {} - {}", getAuthorities(authentication), authentication.getPrincipal());
+
+        return profile;
     }
 
     @PostMapping
