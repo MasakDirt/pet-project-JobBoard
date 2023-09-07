@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class AuthPDFService {
     private final PDFService pdfService;
-    private final UserAuthService userAuthService;
     private final AuthCandidateContactService authCandidateContactService;
 
     public boolean isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainPDF(
