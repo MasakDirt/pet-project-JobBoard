@@ -214,7 +214,7 @@ public class JobBoardApplication implements CommandLineRunner {
 
         imageService.updateProfile(imageAdminCandidate.getId(), employerProfileAdmin.getId());
 
-        Image imageAdminEmployer = imageService.update(imageAdminCandidate.getId(),"files/photos/adminPhoto.jpg");
+        Image imageAdminEmployer = imageService.update(imageAdminCandidate.getId(), setContent("files/photos/adminPhoto.jpg"));
 
         Image imageLarry = createImageForEmployer(employerProfileLarry.getId(), null);
 
@@ -369,14 +369,14 @@ public class JobBoardApplication implements CommandLineRunner {
     }
 
     private Image createImageForCandidate(long candidateId, String filename) {
-        var image = imageService.createWithCandidate(candidateId, filename);
+        var image = imageService.createWithCandidate(candidateId, setContent(filename));
         log.info("Image for candidate {} successfully created", candidateId);
 
         return image;
     }
 
     private Image createImageForEmployer(long employerId, String filename) {
-        var image = imageService.createWithEmployer(employerId, filename);
+        var image = imageService.createWithEmployer(employerId, setContent(filename));
         log.info("Image for employer {} successfully created", employerId);
 
         return image;
