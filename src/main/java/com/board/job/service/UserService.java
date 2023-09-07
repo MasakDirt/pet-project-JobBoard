@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -92,7 +93,7 @@ public class UserService {
         var employerCompany = user.getEmployerCompany();
         var employerProfile = user.getEmployerProfile();
 
-        if (employerCompany == null || employerProfile == null) {
+        if (Objects.isNull(employerCompany) || Objects.isNull(employerProfile)) {
             throw new UserIsNotEmployer("Please create your employer profile, then you will be permitted to create a vacancy");
         }
 
