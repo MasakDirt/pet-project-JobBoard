@@ -37,8 +37,8 @@ public class AppExceptionHandler {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler({ConstraintViolationException.class, UserHaveNoPDF.class})
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(HttpServletRequest request, RuntimeException ex) {
+    @ExceptionHandler({ConstraintViolationException.class, UserHaveNoPDF.class, IllegalArgumentException.class})
+    public ResponseEntity<ErrorResponse> handleBadRequestExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
@@ -48,7 +48,7 @@ public class AppExceptionHandler {
     }
 
     @ExceptionHandler({AccessDeniedException.class, UserIsNotEmployer.class})
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(HttpServletRequest request, RuntimeException ex) {
+    public ResponseEntity<ErrorResponse> handleForbiddenExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
