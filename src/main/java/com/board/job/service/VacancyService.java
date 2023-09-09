@@ -35,6 +35,7 @@ public class VacancyService {
         updated.setId(id);
         updated.setEmployerCompany(vacancy.getEmployerCompany());
         updated.setEmployerProfile(vacancy.getEmployerProfile());
+        updated.setPostedAt(vacancy.getPostedAt());
 
         return vacancyRepository.save(updated);
     }
