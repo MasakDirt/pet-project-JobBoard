@@ -7,12 +7,15 @@ import com.board.job.model.entity.Vacancy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+import java.time.LocalDateTime;
+
+@Mapper(componentModel = "spring", imports = LocalDateTime.class)
 public interface VacancyMapper {
     @Mapping(target = "id", expression = "java(vacancy.getId())")
     CutVacancyResponse getCutVacancyResponseFromVacancy(Vacancy vacancy);
 
     FullVacancyResponse getFullVacancyResponseFromVacancy(Vacancy vacancy);
 
+    @Mapping(target = "postedAt", expression = "java(LocalDateTime.now())")
     Vacancy getVacancyFromVacancyRequest(VacancyRequest vacancyRequest);
 }
