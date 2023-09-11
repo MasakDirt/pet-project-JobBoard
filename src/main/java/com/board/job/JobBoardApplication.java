@@ -239,13 +239,13 @@ public class JobBoardApplication implements CommandLineRunner {
         long helenAndLarryCompany = createMessenger(vacancyTraineeJavaLarry.getId(), candidateProfileHelen.getId());
 
 //      !!!! FEEDBACKS !!!!
-        Feedback feedbackAdmin = createFeedback(adminAndVioletCompany, Strings.textAdmin());
+        Feedback feedbackAdmin = createFeedback(userAdmin.getId(), adminAndVioletCompany, Strings.textAdmin());
 
-        Feedback feedbackNikole = createFeedback(nikoleAndVioletCompany, Strings.textNikole());
+        Feedback feedbackNikole = createFeedback(userNikole.getId(), nikoleAndVioletCompany, Strings.textNikole());
 
-        Feedback feedbackDonald = createFeedback(donaldAndVioletCompany, Strings.textDonald());
+        Feedback feedbackDonald = createFeedback(userDonald.getId(), donaldAndVioletCompany, Strings.textDonald());
 
-        Feedback feedbackHelen = createFeedback(helenAndLarryCompany, Strings.textHelen());
+        Feedback feedbackHelen = createFeedback(userHelen.getId(), helenAndLarryCompany, Strings.textHelen());
 
 //        userService.delete(admin.getId());
     }
@@ -361,8 +361,8 @@ public class JobBoardApplication implements CommandLineRunner {
         return messenger.getId();
     }
 
-    private Feedback createFeedback(long messengerId, String text) {
-        var feedback = feedbackService.create(messengerId, text);
+    private Feedback createFeedback(long ownerId, long messengerId, String text) {
+        var feedback = feedbackService.create(ownerId, messengerId, text);
         log.info("Feedback for messenger {} successfully created", messengerId);
 
         return feedback;
