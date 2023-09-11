@@ -15,6 +15,11 @@ public class AuthCandidateProfileService {
         return userAuthService.isUsersSame(userId, authEmail) && getProfile(candidateId).getOwner().getId() == userId;
     }
 
+    public boolean isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfile(long userId, long candidateId, String authEmail) {
+        return userAuthService.isAdmin(authEmail) || (userAuthService.isUsersSame(userId, authEmail)
+                && getProfile(candidateId).getOwner().getId() == userId);
+    }
+
     public CandidateProfile getProfile(long id) {
         return candidateProfileService.readById(id);
     }
