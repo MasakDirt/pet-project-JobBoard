@@ -51,4 +51,8 @@ public class VacancyService {
     public Page<Vacancy> getSorted(Pageable pageable) {
         return vacancyRepository.findAll(pageable);
     }
+
+    public List<Vacancy> getAllByEmployerProfileId(long employerId){
+        return vacancyRepository.getVacanciesByEmployerProfileId(employerId);
+    }
 }
