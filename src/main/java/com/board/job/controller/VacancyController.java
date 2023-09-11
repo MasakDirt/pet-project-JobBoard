@@ -24,12 +24,12 @@ import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/users/{owner-id}/vacancies")
+@RequestMapping("/api/users/{owner-id}")
 public class VacancyController {
     private final VacancyMapper mapper;
     private final VacancyService vacancyService;
 
-    @GetMapping
+    @GetMapping("/vacancies")
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
     public List<CutVacancyResponse> getAll(Authentication authentication) {
         var response = vacancyService.getAll()
@@ -41,7 +41,7 @@ public class VacancyController {
         return response;
     }
 
-    @GetMapping("/sorted")
+    @GetMapping("/vacancies/sorted")
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
     public List<CutVacancyResponse> getSortedVacancies(
             @RequestParam(name = "sort_by", defaultValue = "id") String[] sortBy,
@@ -60,7 +60,7 @@ public class VacancyController {
         return vacancies;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/vacancies/{id}")
     @PreAuthorize("@userAuthService.isUsersSame(#ownerId, authentication.principal)")
     public FullVacancyResponse getById(@PathVariable("owner-id") long ownerId,
                                        @PathVariable long id, Authentication authentication) {
@@ -70,10 +70,40 @@ public class VacancyController {
         return vacancy;
     }
 
-    @PostMapping
+    @GetMapping("/employer-profile/{employer-id}/vacancies")
     @PreAuthorize("@userAuthService.isUsersSame(#ownerId, authentication.principal)")
-    public ResponseEntity<String> create(@PathVariable("owner-id") long ownerId,
-                                         @RequestBody @Valid VacancyRequest request, Authentication authentication) {
+    public List<CutVacancyResponse> getAllEmployerVacancies(@PathVariable("owner-id") long ownerId,
+                                                            @PathVariable("employer-id") long employerId, Authentication authentication) {
+        var responses = vacancyService.getAllByEmployerProfileId(employerId)
+                .stream()
+                .map(mapper::getCutVacancyResponseFromVacancy)
+                .toList();
+        log.info("=== GET-EMPLOYER-VACANCIES === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
+
+        return responses;
+    }
+
+    @GetMapping("/employer-profile/{employer-id}/vacancies/{id}")
+    @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
+            "(#ownerId, #employerId, #id, authentication.principal)")
+    public CutVacancyResponse getEmployerVacancy(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            @PathVariable long id, Authentication authentication) {
+
+        var responses = mapper.getCutVacancyResponseFromVacancy(vacancyService.readById(id));
+        log.info("=== GET-EMPLOYER-VACANCY === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
+
+        return responses;
+    }
+
+
+    @PostMapping("/employer-profile/{employer-id}/vacancies")
+    @PreAuthorize("@authEmployerProfileService.isUsersSameByIdAndUserOwnerEmployerProfile" +
+            "(#ownerId, #employerId, authentication.principal)")
+    public ResponseEntity<String> create(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            @RequestBody @Valid VacancyRequest request, Authentication authentication) {
+
         var vacancy = vacancyService.create(ownerId, mapper.getVacancyFromVacancyRequest(request));
         log.info("=== POST-VACANCY === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
@@ -81,10 +111,12 @@ public class VacancyController {
                 .body(String.format("Vacancy for employer %s successfully created.", vacancy.getEmployerProfile().getEmployerName()));
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("@authVacancyService.isUsersSameAndOwnerOfVacancy(#ownerId, #id, authentication.principal)")
-    public ResponseEntity<String> update(@PathVariable("owner-id") long ownerId, @PathVariable long id,
-                                         @RequestBody @Valid VacancyRequest request, Authentication authentication) {
+    @PutMapping("/employer-profile/{employer-id}/vacancies/{id}")
+    @PreAuthorize("@authVacancyService.isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
+            "(#ownerId, #employerId, #id, authentication.principal)")
+    public ResponseEntity<String> update(
+            @PathVariable("owner-id") long ownerId, @PathVariable long id, @PathVariable("employer-id") long employerId,
+            @RequestBody @Valid VacancyRequest request, Authentication authentication) {
         var vacancy = vacancyService.update(id, mapper.getVacancyFromVacancyRequest(request));
         log.info("=== PUT-VACANCY === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
@@ -92,10 +124,11 @@ public class VacancyController {
                 "Vacancy for employer %s successfully updated.", vacancy.getEmployerProfile().getEmployerName()));
     }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("@authVacancyService.isUsersSameAndOwnerOfVacancy(#ownerId, #id, authentication.principal)")
+    @DeleteMapping("/employer-profile/{employer-id}/vacancies/{id}")
+    @PreAuthorize("@authVacancyService.isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
+            "(#ownerId, #employerId, #id, authentication.principal)")
     public ResponseEntity<String> delete(@PathVariable("owner-id") long ownerId, @PathVariable long id,
-                                         Authentication authentication) {
+                                         @PathVariable("employer-id") long employerId, Authentication authentication) {
 
         vacancyService.delete(id);
         log.info("=== DELETE-VACANCY === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
