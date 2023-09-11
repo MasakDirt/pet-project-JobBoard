@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
-    List<Vacancy> getVacanciesByEmployerCompanyId(long companyId);
+    List<Vacancy> getVacanciesByEmployerProfileId(long employerId);
 }
