@@ -11,9 +11,16 @@ public class AuthVacancyService {
     private final UserAuthService userAuthService;
     private final VacancyService vacancyService;
 
-    public boolean isUsersSameAndOwnerOfVacancy(long ownerId, long id, String authEmail) {
+    public boolean isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy(
+            long ownerId, long employerId, long id, String authEmail) {
+
         return userAuthService.isUsersSame(ownerId, authEmail)
-                && getVacancy(id).getEmployerProfile().getOwner().getId() == id;
+                && getVacancy(id).getEmployerProfile().getId() == employerId;
+    }
+
+    public boolean isUsersSameAndEmployerProfileOwnerOfVacancy(long ownerId, long employerId, long id, String authEmail) {
+        return userAuthService.isUsersSame(ownerId, authEmail)
+                && getVacancy(id).getEmployerProfile().getId() == employerId;
     }
 
     public Vacancy getVacancy(long id) {
