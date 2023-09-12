@@ -39,9 +39,6 @@ public class FeedbackService {
     }
 
     public List<Feedback> getAllMessengerFeedbacks(long messengerId) {
-        return feedbackRepository.findAllByMessengerId(messengerId)
-                .stream()
-                .sorted(((o1, o2) -> o2.getSendAt().compareTo(o1.getSendAt())))
-                .toList();
+        return feedbackRepository.findAllByMessengerId(messengerId);
     }
 }
