@@ -139,7 +139,7 @@ public class VacancyServiceTests {
 
         unexpected.setLookingFor(newLookingFor);
 
-        Vacancy actual = vacancyService.update(unexpected);
+        Vacancy actual = vacancyService.update(unexpected.getId(), unexpected);
 
         assertAll(
                 () -> assertEquals(vacancyId, actual.getId(),
@@ -164,12 +164,8 @@ public class VacancyServiceTests {
 
     @Test
     public void test_Invalid_Update() {
-        assertThrows(NullPointerException.class, () -> vacancyService.update(null),
+        assertThrows(NullPointerException.class, () -> vacancyService.update(2L, null),
                 "Null pointer exception will be thrown because we pass in update method null vacancy");
-
-        assertThrows(EntityNotFoundException.class, () -> vacancyService.update(new Vacancy()),
-                "Entity not found exception will be thrown because we pass new vacancy and it has an id 0, " +
-                        "so we have no vacancy with id 0.");
     }
 
     @Test
