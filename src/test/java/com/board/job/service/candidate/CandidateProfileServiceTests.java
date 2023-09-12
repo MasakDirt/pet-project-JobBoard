@@ -111,7 +111,7 @@ public class CandidateProfileServiceTests {
         unexpected.setCategory(Category.KOTLIN);
         unexpected.setEnglishLevel(LanguageLevel.ADVANCED_FLUENT);
 
-        CandidateProfile actual = candidateProfileService.update(unexpected);
+        CandidateProfile actual = candidateProfileService.update(unexpected.getId(), unexpected);
 
         assertAll(
                 () -> assertEquals(unexpected.getId(), actual.getId()),
@@ -123,11 +123,8 @@ public class CandidateProfileServiceTests {
 
     @Test
     public void test_Invalid_Update() {
-        assertThrows(NullPointerException.class, () -> candidateProfileService.update(null),
+        assertThrows(NullPointerException.class, () -> candidateProfileService.update(1, null),
                 "Null pointer exception will be thrown, because we pass null user to method update.");
-
-        assertThrows(EntityNotFoundException.class, () -> candidateProfileService.update(new CandidateProfile()),
-                "Entity not found exception will be thrown because we have no this candidate.");
     }
 
     @Test

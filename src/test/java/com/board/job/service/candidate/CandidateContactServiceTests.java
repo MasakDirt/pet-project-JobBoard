@@ -1,6 +1,5 @@
 package com.board.job.service.candidate;
 
-import com.board.job.model.entity.PDF_File;
 import com.board.job.model.entity.candidate.CandidateContact;
 import com.board.job.repository.candidate.CandidateContactRepository;
 import com.board.job.service.PDFService;
