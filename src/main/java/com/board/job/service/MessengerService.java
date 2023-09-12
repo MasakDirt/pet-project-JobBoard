@@ -37,4 +37,12 @@ public class MessengerService {
     public List<Messenger> getAll() {
         return messengerRepository.findAll();
     }
+
+    public List<Messenger> getAllByCandidateId(long candidateId) {
+        return messengerRepository.findAllByCandidateId(candidateId);
+    }
+
+    public List<Messenger> getAllByVacancyId(long vacancyId) {
+        return messengerRepository.findAllByVacancyId(vacancyId);
+    }
 }

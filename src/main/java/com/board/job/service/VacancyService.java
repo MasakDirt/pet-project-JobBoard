@@ -4,6 +4,8 @@ import com.board.job.model.entity.Vacancy;
 import com.board.job.repository.VacancyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +30,12 @@ public class VacancyService {
                 new EntityNotFoundException("Vacancy not found"));
     }
 
-    public Vacancy update(Vacancy updated) {
-        readById(updated.getId());
+    public Vacancy update(long id, Vacancy updated) {
+        var vacancy = readById(id);
+        updated.setId(id);
+        updated.setEmployerCompany(vacancy.getEmployerCompany());
+        updated.setEmployerProfile(vacancy.getEmployerProfile());
+        updated.setPostedAt(vacancy.getPostedAt());
 
         return vacancyRepository.save(updated);
     }
@@ -40,5 +46,13 @@ public class VacancyService {
 
     public List<Vacancy> getAll() {
         return vacancyRepository.findAll();
+    }
+
+    public Page<Vacancy> getSorted(Pageable pageable) {
+        return vacancyRepository.findAll(pageable);
+    }
+
+    public List<Vacancy> getAllByEmployerProfileId(long employerId){
+        return vacancyRepository.getVacanciesByEmployerProfileId(employerId);
     }
 }

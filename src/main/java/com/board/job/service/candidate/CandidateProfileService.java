@@ -5,9 +5,13 @@ import com.board.job.repository.candidate.CandidateProfileRepository;
 import com.board.job.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.*;
 
 @Service
 @AllArgsConstructor
@@ -28,9 +32,11 @@ public class CandidateProfileService {
                 new EntityNotFoundException("CandidateProfile not found"));
     }
 
-    public CandidateProfile update(CandidateProfile updated) {
-        readById(updated.getId());
-
+    public CandidateProfile update(long id, CandidateProfile updated) {
+        var old = readById(id);
+        updated.setId(id);
+        updated.setOwner(old.getOwner());
+        updated.setMessengers(old.getMessengers());
         return candidateProfileRepository.save(updated);
     }
 
@@ -39,6 +45,10 @@ public class CandidateProfileService {
     }
 
     public List<CandidateProfile> getAll() {
-        return candidateProfileRepository.findAll();
+        return candidateProfileRepository.findAll(sort(CandidateProfile.class));
+    }
+
+    public Page<CandidateProfile> getAllSorted(Pageable pageable) {
+        return candidateProfileRepository.findAll(pageable);
     }
 }

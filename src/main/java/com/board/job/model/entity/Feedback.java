@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -19,7 +21,19 @@ public class Feedback {
     @NotBlank(message = "You should write text about why you the best candidate for this vacation.")
     private String text;
 
+    @Column(name = "send_at")
+    @CreationTimestamp
+    private LocalDateTime sendAt;
+
+    @Column(name = "messenger_id")
     private long messengerId;
+
+    @Column(name = "owner_id")
+    private long ownerId;
+
+    public Feedback() {
+        this.sendAt = LocalDateTime.now();
+    }
 
     @Override
     public boolean equals(Object o) {

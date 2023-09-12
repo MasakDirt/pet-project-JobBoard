@@ -2,11 +2,11 @@ package com.board.job.component;
 
 import com.board.job.service.UserService;
 import com.board.job.util.JwtUtils;
-import com.github.javaparser.quality.NotNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -13,9 +13,10 @@ import java.util.List;
 public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
 
-    public Feedback create(long messengerId, String text) {
+    public Feedback create(long ownerId, long messengerId, String text) {
         var feedback = new Feedback();
         feedback.setText(text);
+        feedback.setOwnerId(ownerId);
         feedback.setMessengerId(messengerId);
 
         return feedbackRepository.save(feedback);
@@ -37,7 +38,7 @@ public class FeedbackService {
         feedbackRepository.delete(readById(id));
     }
 
-    public List<Feedback> getAllCandidateFeedbacks(long messengerId) {
+    public List<Feedback> getAllMessengerFeedbacks(long messengerId) {
         return feedbackRepository.findAllByMessengerId(messengerId);
     }
 }

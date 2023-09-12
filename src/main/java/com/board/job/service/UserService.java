@@ -16,6 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -24,8 +26,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
 
-    public User create(User user, List<Role> roles) {
-        user.setRoles(new HashSet<>(roles));
+    public User create(User user, Set<Role> roles) {
+        user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -46,8 +48,16 @@ public class UserService {
         return userRepository.save(updated);
     }
 
-    public User update(User updated, String oldPassword) {
-        var oldUser = readById(updated.getId());
+    public User updateNames(long id, User updated) {
+        var user = readById(id);
+        user.setFirstName(updated.getFirstName());
+        user.setLastName(updated.getLastName());
+
+        return userRepository.save(user);
+    }
+
+    public User update(long id, User updated, String oldPassword) {
+        var oldUser = readById(id);
 
         if (!passwordEncoder.matches(oldPassword, oldUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong old password!");
@@ -56,7 +66,7 @@ public class UserService {
         updated.setId(oldUser.getId());
         updated.setEmail(oldUser.getEmail());
 
-        return create(updated, roleService.getAllByUserId(oldUser.getId()));
+        return create(updated, new HashSet<>(roleService.getAllByUserId(oldUser.getId())));
     }
 
     public void delete(long id) {
@@ -83,7 +93,7 @@ public class UserService {
         var employerCompany = user.getEmployerCompany();
         var employerProfile = user.getEmployerProfile();
 
-        if (employerCompany == null || employerProfile == null) {
+        if (Objects.isNull(employerCompany) || Objects.isNull(employerProfile)) {
             throw new UserIsNotEmployer("Please create your employer profile, then you will be permitted to create a vacancy");
         }
 

@@ -1,6 +1,6 @@
 package com.board.job.exception;
 
-import com.board.job.model.dto.ErrorResponse;
+import com.board.job.model.dto.error.ErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +37,8 @@ public class AppExceptionHandler {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException ex) {
+    @ExceptionHandler({ConstraintViolationException.class, UserHaveNoPDF.class, IllegalArgumentException.class})
+    public ResponseEntity<ErrorResponse> handleBadRequestExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
@@ -48,12 +48,12 @@ public class AppExceptionHandler {
     }
 
     @ExceptionHandler({AccessDeniedException.class, UserIsNotEmployer.class})
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(HttpServletRequest request, RuntimeException ex) {
+    public ResponseEntity<ErrorResponse> handleForbiddenExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundExceptions(HttpServletRequest request, EntityNotFoundException ex) {
+    @ExceptionHandler({EntityNotFoundException.class, InvalidFile.class})
+    public ResponseEntity<ErrorResponse> handleNotFoundExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.NOT_FOUND, ex.getMessage());
     }
 

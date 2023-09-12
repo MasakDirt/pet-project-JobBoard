@@ -14,7 +14,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,6 +70,10 @@ public class Vacancy {
     @Column(name = "english_level")
     private LanguageLevel englishLevel;
 
+    @Column(name = "posted_at")
+    @CreationTimestamp
+    private LocalDateTime postedAt;
+
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "employer_profile_id")
@@ -81,6 +87,10 @@ public class Vacancy {
     @JsonManagedReference
     @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL)
     private List<Messenger> messengers;
+
+    public Vacancy() {
+        postedAt = LocalDateTime.now();
+    }
 
     @Override
     public boolean equals(Object o) {
