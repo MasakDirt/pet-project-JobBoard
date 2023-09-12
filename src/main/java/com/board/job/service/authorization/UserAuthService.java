@@ -28,7 +28,7 @@ public class UserAuthService {
                 .anyMatch(role -> role.getName().equals("ADMIN"));
     }
 
-    private User getUser(String email) {
+    public User getUser(String email) {
         return userService.readByEmail(email);
     }
 }
