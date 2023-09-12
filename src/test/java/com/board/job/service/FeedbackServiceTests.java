@@ -38,17 +38,19 @@ public class FeedbackServiceTests {
 
     @Test
     public void test_Valid_Create() {
+        long ownerId = 1L;
         long messengerId = 2L;
         String text = "text";
-        List<Feedback> before = feedbackService.getAllCandidateFeedbacks(messengerId);
+        List<Feedback> before = feedbackService.getAllMessengerFeedbacks(messengerId);
 
         Feedback expected = new Feedback();
         expected.setText(text);
         expected.setMessengerId(messengerId);
+        expected.setOwnerId(ownerId);
 
-        Feedback actual = feedbackService.create(messengerId, text);
+        Feedback actual = feedbackService.create(ownerId, messengerId, text);
         expected.setId(actual.getId());
-        List<Feedback> after = feedbackService.getAllCandidateFeedbacks(messengerId);
+        List<Feedback> after = feedbackService.getAllMessengerFeedbacks(messengerId);
 
         assertTrue(before.size() < after.size(),
                 "Before creating feedback list must be smaller than after.");
@@ -59,7 +61,7 @@ public class FeedbackServiceTests {
 
     @Test
     public void test_Valid_ReadById() {
-        Feedback expected = feedbackService.create(3L, "Feedback");
+        Feedback expected = feedbackService.create(2L, 3L, "Feedback");
 
         Feedback actual = feedbackService.readById(expected.getId());
 
@@ -77,7 +79,7 @@ public class FeedbackServiceTests {
         String oldText = "Old text";
         String newText = "New text";
 
-        Feedback unexpected = feedbackService.create(1L, oldText);
+        Feedback unexpected = feedbackService.create(1L, 3L,  oldText);
 
         Feedback actual = feedbackService.update(unexpected.getId(), newText);
 
@@ -99,7 +101,7 @@ public class FeedbackServiceTests {
 
     @Test
     public void test_Valid_Delete() {
-        Feedback delete = feedbackService.create(3L, "Text");
+        Feedback delete = feedbackService.create(3L, 1L, "Text");
 
         feedbackService.delete(delete.getId());
 
@@ -121,7 +123,7 @@ public class FeedbackServiceTests {
                 .filter(feedback -> feedback.getMessengerId() == messengerId)
                 .toList();
 
-        List<Feedback> actual = feedbackService.getAllCandidateFeedbacks(messengerId);
+        List<Feedback> actual = feedbackService.getAllMessengerFeedbacks(messengerId);
 
         assertEquals(expected, actual,
                 "Lists must be same");
