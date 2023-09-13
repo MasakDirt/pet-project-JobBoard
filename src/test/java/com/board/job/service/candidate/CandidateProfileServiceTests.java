@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -150,5 +153,22 @@ public class CandidateProfileServiceTests {
         assertTrue(candidateProfileService.getAll()
                 .stream()
                 .anyMatch(candidateProfile -> candidateProfile.equals(expected)));
+    }
+
+    @Test
+    public void test_GetAllSorted() {
+        Sort sort = Sort.by(Sort.Direction.fromString("desc"), "position");
+        Pageable pageable = PageRequest.of(0, 10, sort);
+
+        List<CandidateProfile> expected = candidateProfileService.getAll()
+                .stream()
+                .sorted(((o1, o2) -> o2.getPosition().compareTo(o1.getPosition())))
+                .toList();
+
+        List<CandidateProfile> actual = candidateProfileService.getAllSorted(pageable)
+                .stream()
+                .toList();
+
+        assertEquals(expected, actual);
     }
 }
