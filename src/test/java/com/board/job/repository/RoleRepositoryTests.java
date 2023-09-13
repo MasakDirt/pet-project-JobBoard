@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,5 +55,28 @@ public class RoleRepositoryTests {
     public void test_Invalid_FindByName() {
         assertTrue(roleRepository.findByName("").isEmpty(),
                 "Optional must be empty because we have no role with empty name.");
+    }
+
+    @Test
+    public void test_Valid_FindAllByUsersId() {
+        long userId = 4L;
+
+        List<Role> expected = roleRepository.findAll()
+                .stream()
+                .filter(role -> role.getUsers()
+                        .stream()
+                        .anyMatch(user -> user.getId() == userId))
+                .toList();
+
+        List<Role> actual = roleRepository.findAllByUsersId(userId);
+
+        assertFalse(actual.isEmpty());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_Invalid_FindAllByUsersId() {
+        assertTrue(roleRepository.findAllByUsersId(0).isEmpty(),
+                "List must be empty because we have no user with 0 id.");
     }
 }
