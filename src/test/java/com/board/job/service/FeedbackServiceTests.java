@@ -116,7 +116,7 @@ public class FeedbackServiceTests {
     }
 
     @Test
-    public void test_Valid_GetAllCandidateFeedbacks() {
+    public void test_Valid_getAllMessengerFeedbacks() {
         long messengerId = 3L;
         List<Feedback> expected = feedbackRepository.findAll()
                 .stream()
