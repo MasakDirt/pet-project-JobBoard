@@ -50,9 +50,6 @@ public class CandidateContactServiceTests {
     @Test
     public void test_Valid_Create() throws Exception {
         List<CandidateContact> before = candidateContactRepository.findAll();
-
-        String pdfFilename = "files/pdf/CV_Maksym_Korniev.pdf";
-        String photoFileName = "files/photos/adminPhoto.jpg";
         long ownerId = 2L;
 
         CandidateContact expected = new CandidateContact();
