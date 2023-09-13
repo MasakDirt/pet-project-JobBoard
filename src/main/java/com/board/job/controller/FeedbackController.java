@@ -1,8 +1,11 @@
 package com.board.job.controller;
 
 import com.board.job.model.dto.feedback.FeedbackResponse;
+import com.board.job.model.dto.messenger.FullMessengerResponse;
 import com.board.job.model.mapper.FeedbackMapper;
+import com.board.job.model.mapper.MessengerMapper;
 import com.board.job.service.FeedbackService;
+import com.board.job.service.MessengerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +22,37 @@ import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 @RequestMapping("/api/users/{owner-id}")
 public class FeedbackController {
     private final FeedbackMapper mapper;
+    private final MessengerMapper messengerMapper;
     private final FeedbackService feedbackService;
+    private final MessengerService messengerService;
+
+    @GetMapping("/candidate/{candidate-id}/messengers/{id}/feedbacks")
+    @PreAuthorize("@authMessengerService.isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger" +
+            "(#ownerId, #candidateId, #id, authentication.principal)")
+    public FullMessengerResponse getAllCandidateMessengerFeedbacks(
+            @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
+            @PathVariable long id, Authentication authentication
+    ) {
+        var responses = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(id),
+                feedbackService.getAllMessengerFeedbacks(id));
+        log.info("=== GET-CANDIDATE-MESSENGER-FEEDBACKS === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
+
+        return responses;
+    }
+
+    @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}/feedbacks")
+    @PreAuthorize("@authVacancyService.isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
+            "(#ownerId, #employerId, #vacancyId, authentication.principal)")
+    public FullMessengerResponse getAllEmployerMessengerFeedbacks(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            @PathVariable("vacancy-id") long vacancyId, @PathVariable long id, Authentication authentication
+    ) {
+        var responses = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(id),
+                feedbackService.getAllMessengerFeedbacks(id));
+        log.info("=== GET-VACANCY-MESSENGER-FEEDBACKS === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
+
+        return responses;
+    }
 
     @GetMapping("/candidate/{candidate-id}/messengers/{messenger-id}/feedbacks/{id}")
     @PreAuthorize("@authFeedbackService.isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback" +
