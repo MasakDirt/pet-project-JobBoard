@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -184,5 +187,42 @@ public class VacancyServiceTests {
     public void test_Invalid_Delete() {
         assertThrows(EntityNotFoundException.class, () -> vacancyService.delete(0),
                 "Entity not found exception will be thrown because we have no vacancy with id 0.");
+    }
+
+    @Test
+    public void test_GetSorted() {
+        Sort sort = Sort.by(Sort.Direction.fromString("desc"), "postedAt");
+        Pageable pageable = PageRequest.of(0, 10, sort);
+
+        List<Vacancy> expected = vacancyService.getAll()
+                .stream()
+                .sorted(((o1, o2) -> o2.getPostedAt().compareTo(o1.getPostedAt())))
+                .toList();
+
+        List<Vacancy> actual = vacancyService.getSorted(pageable)
+                .stream()
+                .toList();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_Valid_GetAllByEmployerProfileId() {
+        long employerId = 3L;
+
+        List<Vacancy> expected = vacancyService.getAll()
+                .stream()
+                .filter(vacancy -> vacancy.getEmployerProfile().getId() == employerId)
+                .toList();
+
+        List<Vacancy> actual = vacancyService.getAllByEmployerProfileId(employerId);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_Invalid_GetAllByEmployerProfileId() {
+        assertTrue(vacancyService.getAllByEmployerProfileId(0).isEmpty(),
+                "Here must be empty list because we have no employer with id 0.");
     }
 }
