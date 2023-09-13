@@ -246,8 +246,6 @@ public class JobBoardApplication implements CommandLineRunner {
         Feedback feedbackDonald = createFeedback(userDonald.getId(), donaldAndVioletCompany, Strings.textDonald());
 
         Feedback feedbackHelen = createFeedback(userHelen.getId(), helenAndLarryCompany, Strings.textHelen());
-
-//        userService.delete(admin.getId());
     }
 
     private User createUser(String firstName, String lastName, String email, String password, Role role) {
