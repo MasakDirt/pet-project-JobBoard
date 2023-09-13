@@ -167,4 +167,27 @@ public class RoleServiceTests {
         assertThrows(EntityNotFoundException.class, () -> roleService.delete(0),
                 "Entity not found exception will be thrown because we have no role with id 0.");
     }
+
+    @Test
+    public void test_Valid_GetAllByUserId() {
+        long userId = 4L;
+
+        List<Role> expected = roleService.getAll()
+                .stream()
+                .filter(role -> role.getUsers()
+                        .stream()
+                        .anyMatch(user -> user.getId() == userId))
+                .toList();
+
+        List<Role> actual = roleService.getAllByUserId(userId);
+
+        assertFalse(actual.isEmpty());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_Invalid_GetAllByUserId() {
+        assertTrue(roleService.getAllByUserId(0).isEmpty(),
+                "List must be empty because we have no user with 0 id.");
+    }
 }
