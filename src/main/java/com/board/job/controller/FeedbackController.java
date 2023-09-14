@@ -41,7 +41,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}/feedbacks")
-    @PreAuthorize("@authVacancyService.isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
+    @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #vacancyId, authentication.principal)")
     public FullMessengerResponse getAllEmployerMessengerFeedbacks(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,

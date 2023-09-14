@@ -40,7 +40,7 @@ public class MessengerController {
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers")
-    @PreAuthorize("@authVacancyService.isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
+    @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #vacancyId, authentication.principal)")
     public List<CutMessengerResponse> getAllVacancyMessengers(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,

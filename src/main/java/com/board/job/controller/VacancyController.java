@@ -112,7 +112,7 @@ public class VacancyController {
     }
 
     @PutMapping("/employer-profile/{employer-id}/vacancies/{id}")
-    @PreAuthorize("@authVacancyService.isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
+    @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #id, authentication.principal)")
     public ResponseEntity<String> update(
             @PathVariable("owner-id") long ownerId, @PathVariable long id, @PathVariable("employer-id") long employerId,
@@ -125,7 +125,7 @@ public class VacancyController {
     }
 
     @DeleteMapping("/employer-profile/{employer-id}/vacancies/{id}")
-    @PreAuthorize("@authVacancyService.isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
+    @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #id, authentication.principal)")
     public ResponseEntity<String> delete(@PathVariable("owner-id") long ownerId, @PathVariable long id,
                                          @PathVariable("employer-id") long employerId, Authentication authentication) {
