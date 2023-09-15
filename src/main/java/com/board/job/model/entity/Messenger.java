@@ -30,7 +30,7 @@ public class Messenger {
     public Messenger() {
     }
 
-    public Messenger(Vacancy vacancy, CandidateProfile candidate) {
+    private Messenger(Vacancy vacancy, CandidateProfile candidate) {
         this.vacancy = vacancy;
         this.candidate = candidate;
     }

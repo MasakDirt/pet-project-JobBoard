@@ -14,9 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,7 +48,6 @@ public class EmployerProfileServiceTests {
 
     @Test
     public void test_Valid_Create() {
-        String fileName = "files/photos/nicolas.jpg";
         long ownerId = 4L;
 
         EmployerProfile expected = new EmployerProfile();
@@ -61,7 +57,7 @@ public class EmployerProfileServiceTests {
         expected.setTelegram("@telegram");
         expected.setPhone("phone-4503506");
 
-        EmployerProfile actual = employerProfileService.create(fileName, ownerId, expected);
+        EmployerProfile actual = employerProfileService.create(ownerId, expected);
         expected.setId(actual.getId());
 
         assertTrue(employerProfiles.size() < employerProfileRepository.findAll().size(),
@@ -71,12 +67,8 @@ public class EmployerProfileServiceTests {
 
     @Test
     public void test_Invalid_Create() {
-        assertThrows(ConstraintViolationException.class, () -> employerProfileService.create(
-                        "files/photos/violetPhoto.jpg", 5, new EmployerProfile()),
+        assertThrows(ConstraintViolationException.class, () -> employerProfileService.create(5, new EmployerProfile()),
                 "Constraint violation exception will be thrown because we pass invalid employer company in method");
-        assertThrows(NullPointerException.class, () -> employerProfileService.create(
-                        "files/photos/violetPhoto.jpg", 3, null),
-                "Null pointer exception will be thrown because we pass null employer company in method");
     }
 
     @Test
@@ -88,7 +80,7 @@ public class EmployerProfileServiceTests {
         expected.setTelegram("@telegram");
         expected.setPhone("phone-4503506");
 
-        expected = employerProfileService.create("files/photos/adminPhoto.jpg", 3L, expected);
+        expected = employerProfileService.create(3L, expected);
 
         EmployerProfile actual = employerProfileService.readById(expected.getId());
 
@@ -111,7 +103,7 @@ public class EmployerProfileServiceTests {
         unexpected.setCompanyName("Company");
         unexpected.setPositionInCompany("new pos");
 
-        EmployerProfile actual = employerProfileService.update(unexpected);
+        EmployerProfile actual = employerProfileService.update(unexpected.getId(), unexpected);
 
         assertEquals(unexpected.getId(), actual.getId(),
                 "After updating, id`s must be equal.");
@@ -128,7 +120,7 @@ public class EmployerProfileServiceTests {
 
     @Test
     public void test_Invalid_Update() {
-        assertThrows(EntityNotFoundException.class, () -> employerProfileService.update(new EmployerProfile()),
+        assertThrows(EntityNotFoundException.class, () -> employerProfileService.update(0, new EmployerProfile()),
                 "Entity not found exception will be thrown because we have no this in db.");
     }
 
@@ -145,43 +137,5 @@ public class EmployerProfileServiceTests {
     public void test_Invalid_Delete() {
         assertThrows(EntityNotFoundException.class, () -> employerProfileService.delete(0),
                 "Entity not found exception will be thrown because we have no employer profile with id 0.");
-    }
-
-    @Test
-    public void test_Valid_GetWithPropertyPictureAttachedById() {
-        long id = 3L;
-        byte[] expected = employerProfileRepository.findWithPropertyPictureAttachedById(id);
-
-        byte[] actual = employerProfileService.getWithPropertyPictureAttachedById(id);
-
-        assertEquals(Arrays.toString(expected), Arrays.toString(actual),
-                "We read bytes be same id, so they must be equal.");
-    }
-
-    @Test
-    public void test_Invalid_GetWithPropertyPictureAttachedById() {
-        assertEquals(Arrays.toString(new byte[]{}), Arrays.toString(employerProfileService.getWithPropertyPictureAttachedById(0)),
-                "Arrays must be empty because we hve no user with this id.");
-    }
-
-    @Test
-    public void test_Valid_SaveProfilePicture() throws Exception {
-        long id = 2L;
-        EmployerProfile employerProfile = employerProfileService.readById(id);
-        byte[] unexpected = employerProfile.getProfilePicture();
-
-        employerProfileService.saveProfilePicture(id, Files.readAllBytes(Path.of("files/photos/nicolas.jpg")));
-
-        byte[] actual = employerProfile.getProfilePicture();
-
-        assertNotEquals(Arrays.toString(unexpected), Arrays.toString(actual),
-                "We added new profile picture so 'unexpected' array must be empty");
-    }
-
-    @Test
-    public void test_Invalid_SaveProfilePicture() {
-        assertThrows(EntityNotFoundException.class, () -> employerProfileService.saveProfilePicture(
-                0, Files.readAllBytes(Path.of("files/photos/nicolas.jpg"))),
-        "Entity not found exception will be thrown because we have no employer profile with id 0.");
     }
 }

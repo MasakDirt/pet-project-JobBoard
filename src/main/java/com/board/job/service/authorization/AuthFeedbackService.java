@@ -28,14 +28,12 @@ public class AuthFeedbackService {
     public boolean isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback(
             long ownerId, long employerId, long vacancyId, long messengerId, String id,  String authEmail
     ) {
-        var feedback = getFeedback(id);
         var messenger = authMessengerService.getMessenger(messengerId);
         return userAuthService.isUsersSame(ownerId, authEmail)
                 && employerProfileService.getEmployer(employerId).getOwner().getId() == ownerId
                 && messenger.getVacancy().getEmployerProfile().getId() == employerId
                 && messenger.getVacancy().getId() == vacancyId
-                && feedback.getMessengerId() == messengerId
-                && feedback.getOwnerId() == ownerId;
+                && getFeedback(id).getMessengerId() == messengerId;
     }
 
     private Feedback getFeedback(String id) {

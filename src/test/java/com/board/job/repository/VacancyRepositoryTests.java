@@ -32,14 +32,14 @@ public class VacancyRepositoryTests {
     }
 
     @Test
-    public void test_Valid_GetVacanciesByEmployerCompanyId() {
+    public void test_Valid_GetVacanciesByEmployerProfileId() {
         long employerCompanyId = 3L;
         List<Vacancy> expected = vacancyRepository.findAll()
                 .stream()
                 .filter(vacancy -> vacancy.getEmployerCompany().getId() == employerCompanyId)
                 .toList();
 
-        List<Vacancy> actual = vacancyRepository.getVacanciesByEmployerCompanyId(employerCompanyId);
+        List<Vacancy> actual = vacancyRepository.getVacanciesByEmployerProfileId(employerCompanyId);
 
         assertFalse(actual.isEmpty(),
                 "We must get false because in this employer company vacancies are available.");
@@ -50,8 +50,8 @@ public class VacancyRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_GetVacanciesByEmployerCompanyId() {
-        assertTrue(vacancyRepository.getVacanciesByEmployerCompanyId(0).isEmpty(),
+    public void test_Invalid_GetVacanciesByEmployerProfileId() {
+        assertTrue(vacancyRepository.getVacanciesByEmployerProfileId(0).isEmpty(),
                 "We have no employer company with id 0, so here must be empty list!");
     }
 }

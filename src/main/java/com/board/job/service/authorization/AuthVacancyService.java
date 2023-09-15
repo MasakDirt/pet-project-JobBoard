@@ -14,13 +14,6 @@ public class AuthVacancyService {
     private final UserAuthService userAuthService;
     private final VacancyService vacancyService;
 
-    public boolean isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy(
-            long ownerId, long employerId, long id, String authEmail) {
-
-        return userAuthService.isUsersSame(ownerId, authEmail)
-                && getVacancy(id).getEmployerProfile().getId() == employerId;
-    }
-
     public boolean isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy(
             long ownerId, long employerId, long id) {
 

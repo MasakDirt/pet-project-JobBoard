@@ -18,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -70,7 +70,7 @@ public class UserServiceTests {
         expected.setPassword("pass");
         expected.setRoles(Set.of(role));
 
-        User actual = userService.create(expected, List.of(role));
+        User actual = userService.create(expected, Set.of(role));
         expected.setId(actual.getId());
 
         assertTrue(users.size() < userService.getAll().size(),
@@ -86,10 +86,10 @@ public class UserServiceTests {
         Role role = roleService.readById(2L);
 
         assertAll(
-                () -> assertThrows(NullPointerException.class, () -> userService.create(null, List.of(role)),
+                () -> assertThrows(NullPointerException.class, () -> userService.create(null, Set.of(role)),
                         "Null pointer exception will be thrown because we pass null user value to method."),
 
-                () -> assertThrows(IllegalArgumentException.class, () -> userService.create(new User(), List.of(role)),
+                () -> assertThrows(IllegalArgumentException.class, () -> userService.create(new User(), Set.of(role)),
                         "Illegal argument exception will be thrown because we pass invalid user value to method.")
         );
     }
@@ -102,7 +102,7 @@ public class UserServiceTests {
         expected.setEmail("user@mail.co");
         expected.setPassword("pass");
 
-        expected = userService.create(expected, List.of(roleService.readById(1L)));
+        expected = userService.create(expected, Set.of(roleService.readById(1L)));
 
         User actual = userService.readById(expected.getId());
 
@@ -126,7 +126,7 @@ public class UserServiceTests {
         expected.setEmail(email);
         expected.setPassword("pass");
 
-        expected = userService.create(expected, List.of(roleService.readById(4L)));
+        expected = userService.create(expected, Set.of(roleService.readById(4L)));
 
         User actual = userService.readByEmail(email);
 
@@ -182,7 +182,7 @@ public class UserServiceTests {
 
         unexpected.setLastName(lastName);
 
-        User actual = userService.update(unexpected, "2222");
+        User actual = userService.update(unexpected.getId(), unexpected, "2222");
 
         assertAll(
                 () -> assertEquals(oldFirstName, actual.getFirstName(),
@@ -197,15 +197,16 @@ public class UserServiceTests {
 
     @Test
     public void test_Invalid_Update() {
-        User user = userService.readById(5L);
-        assertThrows(NullPointerException.class, () -> userService.update(null, ""),
-                "Null pointer exception will be thrown because we pass null user value to method.");
+        long id = 5L;
+        User user = userService.readById(id);
+        assertThrows(ResponseStatusException.class, () -> userService.update(id, null, ""),
+                "Response status exception will be thrown because we pass null user value to method.");
 
-        assertThrows(EntityNotFoundException.class, () -> userService.update(new User(), ""),
-                "Entity not found exception will be thrown because we pass invalid user value to method.");
+        assertThrows(ResponseStatusException.class, () -> userService.update(id, new User(), ""),
+                "Response status exception will be thrown because we pass invalid user value to method.");
 
-        assertThrows(ResponseStatusException.class, () -> userService.update(user, "1234"),
-                "Entity not found exception will be thrown because we pass invalid user value to method.");
+        assertThrows(ResponseStatusException.class, () -> userService.update(id, user, "1234"),
+                "Response status exception will be thrown because we pass invalid old pass to method.");
     }
 
     @Test
@@ -240,7 +241,7 @@ public class UserServiceTests {
         unexpected.setRoles(Set.of(roleService.readById(1), roleService.readById(3), roleService.readById(4)));
         Set<Role> roles = unexpected.getRoles();
 
-        unexpected = userService.create(unexpected, new ArrayList<>(roles));
+        unexpected = userService.create(unexpected, new HashSet<>(roles));
         User actual = userService.updateUserRolesAndGetUser(unexpected.getId(), roleName);
 
         assertNotEquals(roles, actual.getRoles(),

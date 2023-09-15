@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,11 +52,14 @@ public class EmployerCompanyServiceTests {
     @Test
     public void test_Valid_Create() {
         long ownerId = 3L;
-        EmployerCompany expected = new EmployerCompany();
-        expected.setAboutCompany("About");
-        expected.setWebSite("website");
+        String aboutCompany = "About";
+        String webSite = "website";
 
-        EmployerCompany actual = employerCompanyService.create(ownerId, expected);
+        EmployerCompany expected = new EmployerCompany();
+        expected.setAboutCompany(aboutCompany);
+        expected.setWebSite(webSite);
+
+        EmployerCompany actual = employerCompanyService.create(ownerId, aboutCompany, webSite);
         expected.setId(actual.getId());
         expected.setOwner(userService.readById(ownerId));
 
@@ -70,23 +72,22 @@ public class EmployerCompanyServiceTests {
 
     @Test
     public void test_Invalid_Create() {
-        assertThrows(EntityNotFoundException.class,() -> employerCompanyService.create(0, new EmployerCompany()),
+        String webSite = "website";
+
+        assertThrows(EntityNotFoundException.class,() -> employerCompanyService.create(0, "", webSite),
                 "Entity not found exception will be thrown because we have no this user!");
-
-        assertThrows(NullPointerException.class,() -> employerCompanyService.create(3, null),
-                "Null pointer exception will be thrown because we pass null employer company value!");
-
-        assertThrows(DataIntegrityViolationException.class,() -> employerCompanyService.create(3, new EmployerCompany()),
-                "Data integrity violation exception will be thrown because we pass not appropriate employer company value!");
     }
 
     @Test
     public void test_Valid_ReadById() {
-        EmployerCompany expected = new EmployerCompany();
-        expected.setAboutCompany("About");
-        expected.setWebSite("website");
+        String aboutCompany = "About";
+        String webSite = "website";
 
-        expected = employerCompanyService.create(4L, expected);
+        EmployerCompany expected = new EmployerCompany();
+        expected.setAboutCompany(aboutCompany);
+        expected.setWebSite(webSite);
+
+        expected = employerCompanyService.create(4L, aboutCompany, webSite);
 
         EmployerCompany actual = employerCompanyService.readById(expected.getId());
 
@@ -109,7 +110,7 @@ public class EmployerCompanyServiceTests {
         String aboutCompany = unexpected.getAboutCompany();
 
         unexpected.setWebSite(newWeb);
-        EmployerCompany actual = employerCompanyService.update(unexpected);
+        EmployerCompany actual = employerCompanyService.update(unexpected.getId(), unexpected);
 
         assertEquals(unexpected.getId(), actual.getId());
         assertNotEquals(webSite, actual.getWebSite());
@@ -118,11 +119,8 @@ public class EmployerCompanyServiceTests {
 
     @Test
     public void test_Invalid_Update() {
-        assertThrows(NullPointerException.class,() -> employerCompanyService.update(null),
+        assertThrows(NullPointerException.class,() -> employerCompanyService.update(2, null),
                 "Null pointer exception will be thrown because we pass null employer company value!");
-
-        assertThrows(EntityNotFoundException.class,() -> employerCompanyService.update(new EmployerCompany()),
-                "Entity not found exception will be thrown because we have no this employer company!");
     }
 
     @Test

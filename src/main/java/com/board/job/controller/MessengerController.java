@@ -1,9 +1,7 @@
 package com.board.job.controller;
 
 import com.board.job.model.dto.messenger.CutMessengerResponse;
-import com.board.job.model.dto.messenger.FullMessengerResponse;
 import com.board.job.model.mapper.MessengerMapper;
-import com.board.job.service.FeedbackService;
 import com.board.job.service.MessengerService;
 import com.board.job.service.UserService;
 import lombok.AllArgsConstructor;
@@ -26,7 +24,6 @@ public class MessengerController {
     private final UserService userService;
     private final MessengerMapper mapper;
     private final MessengerService messengerService;
-    private final FeedbackService feedbackService;
 
     @GetMapping("/candidate/{candidate-id}/messengers")
     @PreAuthorize("@authCandidateProfileService.isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfile" +
@@ -42,22 +39,8 @@ public class MessengerController {
         return responses;
     }
 
-    @GetMapping("/candidate/{candidate-id}/messengers/{id}")
-    @PreAuthorize("@authMessengerService.isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger" +
-            "(#ownerId, #candidateId, #id, authentication.principal)")
-    public FullMessengerResponse getCandidateMessenger(
-            @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
-            @PathVariable long id, Authentication authentication
-    ) {
-        var responses = mapper.getFullMessengerResponseFromMessenger(messengerService.readById(id),
-                feedbackService.getAllMessengerFeedbacks(id));
-        log.info("=== GET-CANDIDATE-MESSENGER === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
-
-        return responses;
-    }
-
     @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers")
-    @PreAuthorize("@authVacancyService.isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
+    @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #vacancyId, authentication.principal)")
     public List<CutMessengerResponse> getAllVacancyMessengers(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
@@ -68,20 +51,6 @@ public class MessengerController {
                 .map(mapper::getCutMessengerResponseFromMessenger)
                 .toList();
         log.info("=== GET-VACANCY-MESSENGERS === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
-
-        return responses;
-    }
-
-    @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}")
-    @PreAuthorize("@authVacancyService.isUsersSameAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
-            "(#ownerId, #employerId, #vacancyId, authentication.principal)")
-    public FullMessengerResponse getVacancyMessenger(
-            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable("vacancy-id") long vacancyId, @PathVariable long id, Authentication authentication
-    ) {
-        var responses = mapper.getFullMessengerResponseFromMessenger(messengerService.readById(id),
-                feedbackService.getAllMessengerFeedbacks(id));
-        log.info("=== GET-VACANCY-MESSENGER === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
         return responses;
     }

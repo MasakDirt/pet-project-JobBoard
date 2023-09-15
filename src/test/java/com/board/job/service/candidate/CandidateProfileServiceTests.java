@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,7 +114,7 @@ public class CandidateProfileServiceTests {
         unexpected.setCategory(Category.KOTLIN);
         unexpected.setEnglishLevel(LanguageLevel.ADVANCED_FLUENT);
 
-        CandidateProfile actual = candidateProfileService.update(unexpected);
+        CandidateProfile actual = candidateProfileService.update(unexpected.getId(), unexpected);
 
         assertAll(
                 () -> assertEquals(unexpected.getId(), actual.getId()),
@@ -123,11 +126,8 @@ public class CandidateProfileServiceTests {
 
     @Test
     public void test_Invalid_Update() {
-        assertThrows(NullPointerException.class, () -> candidateProfileService.update(null),
+        assertThrows(NullPointerException.class, () -> candidateProfileService.update(1, null),
                 "Null pointer exception will be thrown, because we pass null user to method update.");
-
-        assertThrows(EntityNotFoundException.class, () -> candidateProfileService.update(new CandidateProfile()),
-                "Entity not found exception will be thrown because we have no this candidate.");
     }
 
     @Test
@@ -153,5 +153,22 @@ public class CandidateProfileServiceTests {
         assertTrue(candidateProfileService.getAll()
                 .stream()
                 .anyMatch(candidateProfile -> candidateProfile.equals(expected)));
+    }
+
+    @Test
+    public void test_GetAllSorted() {
+        Sort sort = Sort.by(Sort.Direction.fromString("desc"), "position");
+        Pageable pageable = PageRequest.of(0, 10, sort);
+
+        List<CandidateProfile> expected = candidateProfileService.getAll()
+                .stream()
+                .sorted(((o1, o2) -> o2.getPosition().compareTo(o1.getPosition())))
+                .toList();
+
+        List<CandidateProfile> actual = candidateProfileService.getAllSorted(pageable)
+                .stream()
+                .toList();
+
+        assertEquals(expected, actual);
     }
 }

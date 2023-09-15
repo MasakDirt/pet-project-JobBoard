@@ -115,4 +115,46 @@ public class MessengerServiceTests {
         assertThrows(EntityNotFoundException.class, () -> messengerService.delete(0),
                 "Entity not found exception will be thrown because we have no messenger with id 0.");
     }
+
+    @Test
+    public void test_Valid_GetAllByVacancyId() {
+        long vacancyId = 7L;
+
+        List<Messenger> expected = messengerService.getAll()
+                .stream()
+                .filter(messenger ->  messenger.getVacancy().getId() == vacancyId)
+                .toList();
+
+        List<Messenger> actual = messengerService.getAllByVacancyId(vacancyId);
+
+        assertFalse(actual.isEmpty());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_Invalid_GetAllByVacancyId() {
+     assertTrue(messengerService.getAllByVacancyId(0).isEmpty(),
+             "We have no vacancy with id 0, so here must be empty list");
+    }
+
+    @Test
+    public void test_Valid_GetAllByCandidateId() {
+        long candidateId = 1L;
+
+        List<Messenger> expected = messengerService.getAll()
+                .stream()
+                .filter(messenger ->  messenger.getCandidate().getId() == candidateId)
+                .toList();
+
+        List<Messenger> actual = messengerService.getAllByCandidateId(candidateId);
+
+        assertFalse(actual.isEmpty());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_Invalid_GetAllByCandidateId() {
+     assertTrue(messengerService.getAllByCandidateId(0).isEmpty(),
+             "We have no candidate with id 0, so here must be empty list");
+    }
 }
