@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.stream.Stream;
 
-import static com.board.job.model.ValidationHelper.getViolation;
+import static com.board.job.config.HelperForTests.getViolation;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

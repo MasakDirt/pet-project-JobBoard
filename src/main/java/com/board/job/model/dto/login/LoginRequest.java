@@ -3,14 +3,14 @@ package com.board.job.model.dto.login;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 @Data
-@Builder
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginRequest {
 
     @NotNull(message = "The 'email' cannot be null!")

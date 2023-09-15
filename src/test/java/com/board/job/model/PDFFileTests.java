@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static com.board.job.model.ValidationHelper.getViolation;
+import static com.board.job.config.HelperForTests.getViolation;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
