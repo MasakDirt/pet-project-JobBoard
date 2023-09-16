@@ -2,7 +2,6 @@ package com.board.job.controller;
 
 import com.board.job.model.dto.login.LoginRequest;
 import com.board.job.model.dto.user.UserCreateRequest;
-import com.board.job.model.dto.user.UserResponse;
 import com.board.job.model.entity.Role;
 import com.board.job.model.entity.User;
 import com.board.job.model.mapper.UserMapper;
