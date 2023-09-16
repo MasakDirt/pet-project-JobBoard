@@ -53,7 +53,7 @@ public class SecurityConfigTests {
         mvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
-                                asJsonString(new LoginRequest("admin@mail.co", "1111"))
+                                asJsonString(LoginRequest.of("admin@mail.co", "1111"))
                         )
                 )
                 .andExpect(status().isOk());
