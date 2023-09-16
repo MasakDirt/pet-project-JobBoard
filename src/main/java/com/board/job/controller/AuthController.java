@@ -32,15 +32,15 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody @Valid LoginRequest loginRequest) {
-        var userDetails = userService.readByEmail(loginRequest.getEmail());
+        var user = userService.readByEmail(loginRequest.getEmail());
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), userDetails.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Wrong password");
         }
 
-        log.info("=== POST-LOGIN === auth - {} === time - {}.", userDetails.getEmail(), LocalDateTime.now());
+        log.info("=== POST-LOGIN === auth - {} === time - {}.", user.getEmail(), LocalDateTime.now());
 
-        return jwtUtils.generateTokenFromEmail(userDetails.getEmail());
+        return jwtUtils.generateTokenFromEmail(user.getEmail());
     }
 
     @PostMapping("/register")
