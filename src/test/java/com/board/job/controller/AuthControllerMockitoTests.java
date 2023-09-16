@@ -89,7 +89,7 @@ public class AuthControllerMockitoTests {
         when(mapper.getUserFromUserCreate(userCreate)).thenReturn(user);
         when(userService.create(eq(user), eq(Set.of(role)))).thenReturn(user);
 
-        UserResponse actual = authController.create(userCreate);
+        authController.create(userCreate);
 
         verify(mapper, times(1)).getUserResponseFromUser(user);
     }
