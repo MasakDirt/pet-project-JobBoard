@@ -10,7 +10,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class LoginRequest {
 
     @NotNull(message = "The 'email' cannot be null!")
@@ -20,4 +19,13 @@ public class LoginRequest {
 
     @NotBlank(message = "The 'password' cannot be blank!")
     private String password;
+
+    private LoginRequest(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public static LoginRequest of(String email, String password) {
+        return new LoginRequest(email, password);
+    }
 }
