@@ -1,4 +1,4 @@
-package com.board.job.config;
+package com.board.job.helper;
 
 import com.board.job.model.dto.user.UserCreateRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;

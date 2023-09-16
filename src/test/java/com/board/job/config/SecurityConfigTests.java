@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static com.board.job.config.HelperForTests.asJsonString;
-import static com.board.job.config.HelperForTests.createUser;
+import static com.board.job.helper.HelperForTests.asJsonString;
+import static com.board.job.helper.HelperForTests.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
