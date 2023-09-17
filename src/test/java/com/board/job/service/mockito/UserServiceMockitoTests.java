@@ -3,6 +3,7 @@ package com.board.job.service.mockito;
 import com.board.job.model.entity.Role;
 import com.board.job.model.entity.User;
 import com.board.job.repository.UserRepository;
+import com.board.job.service.RoleService;
 import com.board.job.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,8 @@ public class UserServiceMockitoTests {
     private UserRepository userRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private RoleService roleService;
 
     @Test
     public void test_Create() {
@@ -79,6 +82,8 @@ public class UserServiceMockitoTests {
         when(passwordEncoder.matches(oldPass, user.getPassword())).thenReturn(true);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(passwordEncoder.encode("new pass")).thenReturn("LPEFLFlfemkfflF:LKD");
+        when(roleService.getAllByUserId(user.getId())).thenReturn(List.of());
+
         userService.update(user.getId(), user, oldPass);
     }
 
