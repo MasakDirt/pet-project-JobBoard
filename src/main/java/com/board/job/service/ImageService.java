@@ -95,13 +95,6 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
-    public Image updateContact(long id, long contactId) {
-        var image = readById(id);
-        image.setContact(candidateContactService.readById(contactId));
-
-        return imageRepository.save(image);
-    }
-
     public Image updateProfile(long id, long profileId) {
         var image = readById(id);
         image.setProfile(employerProfileService.readById(profileId));
@@ -111,13 +104,5 @@ public class ImageService {
 
     public void delete(long id) {
         imageRepository.delete(readById(id));
-    }
-
-    private byte[] setImageContent(String filename) {
-        try {
-            return Files.readAllBytes(Path.of(filename));
-        } catch (IOException io) {
-            throw new IllegalArgumentException(String.format("File with name %s not found", filename));
-        }
     }
 }
