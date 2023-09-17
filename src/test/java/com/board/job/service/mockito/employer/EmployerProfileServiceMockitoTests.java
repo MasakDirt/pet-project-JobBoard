@@ -71,7 +71,7 @@ public class EmployerProfileServiceMockitoTests {
         when(employerProfileRepository.findById(id)).thenReturn(Optional.of(employerProfile));
         when(employerProfileRepository.save(employerProfile)).thenReturn(employerProfile);
 
-        EmployerProfile actual = employerProfileService.update(employerProfile);
+        EmployerProfile actual = employerProfileService.update(id, employerProfile);
         verify(employerProfileRepository, times(1)).save(employerProfile);
 
         Assertions.assertEquals(employerProfile, actual);
