@@ -34,10 +34,11 @@ public class EmployerCompanyServiceMockitoTests {
         EmployerCompany employerCompany = new EmployerCompany();
         employerCompany.setAboutCompany("About");
         employerCompany.setWebSite("web");
+        employerCompany.setOwner(new User());
 
         when(userService.readById(ownerID)).thenReturn(new User());
         when(employerCompanyRepository.save(employerCompany)).thenReturn(employerCompany);
-        EmployerCompany actual = employerCompanyService.create(ownerID, employerCompany);
+        EmployerCompany actual = employerCompanyService.create(ownerID, "About", "web");
 
         verify(employerCompanyRepository, times(1)).save(employerCompany);
 
@@ -70,7 +71,7 @@ public class EmployerCompanyServiceMockitoTests {
         when(employerCompanyRepository.findById(id)).thenReturn(Optional.of(employerCompany));
         when(employerCompanyRepository.save(employerCompany)).thenReturn(employerCompany);
 
-        EmployerCompany actual = employerCompanyService.update(employerCompany);
+        EmployerCompany actual = employerCompanyService.update(id, employerCompany);
         verify(employerCompanyRepository, times(1)).save(employerCompany);
 
         Assertions.assertEquals(employerCompany, actual);

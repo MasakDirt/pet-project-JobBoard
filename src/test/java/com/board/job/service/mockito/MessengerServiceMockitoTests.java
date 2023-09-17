@@ -70,11 +70,35 @@ public class MessengerServiceMockitoTests {
 
     @Test
     public void test_GetAll() {
-        List<Messenger> expected = List.of(new Messenger(), new Messenger());
+        List<Messenger> expected = List.of(new Messenger());
         when(messengerRepository.findAll()).thenReturn(expected);
         List<Messenger> actual = messengerService.getAll();
 
         verify(messengerRepository, times(1)).findAll();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_getAllByCandidateId() {
+        long candidateId = 4L;
+        List<Messenger> expected = List.of(new Messenger(), new Messenger(), new Messenger());
+        when(messengerRepository.findAllByCandidateId(candidateId)).thenReturn(expected);
+        List<Messenger> actual = messengerService.getAllByCandidateId(candidateId);
+
+        verify(messengerRepository, times(1)).findAllByCandidateId(candidateId);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_getAllByVacancyId() {
+        long vacancyID = 4L;
+        List<Messenger> expected = List.of(new Messenger(), new Messenger());
+        when(messengerRepository.findAllByVacancyId(vacancyID)).thenReturn(expected);
+        List<Messenger> actual = messengerService.getAllByVacancyId(vacancyID);
+
+        verify(messengerRepository, times(1)).findAllByVacancyId(vacancyID);
 
         assertEquals(expected, actual);
     }

@@ -1,8 +1,10 @@
 package com.board.job.service.mockito;
 
 import com.board.job.model.entity.PDF_File;
+import com.board.job.model.entity.candidate.CandidateContact;
 import com.board.job.repository.PDFRepository;
 import com.board.job.service.PDFService;
+import com.board.job.service.candidate.CandidateContactService;
 import com.google.common.io.Files;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,14 +27,19 @@ public class PdfServiceMockitoTests {
     private PDFService pdfService;
     @Mock
     private PDFRepository pdfRepository;
+    @Mock
+    private CandidateContactService candidateContactService;
 
     @Test
     public void test_Create() throws Exception {
-        String filename = "files/pdf/CV_Maksym_Korniev.pdf";
-        PDF_File file = new PDF_File();
-        file.setFileContent(Files.toByteArray(new File(filename)));
+        byte[] bytes = Files.toByteArray(new File("files/pdf/CV_Maksym_Korniev.pdf"));
 
-        pdfService.create(filename);
+        long candidateId = 2L;
+        PDF_File file = new PDF_File();
+        file.setFileContent(bytes);
+
+        when(candidateContactService.readById(candidateId)).thenReturn(new CandidateContact());
+        pdfService.create(candidateId, bytes);
 
         verify(pdfRepository, times(1)).save(file);
     }
@@ -49,13 +56,24 @@ public class PdfServiceMockitoTests {
     }
 
     @Test
+    public void test_GetPdfFile() throws Exception{
+        long id = 4L;
+        PDF_File pdfFile = new PDF_File();
+        pdfFile.setId(id);
+        pdfFile.setFileContent(Files.toByteArray(new File("files/pdf/CV_Maksym_Korniev.pdf")));
+
+        when(pdfRepository.findById(id)).thenReturn(Optional.of(pdfFile));
+        pdfService.getPDFFile(id);
+    }
+
+    @Test
     public void test_Update() throws Exception {
-        String filename = "files/pdf/CV_Maksym_Korniev.pdf";
+        byte[] bytes = Files.toByteArray(new File("files/pdf/CV_Maksym_Korniev.pdf"));
         PDF_File file = new PDF_File();
-        file.setFileContent(Files.toByteArray(new File("files/pdf/Certificate_Maksym_Korniev.pdf")));
+        file.setFileContent(bytes);
 
         when(pdfRepository.findById(1L)).thenReturn(Optional.of(file));
-        PDF_File actual = pdfService.update(1L, filename);
+        PDF_File actual = pdfService.update(1L, bytes);
 
         verify(pdfRepository, times(1)).save(file);
 
