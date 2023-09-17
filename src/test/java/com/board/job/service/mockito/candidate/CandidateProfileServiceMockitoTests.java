@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.data.domain.Sort.sort;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)
@@ -71,7 +74,7 @@ public class CandidateProfileServiceMockitoTests {
         when(candidateProfileRepository.findById(id)).thenReturn(Optional.of(candidateProfile));
         when(candidateProfileRepository.save(candidateProfile)).thenReturn(candidateProfile);
 
-        CandidateProfile actual = candidateProfileService.update(candidateProfile);
+        CandidateProfile actual = candidateProfileService.update(id, candidateProfile);
         verify(candidateProfileRepository, times(1)).save(candidateProfile);
 
         Assertions.assertEquals(candidateProfile, actual);
@@ -88,11 +91,19 @@ public class CandidateProfileServiceMockitoTests {
     @Test
     public void test_GetAll() {
         List<CandidateProfile> expected = List.of(new CandidateProfile(), new CandidateProfile());
-        when(candidateProfileRepository.findAll()).thenReturn(expected);
+        when(candidateProfileRepository.findAll(sort(CandidateProfile.class))).thenReturn(expected);
         List<CandidateProfile> actual = candidateProfileService.getAll();
 
-        verify(candidateProfileRepository, times(1)).findAll();
+        verify(candidateProfileRepository, times(1)).findAll(sort(CandidateProfile.class));
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_GetAllSorted() {
+        when(candidateProfileRepository.findAll(Pageable.ofSize(2))).thenReturn(Page.empty());
+        candidateProfileService.getAllSorted(Pageable.ofSize(2));
+
+        verify(candidateProfileRepository, times(1)).findAll(Pageable.ofSize(2));
     }
 }
