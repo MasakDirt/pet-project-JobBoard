@@ -60,14 +60,20 @@ public class CandidateContactServiceMockitoTests {
     @Test
     public void test_Update() {
         long id = 3L;
+        User user1 = new User();
+        user1.setId(2L);
+
         CandidateContact candidateContact = new CandidateContact();
         candidateContact.setEmail("new email");
         candidateContact.setId(id);
+        candidateContact.setOwner(user1);
+        candidateContact.setEmail("mail@mail.co");
+        candidateContact.setCandidateName("Name of User");
 
         when(candidateContactRepository.findById(id)).thenReturn(Optional.of(candidateContact));
         when(candidateContactRepository.save(candidateContact)).thenReturn(candidateContact);
 
-        CandidateContact actual = candidateContactService.update(candidateContact);
+        CandidateContact actual = candidateContactService.update(id, candidateContact);
         verify(candidateContactRepository, times(1)).save(candidateContact);
 
         Assertions.assertEquals(candidateContact, actual);
