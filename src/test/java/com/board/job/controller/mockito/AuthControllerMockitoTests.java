@@ -1,5 +1,6 @@
-package com.board.job.controller;
+package com.board.job.controller.mockito;
 
+import com.board.job.controller.AuthController;
 import com.board.job.model.dto.login.LoginRequest;
 import com.board.job.model.dto.user.UserCreateRequest;
 import com.board.job.model.entity.Role;
