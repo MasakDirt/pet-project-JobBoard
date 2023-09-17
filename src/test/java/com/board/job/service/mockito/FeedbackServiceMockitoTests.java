@@ -26,6 +26,7 @@ public class FeedbackServiceMockitoTests {
 
     @Test
     public void test_Create() {
+        long ownerId = 4L;
         long messengerId = 2L;
         String text = "Text";
 
@@ -34,7 +35,7 @@ public class FeedbackServiceMockitoTests {
         feedback.setMessengerId(messengerId);
         when(feedbackRepository.save(feedback)).thenReturn(feedback);
 
-        Feedback actual = feedbackService.create(messengerId, text);
+        Feedback actual = feedbackService.create(ownerId, messengerId, text);
 
         assertEquals(feedback, actual);
     }
@@ -75,10 +76,10 @@ public class FeedbackServiceMockitoTests {
     }
 
     @Test
-    public void test_GetAll() {
+    public void test_getAllMessengerFeedbacks() {
         List<Feedback> expected = List.of(new Feedback(), new Feedback());
         when(feedbackRepository.findAllByMessengerId(2L)).thenReturn(expected);
-        List<Feedback> actual = feedbackService.getAllCandidateFeedbacks(2L);
+        List<Feedback> actual = feedbackService.getAllMessengerFeedbacks(2L);
 
         verify(feedbackRepository, times(1)).findAllByMessengerId(2L);
 
