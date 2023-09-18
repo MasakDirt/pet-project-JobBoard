@@ -80,7 +80,7 @@ public class RoleController {
         var roleNewName = roleService.update(id, name).getName();
         log.info("=== PUT-ROLE === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(
+        return ResponseEntity.ok(
                 String.format("Role old name %s updated to %s", oldRoleName, roleNewName)
         );
     }
@@ -91,7 +91,7 @@ public class RoleController {
         roleService.delete(id);
         log.info("=== DELETE-ROLE === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(
+        return ResponseEntity.ok(
                 String.format("Role with name %s successfully deleted", roleName)
         );
     }
