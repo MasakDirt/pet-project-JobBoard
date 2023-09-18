@@ -34,11 +34,23 @@ public class HelperForTests {
         return new UserCreateRequest(firstName, lastName, email, password);
     }
 
-    public static String getLoginToken(MockMvc mvc, String url, String email, String password) throws Exception {
-        return mvc.perform(post(url)
+    public static String getLoginToken(MockMvc mvc, String email, String password) throws Exception {
+        return mvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 asJsonString(LoginRequest.of(email, password))
+                        )
+                )
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+    }
+
+    public static String getAdminToken(MockMvc mvc) throws Exception {
+        return mvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                asJsonString(LoginRequest.of("admin@mail.co", "1111"))
                         )
                 )
                 .andReturn()
