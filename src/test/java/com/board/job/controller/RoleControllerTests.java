@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.board.job.helper.HelperForTests.asJsonString;
-import static com.board.job.helper.HelperForTests.getLoginToken;
+import static com.board.job.helper.HelperForTests.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,7 +41,7 @@ public class RoleControllerTests {
 
     @BeforeEach
     public void initToken() throws Exception {
-        token = getLoginToken(mvc, "/api/auth/login", "admin@mail.co", "1111");
+        token = getAdminToken(mvc);
     }
 
     @Test
@@ -65,7 +64,7 @@ public class RoleControllerTests {
     @Test
     public void test_Invalid_UserIsNotAdmin_GetAll() throws Exception {
         mvc.perform(get(BASIC_URL)
-                        .header("Authorization", "Bearer " + getLoginToken(mvc, "/api/auth/login", "helen@mail.co", "5555")))
+                        .header("Authorization", "Bearer " + getLoginToken(mvc, "helen@mail.co", "5555")))
                 .andExpect(status().isForbidden())
                 .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains("\"status\":\"FORBIDDEN\",\"message\":\"Access Denied\"")));
     }
