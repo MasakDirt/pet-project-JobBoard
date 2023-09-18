@@ -64,9 +64,9 @@ public class RoleControllerTests {
     @Test
     public void test_Invalid_UserIsNotAdmin_GetAll() throws Exception {
         mvc.perform(get(BASIC_URL)
-                        .header("Authorization", "Bearer " + getLoginToken(mvc, "helen@mail.co", "5555")))
+                        .header("Authorization", "Bearer " + getUserToken(mvc, "helen@mail.co", "5555")))
                 .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains("\"status\":\"FORBIDDEN\",\"message\":\"Access Denied\"")));
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
     }
 
     @Test
