@@ -15,6 +15,8 @@ import java.util.Set;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class HelperForTests {
+    public static final String ACCESS_DENIED = "\"status\":\"FORBIDDEN\",\"message\":\"Access Denied\"";
+
     public static <T> Set<ConstraintViolation<T>> getViolation(T testedClass) {
         return Validation.buildDefaultValidatorFactory()
                 .getValidator()
@@ -25,7 +27,7 @@ public class HelperForTests {
         try {
             return new ObjectMapper().registerModule(new JavaTimeModule())
                     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).writeValueAsString(object);
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             throw new RuntimeException();
         }
     }
@@ -34,7 +36,7 @@ public class HelperForTests {
         return new UserCreateRequest(firstName, lastName, email, password);
     }
 
-    public static String getLoginToken(MockMvc mvc, String email, String password) throws Exception {
+    public static String getUserToken(MockMvc mvc, String email, String password) throws Exception {
         return mvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
@@ -56,5 +58,15 @@ public class HelperForTests {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
+    }
+
+    public static String registerUserAndGetHisToken(MockMvc mvc) throws Exception {
+        UserCreateRequest userCreate = createUser("Maks", "Korniev", "maks@mail.co", "1234");
+
+        mvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userCreate)));
+
+        return getUserToken(mvc, "maks@mail.co", "1234");
     }
 }
