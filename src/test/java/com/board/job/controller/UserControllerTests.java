@@ -119,6 +119,16 @@ public class UserControllerTests {
     }
 
     @Test
+    public void test_NotFound_GetById_ADMIN() throws Exception {
+        mvc.perform(get(BASIC_URl + "/{id}", 10L)
+                        .header("Authorization", "Bearer " + adminToken)
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
+                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"User not found\"")));
+    }
+
+    @Test
     public void test_GetByEmail_ADMIN() throws Exception {
         String email = "helen@mail.co";
         String expected = asJsonString(mapper.getUserResponseFromUser(userService.readByEmail(email)));
@@ -153,6 +163,17 @@ public class UserControllerTests {
                 .andExpect(status().isForbidden())
                 .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
                         .contains(ACCESS_DENIED)));
+    }
+
+    @Test
+    public void test_NotFound_GetByEmail_ADMIN() throws Exception {
+        mvc.perform(get(BASIC_URl + "/email")
+                        .param("email", "notfound@mail.co")
+                        .header("Authorization", "Bearer " + adminToken)
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
+                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"User with email notfound@mail.co not found\"")));
     }
 
     @Test
