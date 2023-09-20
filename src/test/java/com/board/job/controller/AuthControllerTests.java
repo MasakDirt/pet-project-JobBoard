@@ -95,7 +95,7 @@ public class AuthControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(result ->
                         assertEquals(asJsonString(mapper.getUserResponseFromUser(user)).substring(8),
-                        result.getResponse().getContentAsString().substring(8))
+                        result.getResponse().getContentAsString().substring(9))
                 );
     }
 }
