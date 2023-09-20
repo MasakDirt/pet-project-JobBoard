@@ -97,6 +97,16 @@ public class CandidateContactControllerTests {
     }
 
     @Test
+    public void test_NotFound_getCandidateById_ADMIN() throws Exception {
+        mvc.perform(get(BASIC_URl + "/{id}", 100L, 10L)
+                        .header("Authorization", "Bearer " + adminToken)
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
+                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"User not found\"")));
+    }
+
+    @Test
     public void test_Create() throws Exception {
         String userToken = registerUserAndGetHisToken(mvc);
 
