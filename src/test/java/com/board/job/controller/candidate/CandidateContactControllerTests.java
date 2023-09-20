@@ -103,7 +103,7 @@ public class CandidateContactControllerTests {
                 )
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"User not found\"")));
+                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"Candidate not found\"")));
     }
 
     @Test
