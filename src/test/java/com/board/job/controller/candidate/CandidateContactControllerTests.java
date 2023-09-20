@@ -2,6 +2,7 @@ package com.board.job.controller.candidate;
 
 import com.board.job.model.dto.candidate_contact.CandidateContactRequest;
 import com.board.job.model.mapper.candidate.CandidateContactMapper;
+import com.board.job.service.UserService;
 import com.board.job.service.candidate.CandidateContactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ public class CandidateContactControllerTests {
     private final MockMvc mvc;
     private final CandidateContactService candidateContactService;
     private final CandidateContactMapper mapper;
+    private final UserService userService;
 
     private String adminToken;
     private String nikoleToken;
@@ -35,10 +37,11 @@ public class CandidateContactControllerTests {
 
     @Autowired
     public CandidateContactControllerTests(MockMvc mvc, CandidateContactService candidateContactService,
-                                           CandidateContactMapper mapper) {
+                                           CandidateContactMapper mapper, UserService userService) {
         this.mvc = mvc;
         this.candidateContactService = candidateContactService;
         this.mapper = mapper;
+        this.userService = userService;
     }
 
     @BeforeEach
@@ -53,6 +56,7 @@ public class CandidateContactControllerTests {
         assertNotNull(mvc);
         assertNotNull(candidateContactService);
         assertNotNull(mapper);
+        assertNotNull(userService);
     }
 
     @Test
@@ -109,8 +113,7 @@ public class CandidateContactControllerTests {
     @Test
     public void test_Create() throws Exception {
         String userToken = registerUserAndGetHisToken(mvc);
-
-        long ownerID = 7L;
+        long ownerID = userService.readByEmail("maks@mail.co").getId();
 
         mvc.perform(post(BASIC_URl, ownerID)
                         .header("Authorization", "Bearer " + userToken)
