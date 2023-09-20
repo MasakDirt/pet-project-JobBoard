@@ -7,6 +7,7 @@ import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.model.entity.sample.Category;
 import com.board.job.model.entity.sample.LanguageLevel;
 import com.board.job.model.mapper.candidate.CandidateProfileMapper;
+import com.board.job.service.UserService;
 import com.board.job.service.candidate.CandidateProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ public class CandidateProfileControllerTests {
     private final MockMvc mvc;
     private final CandidateProfileService candidateProfileService;
     private final CandidateProfileMapper mapper;
+    private final UserService userService;
 
     private String adminToken;
     private String employerToken;
@@ -43,10 +45,11 @@ public class CandidateProfileControllerTests {
 
     @Autowired
     public CandidateProfileControllerTests(MockMvc mvc, CandidateProfileService candidateProfileService,
-                                           CandidateProfileMapper mapper) {
+                                           CandidateProfileMapper mapper, UserService userService) {
         this.mvc = mvc;
         this.candidateProfileService = candidateProfileService;
         this.mapper = mapper;
+        this.userService = userService;
     }
 
     @BeforeEach
@@ -61,6 +64,7 @@ public class CandidateProfileControllerTests {
         assertNotNull(mvc);
         assertNotNull(candidateProfileService);
         assertNotNull(mapper);
+        assertNotNull(userService);
     }
 
     @Test
@@ -211,7 +215,7 @@ public class CandidateProfileControllerTests {
     @Test
     public void test_Create_User() throws Exception {
         String token = registerUserAndGetHisToken(mvc);
-        long ownerId = 7L;
+        long ownerId = userService.readByEmail("maks@mail.co").getId();
         String expected = asJsonString(create("Java Jun", 700, 0.7,
                 "Ukraine", "Lviv", Category.JAVA, LanguageLevel.INTERMEDIATE,
                 LanguageLevel.ADVANCED_FLUENT, "Experience"));
