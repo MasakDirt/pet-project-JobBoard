@@ -63,8 +63,9 @@ public class CandidateProfileController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
-    public FullCandidateProfileResponse getById(@PathVariable long id,
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER') || " +
+            "@authCandidateProfileService.isUsersSameByIdAndUserOwnerCandidateProfile(#ownerId, #id, authentication.principal)")
+    public FullCandidateProfileResponse getById(@PathVariable("owner-id") long ownerId, @PathVariable long id,
                                                 Authentication authentication) {
         var profile = mapper.getCandidateProfileResponseFromCandidateProfile(candidateProfileService.readById(id));
         log.info("=== GET_CANDIDATE_PROFILE === {} - {}", getAuthorities(authentication), authentication.getPrincipal());
