@@ -62,20 +62,22 @@ public class CandidateProfileControllerMockitoTests {
 
     @Test
     public void test_GetById() {
+        long ownerId = 34945L;
         long id = 345L;
 
         when(mapper.getCandidateProfileResponseFromCandidateProfile(new CandidateProfile())).thenReturn(FullCandidateProfileResponse.builder().build());
         when(service.readById(id)).thenReturn(new CandidateProfile());
-        controller.getById(id, authentication);
+        controller.getById(ownerId, id, authentication);
 
         verify(service, times(1)).readById(id);
     }
 
     @Test
     public void test_NotFound_getById() {
+        long ownerId = 34945L;
         long id = 100L;
         when(service.readById(id)).thenThrow(EntityNotFoundException.class);
-        assertThrows(EntityNotFoundException.class, () -> controller.getById(id, authentication));
+        assertThrows(EntityNotFoundException.class, () -> controller.getById(ownerId, id, authentication));
 
         verify(service, times(1)).readById(id);
         verify(mapper, times(0)).getCandidateProfileResponseFromCandidateProfile(new CandidateProfile());
