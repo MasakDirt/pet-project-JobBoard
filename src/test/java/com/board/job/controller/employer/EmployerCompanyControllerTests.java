@@ -75,7 +75,7 @@ public class EmployerCompanyControllerTests {
     }
 
     @Test
-    public void test_GetByUserId_Admin() throws Exception {
+    public void test_GetById_Admin() throws Exception {
         long ownerId = 6L;
         long id = 3L;
         EmployerCompanyResponse expected = mapper.getEmployerCompanyResponseFromEmployerCompany(
@@ -91,7 +91,7 @@ public class EmployerCompanyControllerTests {
     }
 
     @Test
-    public void test_Forbidden_GetByUserId_User() throws Exception {
+    public void test_Forbidden_GetById_User() throws Exception {
         long ownerId = 6L;
         long id = 1L;
 
@@ -104,7 +104,7 @@ public class EmployerCompanyControllerTests {
     }
 
     @Test
-    public void test_NotFound_GetByUserId_User() throws Exception {
+    public void test_NotFound_GetById_User() throws Exception {
         long ownerId = 6L;
         long id = 10L;
 
@@ -173,8 +173,7 @@ public class EmployerCompanyControllerTests {
                 )
                 .andExpect(status().isForbidden())
                 .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                                .contains(ACCESS_DENIED),
-                        "Here must be access denied status because user is not owner of candidate"));
+                                .contains(ACCESS_DENIED)));
     }
 
     @Test
