@@ -57,8 +57,7 @@ public class EmployerCompanyController {
         var updated = employerCompanyService.update(id, new EmployerCompany(aboutCompany, webSite));
         log.info("=== PUT-EMPLOYER_COMPANY === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(String.format("Employer company for user %s successfully updated", updated.getOwner().getName()));
+        return ResponseEntity.ok(String.format("Employer company for user %s successfully updated", updated.getOwner().getName()));
     }
 
     @DeleteMapping("/{id}")
@@ -71,7 +70,6 @@ public class EmployerCompanyController {
         employerCompanyService.delete(id);
         log.info("=== DELETE-EMPLOYER_COMPANY === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(String.format("Employer company for user %s successfully deleted", old.getOwner().getName()));
+        return ResponseEntity.ok(String.format("Employer company for user %s successfully deleted", old.getOwner().getName()));
     }
 }
