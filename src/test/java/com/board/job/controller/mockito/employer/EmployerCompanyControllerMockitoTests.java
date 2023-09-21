@@ -86,11 +86,6 @@ public class EmployerCompanyControllerMockitoTests {
         user.setFirstName("Ff");
         user.setLastName("Ll");
 
-        EmployerCompany company = new EmployerCompany();
-        company.setAboutCompany("About");
-        company.setWebSite("web");
-        company.setOwner(user);
-
         EmployerCompany updated = new EmployerCompany();
         updated.setAboutCompany(about);
         updated.setWebSite(web);
