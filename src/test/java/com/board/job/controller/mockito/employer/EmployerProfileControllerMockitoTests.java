@@ -58,8 +58,6 @@ public class EmployerProfileControllerMockitoTests {
     @Test
     public void test_Create() {
         long ownerId = 3L;
-        String about = "About";
-        String web = "web";
 
         User user = new User();
         user.setFirstName("Ff");
@@ -81,8 +79,6 @@ public class EmployerProfileControllerMockitoTests {
     public void test_Update() {
         long ownerId = 3L;
         long id = 3L;
-        String about = "Updated";
-        String web = "new";
 
         User user = new User();
         user.setFirstName("Ff");
