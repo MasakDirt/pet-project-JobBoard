@@ -86,11 +86,11 @@ public class VacancyController {
     @GetMapping("/employer-profile/{employer-id}/vacancies/{id}")
     @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #id, authentication.principal)")
-    public CutVacancyResponse getEmployerVacancy(
+    public FullVacancyResponse getEmployerVacancy(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable long id, Authentication authentication) {
 
-        var responses = mapper.getCutVacancyResponseFromVacancy(vacancyService.readById(id));
+        var responses = mapper.getFullVacancyResponseFromVacancy(vacancyService.readById(id));
         log.info("=== GET-EMPLOYER-VACANCY === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
         return responses;
