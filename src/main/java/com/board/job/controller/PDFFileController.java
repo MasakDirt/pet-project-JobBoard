@@ -69,7 +69,7 @@ public class PDFFileController {
     public ResponseEntity<String> update(
             @PathVariable("owner-id") long ownerId,
             @PathVariable("contact-id") long candidateContactId, @PathVariable long id,
-            @RequestParam MultipartFile file, Authentication authentication) throws Exception {
+            @RequestBody MultipartFile file, Authentication authentication) throws Exception {
 
         pdfService.update(id, file.getBytes());
         log.info("=== PUT-PDF_FILE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
