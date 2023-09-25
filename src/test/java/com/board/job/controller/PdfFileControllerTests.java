@@ -151,7 +151,8 @@ public class PdfFileControllerTests {
                         .header("Authorization", "Bearer " + adminToken)
                 )
                 .andExpect(status().isForbidden())
-                .andExpect(result -> result.getResponse().getContentAsString().contains(ACCESS_DENIED));
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
+                        .contains(ACCESS_DENIED)));
     }
 
     @Test
@@ -175,7 +176,8 @@ public class PdfFileControllerTests {
                         .content(multipartFile.getBytes())
                 )
                 .andExpect(status().isForbidden())
-                .andExpect(result -> result.getResponse().getContentAsString().contains(ACCESS_DENIED));
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
+                        .contains(ACCESS_DENIED)));
     }
 
     @Test
@@ -201,7 +203,8 @@ public class PdfFileControllerTests {
                         .header("Authorization", "Bearer " + adminToken)
                 )
                 .andExpect(status().isForbidden())
-                .andExpect(result -> result.getResponse().getContentAsString().contains(ACCESS_DENIED));
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
+                        .contains(ACCESS_DENIED)));
     }
 
     private CandidateContact getCandidate() {
