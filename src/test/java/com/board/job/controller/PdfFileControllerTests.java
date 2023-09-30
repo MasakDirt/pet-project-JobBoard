@@ -207,7 +207,7 @@ public class PdfFileControllerTests {
                         .contains(ACCESS_DENIED)));
     }
 
-    private CandidateContact getCandidate() {
+    public static CandidateContact getCandidate() {
         CandidateContact contact = new CandidateContact();
         contact.setCandidateName("New");
         contact.setEmail("email@mail.co");
