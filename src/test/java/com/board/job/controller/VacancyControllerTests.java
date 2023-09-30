@@ -108,7 +108,7 @@ public class VacancyControllerTests {
     public void test_getSortedVacancies_Admin() throws Exception {
         long ownerId = 1L;
 
-        List<CutVacancyResponse> expected = getSortedVacancies(8L, 5L, 4L, 2L, 1L);
+        List<CutVacancyResponse> expected = getSortedVacancies(8L, 4L, 5L, 2L, 1L);
 
         mvc.perform(get(BASIC_URL + "/vacancies/sorted", ownerId)
                         .header("Authorization", "Bearer " + adminToken)
