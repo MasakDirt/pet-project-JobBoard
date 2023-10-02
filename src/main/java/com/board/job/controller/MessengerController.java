@@ -57,7 +57,7 @@ public class MessengerController {
 
     @PostMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers")
     @PreAuthorize("@authVacancyService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
-            "(#ownerId, #employerId, #vacancyId)")
+            "(#ownerId, #employerId, #vacancyId) && hasRole('CANDIDATE')")
     public ResponseEntity<String> create(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("vacancy-id") long vacancyId, Authentication authentication
