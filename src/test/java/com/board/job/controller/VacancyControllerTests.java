@@ -108,11 +108,11 @@ public class VacancyControllerTests {
     public void test_getSortedVacancies_Admin() throws Exception {
         long ownerId = 1L;
 
-        List<CutVacancyResponse> expected = getSortedVacancies(8L, 4L, 5L, 2L, 1L);
+        List<CutVacancyResponse> expected = getSortedVacancies(2L, 8L, 7L, 1L, 3L);
 
         mvc.perform(get(BASIC_URL + "/vacancies/sorted", ownerId)
                         .header("Authorization", "Bearer " + adminToken)
-                        .param("sort_by", "domain", "category")
+                        .param("sort_by", "category")
                         .param("sort_order", "desc")
                         .param("page", "0")
                 )
