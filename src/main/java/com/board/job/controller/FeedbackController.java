@@ -26,23 +26,23 @@ public class FeedbackController {
     private final FeedbackService feedbackService;
     private final MessengerService messengerService;
 
-    @GetMapping("/candidate/{candidate-id}/messengers/{id}/feedbacks")
+    @GetMapping("/candidate/{candidate-id}/messengers/{messengerId}/feedbacks")
     @PreAuthorize("@authMessengerService.isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger" +
-            "(#ownerId, #candidateId, #id, authentication.principal)")
+            "(#ownerId, #candidateId, #messengerId, authentication.principal)")
     public FullMessengerResponse getAllCandidateMessengerFeedbacks(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
-            @PathVariable long id, Authentication authentication
+            @PathVariable long messengerId, Authentication authentication
     ) {
-        var responses = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(id),
-                feedbackService.getAllMessengerFeedbacks(id));
+        var responses = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(messengerId),
+                feedbackService.getAllMessengerFeedbacks(messengerId));
         log.info("=== GET-CANDIDATE-MESSENGER-FEEDBACKS === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
         return responses;
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}/feedbacks")
-    @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
-            "(#ownerId, #employerId, #vacancyId, authentication.principal)")
+    @PreAuthorize("@authMessengerService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger" +
+            "(#ownerId, #employerId, #vacancyId, #id, authentication.principal)")
     public FullMessengerResponse getAllEmployerMessengerFeedbacks(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("vacancy-id") long vacancyId, @PathVariable long id, Authentication authentication

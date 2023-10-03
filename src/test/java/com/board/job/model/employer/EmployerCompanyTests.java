@@ -1,6 +1,6 @@
 package com.board.job.model.employer;
 
-import com.board.job.config.HelperForTests;
+import com.board.job.helper.HelperForTests;
 import com.board.job.model.entity.employer.EmployerCompany;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

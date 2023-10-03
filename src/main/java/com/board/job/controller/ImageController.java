@@ -102,7 +102,7 @@ public class ImageController {
             "(#ownerId, #candidateId, #id, authentication.principal)")
     public ResponseEntity<String> updateCandidatePhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId, @PathVariable long id,
-            @RequestParam MultipartFile file, Authentication authentication) throws IOException {
+            @RequestBody MultipartFile file, Authentication authentication) throws IOException {
 
         imageService.update(id, file.getBytes());
         log.info("=== PUT-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
@@ -115,7 +115,7 @@ public class ImageController {
             "(#ownerId, #employerId, #id, authentication.principal)")
     public ResponseEntity<String> updateEmployerPhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId, @PathVariable long id,
-            @RequestParam MultipartFile file, Authentication authentication) throws IOException {
+            @RequestBody MultipartFile file, Authentication authentication) throws IOException {
 
         imageService.update(id, file.getBytes());
         log.info("=== PUT-EMPLOYER-IMAGE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());

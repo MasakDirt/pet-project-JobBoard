@@ -57,7 +57,7 @@ public class MessengerController {
 
     @PostMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers")
     @PreAuthorize("@authVacancyService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
-            "(#ownerId, #employerId, #vacancyId)")
+            "(#ownerId, #employerId, #vacancyId) && hasRole('CANDIDATE')")
     public ResponseEntity<String> create(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("vacancy-id") long vacancyId, Authentication authentication
@@ -75,9 +75,9 @@ public class MessengerController {
 
     @DeleteMapping("/candidate/{candidate-id}/messengers/{id}")
     @PreAuthorize("@authMessengerService.isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger" +
-            "(#ownerId, #employerId, #id, authentication.principal)")
+            "(#ownerId, #candidateId, #id, authentication.principal)")
     public ResponseEntity<String> deleteByCandidate(
-            @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long employerId,
+            @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable long id, Authentication authentication
     ) {
         var messenger = messengerService.readById(id);

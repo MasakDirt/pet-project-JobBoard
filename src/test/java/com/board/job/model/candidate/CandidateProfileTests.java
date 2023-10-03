@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.stream.Stream;
 
-import static com.board.job.config.HelperForTests.getViolation;
+import static com.board.job.helper.HelperForTests.getViolation;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
