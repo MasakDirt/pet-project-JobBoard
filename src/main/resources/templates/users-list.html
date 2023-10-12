@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>All Users</title>
+
+
+    <style>
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-delete {
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-purple:hover {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+        .btn-delete:hover {
+            background-color: #a84141;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 20px;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .table-container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="centered">
+    <h2>All Users</h2>
+    <div class="table-container">
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Id</th>
+                <th scope="col">Full name</th>
+                <th scope="col">E-mail</th>
+                <th scope="col" colspan="2">Operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user, iStat: ${users}">
+                <th scope="row" th:text="${iStat.index + 1}"/>
+                <td th:text="${user.id}"/>
+                <td>
+                    <a th:href="@{|/api/users/${user.id}|}" th:text="${user.firstName + ' ' + user.lastName}"/>
+                </td>
+                <td th:text="${user.email}"/>
+
+                <td>
+                    <a class="btn btn-purple" th:href="@{|/api/users/${user.id}/update|}">Edit</a>
+                </td>
+                <td>
+                    <a class="btn btn-delete" th:href="@{|/api/users/${user.id}/delete|}">Remove</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
