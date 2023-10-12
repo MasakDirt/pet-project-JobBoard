@@ -134,7 +134,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
     public void delete(@PathVariable long id, Authentication authentication, HttpServletResponse response) throws IOException {
-        var user = userService.readById(id);
         userService.delete(id);
         log.info("=== DELETE-USER === {} === {}", getAuthorities(authentication), authentication.getName());
 
