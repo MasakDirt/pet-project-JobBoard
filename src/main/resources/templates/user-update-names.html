@@ -20,6 +20,22 @@
             font-weight: bold;
         }
 
+        .btn-back{
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 5px 30px;
+            position: fixed;
+            top: 1px;
+            left: 1px;
+        }
+
+        .btn-back:hover {
+            background-color: #3fcad9;
+        }
+
         .btn-purple:hover {
             background-color: #6a1e9b;
             border-color: #6a1e9b;
@@ -45,6 +61,9 @@
     </style>
 </head>
 <body>
+<header>
+    <button class="btn btn-back" th:onclick="window.history.back()">⬅️Back</button>
+</header>
 <div class="col-md-offset-2 col-sm-8">
     <h1>Update user names</h1>
 </div>
