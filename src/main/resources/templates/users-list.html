@@ -21,7 +21,7 @@
             font-weight: bold;
         }
 
-        .btn-back{
+        .btn-back {
             background-color: #fff;
             border-color: #fff;
             color: #000;
@@ -115,7 +115,6 @@
         <table class="styled-table">
             <thead>
             <tr>
-                <th scope="col">No.</th>
                 <th scope="col">Id</th>
                 <th scope="col">Full name</th>
                 <th scope="col">E-mail</th>
@@ -124,13 +123,14 @@
             </thead>
             <tbody>
             <tr th:each="user, iStat: ${users}">
-                <th scope="row" th:text="${iStat.index + 1}"/>
-                <td th:text="${user.id}"/>
+                <td>
+                    <a th:href="@{|/api/roles/user/${user.id}|}" th:text="${user.id}"/>
+                </td>
+
                 <td>
                     <a th:href="@{|/api/users/${user.id}|}" th:text="${user.firstName + ' ' + user.lastName}"/>
                 </td>
                 <td th:text="${user.email}"/>
-
                 <td>
                     <a class="btn btn-purple" th:href="@{|/api/users/${user.id}/update|}">Edit</a>
                 </td>
