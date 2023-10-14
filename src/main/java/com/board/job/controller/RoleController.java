@@ -4,6 +4,7 @@ import com.board.job.model.dto.role.RoleRequest;
 import com.board.job.model.dto.role.RoleResponse;
 import com.board.job.model.mapper.RoleMapper;
 import com.board.job.service.RoleService;
+import com.board.job.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
@@ -28,6 +28,7 @@ import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 public class RoleController {
     private final RoleService roleService;
     private final RoleMapper mapper;
+    private final UserService userService;
 
     @GetMapping
     public ModelAndView getAll(Authentication authentication, ModelMap map) {
@@ -42,14 +43,18 @@ public class RoleController {
     }
 
     @GetMapping("/user/{user-id}")
-    public Set<RoleResponse> getAllUserRoles(@PathVariable(value = "user-id") long userId, Authentication authentication) {
+    public ModelAndView getAllUserRoles(@PathVariable(value = "user-id") long userId, Authentication authentication,
+                                        ModelMap map) {
         var roles = roleService.getAllByUserId(userId)
                 .stream()
                 .map(mapper::getRoleResponseFromRole)
                 .collect(Collectors.toSet());
         log.info("=== GET-USER-ROLES === {} === {}", getAuthorities(authentication), authentication.getName());
+        map.addAttribute("roles", roles);
+        map.addAttribute("userId", userId);
+        map.addAttribute("userName", userService.readById(userId).getName());
 
-        return roles;
+        return new ModelAndView("user-roles-get", map);
     }
 
     @GetMapping("/{id}")
@@ -85,6 +90,23 @@ public class RoleController {
         response.sendRedirect("/api/roles");
     }
 
+    @GetMapping("/user/{user-id}/add-role")
+    public ModelAndView addUserRoleRequest(@PathVariable(value = "user-id") long userId, ModelMap map) {
+        map.addAttribute("userId", userId);
+        map.addAttribute("roleRequest", new RoleRequest());
+
+        return new ModelAndView("role-user-add", map);
+    }
+
+    @PostMapping("/user/{user-id}/add-role")
+    public void addUserRole(@PathVariable(value = "user-id") long userId, @Valid RoleRequest roleRequest,
+                            Authentication authentication, HttpServletResponse response) throws IOException {
+        userService.updateUserRolesAndGetUser(userId, roleRequest.getName());
+        log.info("=== POST-USER-ADD-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
+
+        response.sendRedirect("/api/roles/user/" + userId);
+    }
+
     @GetMapping("/{id}/update")
     public ModelAndView updateRequest(@PathVariable long id, ModelMap map) {
         map.addAttribute("id", id);
@@ -95,7 +117,7 @@ public class RoleController {
 
     @PostMapping("/{id}/update")
     public void update(@PathVariable long id, @Valid RoleRequest roleRequest,
-                                         Authentication authentication, HttpServletResponse response) throws IOException {
+                       Authentication authentication, HttpServletResponse response) throws IOException {
         roleService.update(id, roleRequest.getName());
         log.info("=== PUT-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
