@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Your profile</title>
+
+
+    <style>
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-purple-bigger-left {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+            font-size: 17px;
+            margin-right: 15px;
+        }
+
+        .btn-purple-bigger-right {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+            font-size: 17px;
+            margin-left: 15px;
+        }
+
+        .btn-delete {
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-back{
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 5px 30px;
+        }
+
+        .btn-purple:hover {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+        .btn-delete:hover {
+            background-color: #a84141;
+        }
+
+        .btn-back:hover {
+            background-color: #3fcad9;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 75vh;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            height: 20px;
+            position: relative;
+        }
+
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 1%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 20px;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .table-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .div-top{
+            margin-top: 14px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <button class="btn btn-back" th:onclick="window.history.back()">⬅️Back</button>
+
+<!--    <div th:if="${isAdmin}" class="container">-->
+<!--        <div class="center">-->
+<!--            <a class="btn btn-purple" th:href="@{/api/users}">Get All Users</a>-->
+<!--            <a class="btn btn-purple" th:href="@{/api/roles}">Get All Roles</a>-->
+<!--            <a class="btn btn-purple" th:href="@{/api/users/create-admin}">Create admin</a>-->
+<!--        </div>-->
+<!--    </div>-->
+</header>
+<div class="centered">
+    <h2>Info About Candidate</h2>
+    <div class="profile-details">
+        <p><strong>Position:</strong> <span th:text="${candidateProfile.position}"></span></p>
+        <p><strong>Salary Expectations:</strong> <span th:text="${candidateProfile.salaryExpectations}"></span></p>
+        <p><strong>Work Experience:</strong> <span th:text="${candidateProfile.workExperience}"></span></p>
+        <p><strong>Country of Residence:</strong> <span th:text="${candidateProfile.countryOfResidence}"></span></p>
+        <p><strong>City of Residence:</strong> <span th:text="${candidateProfile.cityOfResidence}"></span></p>
+        <p><strong>Category:</strong> <span th:text="${candidateProfile.category}"></span></p>
+        <p><strong>English Level:</strong> <span th:text="${candidateProfile.englishLevel}"></span></p>
+        <p><strong>Ukrainian Level:</strong> <span th:text="${candidateProfile.ukrainianLevel}"></span></p>
+        <p><strong>Experience Explanation:</strong> <span th:text="${candidateProfile.experienceExplanation}"></span></p>
+        <p><strong>Achievements:</strong> <span th:text="${candidateProfile.achievements}"></span></p>
+    </div>
+<!--    <div class="table-container">-->
+<!--        <table class="styled-table">-->
+<!--            <tr>-->
+<!--                <td>Position:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.position}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Salary expectations:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.salaryExpectations}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Work experience:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.workExperience}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Country of residence:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.countryOfResidence}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr th:if="${candidateProfile.cityOfResidence != null}">-->
+<!--                <td>City of residence:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.cityOfResidence}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Category:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.category}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>English level:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.englishLevel}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Ukrainian level:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.ukrainianLevel}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr th:if="${candidateProfile.achievements != null}">-->
+<!--                <td>Achievements:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.experienceExplanation}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td>Experience:</td>-->
+<!--                <td>-->
+<!--                    <b th:text="${candidateProfile.experienceExplanation}"></b>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--    </div>-->
+
+    <div class="col-sm-offset-2 col-sm-10">
+        <a class="btn btn-purple" th:href="@{|/api/users/${ownerId}/candidate-profiles/${candidateProfile.id}/update|}">Edit</a>
+        <a class="btn btn-delete" th:href="@{|/api/users/${ownerId}/candidate-profiles/${candidateProfile.id}/delete|}">Remove</a>
+    </div>
+
+<!--    <div class="div-top">-->
+<!--        <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile == null}"-->
+<!--           th:href="@{|/api/users/${user.id}/candidate-profiles/create|}">Create candidate profile</a>-->
+<!--        <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile != null}"-->
+<!--           th:href="@{|/api/users/${user.id}/candidate-profiles/${user.candidateProfile.id}|}">Continue as Candidate</a>-->
+
+<!--        <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile == null}"-->
+<!--           th:href="@{|/api/users/${user.id}/employer-profiles/create|}">Create employer profile</a>-->
+<!--        <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile != null}"-->
+<!--           th:href="@{|/api/users/${user.id}/employer-profiles/${user.employerProfile.id}|}">Continue as Employer</a>-->
+<!--    </div>-->
+</div>
+</body>
+</html>
