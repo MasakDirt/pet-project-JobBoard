@@ -109,7 +109,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="user, iStat: ${users}">
+            <tr th:each="user: ${users}">
                 <td>
                     <a th:href="@{|/api/roles/user/${user.id}|}" th:text="${user.id}"/>
                 </td>
