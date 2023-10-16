@@ -93,12 +93,16 @@
             <thead>
             <tr>
                 <th scope="col">Name</th>
+                <th scope="col">Operation</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="role: ${roles}">
                 <td>
                     <a th:href="@{|/api/roles/${role.id}|}" th:text="${role.name.charAt(0) + role.name.substring(1).toLowerCase()}"/>
+                </td>
+                <td>
+                    <a th:href="@{|/api/roles/user/${userId}/delete-role/${role.name}|}">Delete</a>
                 </td>
             </tr>
         </table>
