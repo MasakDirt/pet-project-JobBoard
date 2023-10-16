@@ -98,7 +98,7 @@
 </header>
 <div class="centered">
     <h2>Info About Role</h2>
-    <h2 style="font-weight: bold; color: #6a1e9b" th:text="${role.name}"></h2>
+    <h2 style="font-weight: bold; color: #6a1e9b" th:text="${role.name.substring(0, 1) + role.name.substring(1).toLowerCase()}"></h2>
     <div class="table-container">
         <table class="styled-table">
             <tr>
@@ -110,7 +110,7 @@
             <tr>
                 <td>Name:</td>
                 <td>
-                    <b th:text="${role.name}"></b>
+                    <b th:text="${role.name.charAt(0) + role.name.substring(1).toLowerCase()}"></b>
                 </td>
             </tr>
         </table>
