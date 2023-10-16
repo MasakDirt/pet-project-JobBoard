@@ -98,7 +98,7 @@
             <tbody>
             <tr th:each="role: ${roles}">
                 <td>
-                    <a th:href="@{|/api/roles/${role.id}|}" th:text="${role.name}"/>
+                    <a th:href="@{|/api/roles/${role.id}|}" th:text="${role.name.charAt(0) + role.name.substring(1).toLowerCase()}"/>
                 </td>
             </tr>
         </table>
