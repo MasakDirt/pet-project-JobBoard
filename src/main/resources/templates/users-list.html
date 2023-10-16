@@ -21,19 +21,6 @@
             font-weight: bold;
         }
 
-        .btn-back {
-            background-color: #fff;
-            border-color: #fff;
-            color: #000;
-            font-weight: bold;
-            font-size: 18px;
-            padding: 5px 30px;
-        }
-
-        .btn-back:hover {
-            background-color: #3fcad9;
-        }
-
         .btn-purple:hover {
             background-color: #6a1e9b;
             border-color: #6a1e9b;
@@ -107,7 +94,7 @@
 </head>
 <body>
 <header>
-    <button class="btn btn-back" th:onclick="window.history.back()">⬅️Back</button>
+    <div th:replace="~{header.html}"></div>
 </header>
 <div class="centered">
     <h2>All Users</h2>
