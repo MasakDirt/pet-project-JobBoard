@@ -1,5 +1,8 @@
 package com.board.job.model.entity.sample;
 
+import lombok.Getter;
+
+@Getter
 public enum LanguageLevel {
     NO("You have no language knowledge"),
     BEGINNER_ELEMENTARY("You have base language knowledge"),
@@ -14,7 +17,15 @@ public enum LanguageLevel {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
+    @Override
+    public String toString() {
+        return switch (name()) {
+            case "BEGINNER_ELEMENTARY" -> "Beginner/Elementary";
+            case "PRE_INTERMEDIATE" -> "Pre-Intermediate";
+            case "INTERMEDIATE" -> "Intermediate";
+            case "UPPER_INTERMEDIATE" -> "Upper-Intermediate";
+            case "ADVANCED_FLUENT" -> "Advanced/Fluent";
+            default -> name().charAt(0) + name().substring(1).toLowerCase();
+        };
     }
 }
