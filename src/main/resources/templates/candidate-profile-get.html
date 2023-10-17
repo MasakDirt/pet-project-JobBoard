@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <title>Your profile</title>
+    <title>Candidate profile</title>
 
 
     <style>
@@ -14,38 +14,11 @@
             font-weight: bold;
         }
 
-        .btn-purple-bigger-left {
-            background-color: #8a2be2;
-            border-color: #8a2be2;
-            color: #fff;
-            font-weight: bold;
-            font-size: 17px;
-            margin-right: 15px;
-        }
-
-        .btn-purple-bigger-right {
-            background-color: #8a2be2;
-            border-color: #8a2be2;
-            color: #fff;
-            font-weight: bold;
-            font-size: 17px;
-            margin-left: 15px;
-        }
-
-        .btn-delete {
+        .btn-delete, .btn-clear {
             background-color: #fff;
             border-color: #fff;
             color: #000;
             font-weight: bold;
-        }
-
-        .btn-back{
-            background-color: #fff;
-            border-color: #fff;
-            color: #000;
-            font-weight: bold;
-            font-size: 18px;
-            padding: 5px 30px;
         }
 
         .btn-purple:hover {
@@ -57,47 +30,9 @@
             background-color: #a84141;
         }
 
-        .btn-back:hover {
-            background-color: #3fcad9;
-        }
-
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 75vh;
-        }
-
         h2 {
             font-size: 3rem;
             margin-bottom: 20px;
-        }
-
-        .container {
-            height: 20px;
-            position: relative;
-        }
-
-        .center {
-            margin: 0;
-            position: absolute;
-            top: 1%;
-            left: 50%;
-            -ms-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
-
-        .styled-table {
-            border-collapse: collapse;
-            margin: 25px 0;
-            font-size: 20px;
-            font-family: sans-serif;
-            min-width: 400px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
         }
 
         .styled-table thead tr {
@@ -119,120 +54,168 @@
             border-bottom: 2px solid #009879;
         }
 
-        .centered {
+        .form-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            flex: 2;
+            font-weight: bold;
+        }
+
+        .form-group .col-sm-6 {
+            flex: 3;
+        }
+
+        input[type = "text"], select, #experienceExplanation, #achievements, #category, #englishLevel,
+        #ukrainianLevel {
+            background-color: rgb(64, 64, 64);
+            color: black;
+            width: 50%;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-        }
-
-        .table-container {
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        .div-top{
-            margin-top: 14px;
+            min-height: 100vh;
+            font-size: 17px;
         }
     </style>
 </head>
 <body>
 <header>
-    <button class="btn btn-back" th:onclick="window.history.back()">⬅️Back</button>
+    <div th:replace="~{header.html}"></div>
 
-<!--    <div th:if="${isAdmin}" class="container">-->
-<!--        <div class="center">-->
-<!--            <a class="btn btn-purple" th:href="@{/api/users}">Get All Users</a>-->
-<!--            <a class="btn btn-purple" th:href="@{/api/roles}">Get All Roles</a>-->
-<!--            <a class="btn btn-purple" th:href="@{/api/users/create-admin}">Create admin</a>-->
-<!--        </div>-->
-<!--    </div>-->
+        <div class="container">
+            <div class="center">
+                <a class="btn btn-purple" th:href="@{|/api/users/${owner.id}/candidate-profiles/${owner.candidateProfile.id}|}">Profile</a>
+                <a class="btn btn-purple" th:href="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}|}">Contacts</a>
+            </div>
+        </div>
 </header>
-<div class="centered">
-    <h2>Info About Candidate</h2>
-    <div class="profile-details">
-        <p><strong>Position:</strong> <span th:text="${candidateProfile.position}"></span></p>
-        <p><strong>Salary Expectations:</strong> <span th:text="${candidateProfile.salaryExpectations}"></span></p>
-        <p><strong>Work Experience:</strong> <span th:text="${candidateProfile.workExperience}"></span></p>
-        <p><strong>Country of Residence:</strong> <span th:text="${candidateProfile.countryOfResidence}"></span></p>
-        <p><strong>City of Residence:</strong> <span th:text="${candidateProfile.cityOfResidence}"></span></p>
-        <p><strong>Category:</strong> <span th:text="${candidateProfile.category}"></span></p>
-        <p><strong>English Level:</strong> <span th:text="${candidateProfile.englishLevel}"></span></p>
-        <p><strong>Ukrainian Level:</strong> <span th:text="${candidateProfile.ukrainianLevel}"></span></p>
-        <p><strong>Experience Explanation:</strong> <span th:text="${candidateProfile.experienceExplanation}"></span></p>
-        <p><strong>Achievements:</strong> <span th:text="${candidateProfile.achievements}"></span></p>
-    </div>
-<!--    <div class="table-container">-->
-<!--        <table class="styled-table">-->
-<!--            <tr>-->
-<!--                <td>Position:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.position}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>Salary expectations:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.salaryExpectations}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>Work experience:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.workExperience}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>Country of residence:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.countryOfResidence}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr th:if="${candidateProfile.cityOfResidence != null}">-->
-<!--                <td>City of residence:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.cityOfResidence}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>Category:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.category}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>English level:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.englishLevel}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>Ukrainian level:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.ukrainianLevel}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr th:if="${candidateProfile.achievements != null}">-->
-<!--                <td>Achievements:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.experienceExplanation}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>Experience:</td>-->
-<!--                <td>-->
-<!--                    <b th:text="${candidateProfile.experienceExplanation}"></b>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--    </div>-->
+<div class="col-md-offset-2 col-sm-8">
+    <h2>Info About Your Profile</h2>
+</div>
+<form class="form-horizontal" th:action="@{|/api/users/${owner.id}/candidate-profiles/${candidateProfileRequest.id}/update|}"
+      method="post">
+    <div class="container">
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="position">Position:</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" id="position"
+                       th:field="${candidateProfileRequest.position}"/>
+            </div>
+        </div>
 
-    <div class="col-sm-offset-2 col-sm-10">
-        <a class="btn btn-purple" th:href="@{|/api/users/${ownerId}/candidate-profiles/${candidateProfile.id}/update|}">Edit</a>
-        <a class="btn btn-delete" th:href="@{|/api/users/${ownerId}/candidate-profiles/${candidateProfile.id}/delete|}">Remove</a>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="salaryExpectations">Salary
+                Expectations:</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" id="salaryExpectations"
+                       th:field="${candidateProfileRequest.salaryExpectations}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="workExperience">Work Experience:</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" id="workExperience"
+                       th:field="${candidateProfileRequest.workExperience}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="countryOfResidence">Country of
+                Residence:</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" id="countryOfResidence"
+                       th:field="${candidateProfileRequest.countryOfResidence}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="cityOfResidence">City of Residence:</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" id="cityOfResidence"
+                       th:field="${candidateProfileRequest.cityOfResidence}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="category"><strong>Category:</strong></label>
+            <div class="col-sm-6">
+                <select class="form-control" name="category" id="category">
+                    <option th:each="category : ${categories}"
+                            th:value="${category}"
+                            th:text="${category}"
+                            th:selected="${category == candidateProfileRequest.category.toString()}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="englishLevel"><strong>English Level:</strong></label>
+            <div class="col-sm-6">
+                <select class="form-control" name="englishLevel" id="englishLevel">
+                    <option th:each="eng_level : ${eng_levels}"
+                            th:value="${eng_level}"
+                            th:text="${eng_level}"
+                            th:selected="${eng_level == candidateProfileRequest.englishLevel.toString()}"/>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="ukrainianLevel"><strong>Ukrainian Level:</strong></label>
+            <div class="col-sm-6">
+                <select class="form-control" name="ukrainianLevel" id="ukrainianLevel">
+                    <option th:each="ukr_level : ${ukr_levels}"
+                            th:value="${ukr_level}"
+                            th:text="${ukr_level}"
+                            th:selected="${ukr_level == candidateProfileRequest.ukrainianLevel.toString()}"/>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="experienceExplanation">Experience explanation:</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" id="experienceExplanation" rows="10"
+                          th:field="${candidateProfileRequest.experienceExplanation}"
+                          style="width: 100%; box-sizing: border-box;"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="achievements">Achievements:</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" id="achievements" rows="6"
+                          th:field="${candidateProfileRequest.achievements}">
+                          style="width: 100%; box-sizing: border-box;"></textarea>
+            </div>
+        </div>
+
+
+        <div class="form-group text-center">
+            <div class="col-sm-10">
+                <input type="submit" class="btn btn-purple" value="Edit"/>
+                <input type="reset" class="btn btn-clear" value="Reset"/>
+                <a class="btn btn-delete"
+                   th:href="@{|/api/users/${owner.id}/candidate-profiles/${candidateProfileRequest.id}/delete|}">Remove</a>
+            </div>
+        </div>
     </div>
+</form>
 
 <!--    <div class="div-top">-->
 <!--        <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile == null}"-->
@@ -245,6 +228,5 @@
 <!--        <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile != null}"-->
 <!--           th:href="@{|/api/users/${user.id}/employer-profiles/${user.employerProfile.id}|}">Continue as Employer</a>-->
 <!--    </div>-->
-</div>
 </body>
 </html>
