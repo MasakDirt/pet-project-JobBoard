@@ -73,10 +73,23 @@ public class UserService {
         userRepository.delete(readById(id));
     }
 
+    public void deleteRole(long id, String roleName) {
+        User user = readById(id);
+        Role role = roleService.readByName(roleName);
+        List<Role> roles = roleService.getAllByUserId(id);
+
+        if (roles.contains(role)) {
+            roles.remove(role);
+
+            user.setRoles(new HashSet<>(roles));
+            update(user);
+        }
+    }
+
     public User updateUserRolesAndGetUser(long id, String roleName) {
-        var user = readById(id);
-        var role = roleService.readByName(roleName);
-        var roles = roleService.getAllByUserId(id);
+        User user = readById(id);
+        Role role = roleService.readByName(roleName);
+        List<Role> roles = roleService.getAllByUserId(id);
 
         if (!roles.contains(role)) {
             roles.add(role);
