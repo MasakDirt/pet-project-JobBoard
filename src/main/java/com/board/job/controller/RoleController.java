@@ -2,6 +2,7 @@ package com.board.job.controller;
 
 import com.board.job.model.dto.role.RoleRequest;
 import com.board.job.model.dto.role.RoleResponse;
+import com.board.job.model.entity.Role;
 import com.board.job.model.mapper.RoleMapper;
 import com.board.job.service.RoleService;
 import com.board.job.service.UserService;
@@ -94,6 +95,7 @@ public class RoleController {
     public ModelAndView addUserRoleRequest(@PathVariable(value = "user-id") long userId, ModelMap map) {
         map.addAttribute("userId", userId);
         map.addAttribute("roleRequest", new RoleRequest());
+        map.addAttribute("roles", roleService.getAll().stream().map(Role::getName));
 
         return new ModelAndView("role-user-add", map);
     }
@@ -130,5 +132,15 @@ public class RoleController {
         log.info("=== DELETE-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
         response.sendRedirect("/api/roles");
+    }
+
+    @GetMapping("/user/{user-id}/delete-role/{role-name}")
+    public void deleteUserRole(@PathVariable(name = "user-id") long userId,
+                               @PathVariable(name = "role-name") String roleName, Authentication authentication,
+                               HttpServletResponse response) throws IOException {
+        userService.deleteRole(userId, roleName);
+        log.info("=== DELETE-USER-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
+
+        response.sendRedirect("/api/roles/user/" + userId);
     }
 }
