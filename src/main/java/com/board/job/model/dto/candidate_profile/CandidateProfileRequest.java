@@ -8,14 +8,15 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 @Data
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CandidateProfileRequest {
+    private long id;
 
     @NotBlank(message = "The position cannot be 'blank'")
     private String position;
@@ -38,17 +39,17 @@ public class CandidateProfileRequest {
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "You must pick one category")
-    private Category category;
+    private String category;
 
     @Enumerated(EnumType.STRING)
     @JsonProperty(value = "english_level")
     @NotNull(message = "You must select your level of english")
-    private LanguageLevel englishLevel;
+    private String englishLevel;
 
     @Enumerated(EnumType.STRING)
     @JsonProperty(value = "ukrainian_level")
     @NotNull(message = "You must select your level of ukrainian")
-    private LanguageLevel ukrainianLevel;
+    private String ukrainianLevel;
 
     @JsonProperty(value = "experience_explanation")
     @NotBlank(message = "Tell your experience here, if you have no, write about your study")
