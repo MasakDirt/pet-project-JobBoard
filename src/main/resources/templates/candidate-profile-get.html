@@ -95,17 +95,22 @@
 <header>
     <div th:replace="~{header.html}"></div>
 
-        <div class="container">
-            <div class="center">
-                <a class="btn btn-purple" th:href="@{|/api/users/${owner.id}/candidate-profiles/${owner.candidateProfile.id}|}">Profile</a>
-                <a class="btn btn-purple" th:href="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}|}">Contacts</a>
-            </div>
+    <div class="container">
+        <div class="center">
+            <a class="btn btn-purple"
+               th:href="@{|/api/users/${owner.id}/candidate-profiles/${owner.candidateProfile.id}|}">Profile</a>
+            <a th:if="${owner.candidateContact != null}" class="btn btn-purple"
+               th:href="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}|}">Contacts</a>
+            <a th:if="${owner.candidateContact == null}" class="btn btn-purple"
+               th:href="@{|/api/users/${owner.id}/candidate-contacts/create}">Contacts</a>
         </div>
+    </div>
 </header>
 <div class="col-md-offset-2 col-sm-8">
     <h2>Info About Your Profile</h2>
 </div>
-<form class="form-horizontal" th:action="@{|/api/users/${owner.id}/candidate-profiles/${candidateProfileRequest.id}/update|}"
+<form class="form-horizontal"
+      th:action="@{|/api/users/${owner.id}/candidate-profiles/${candidateProfileRequest.id}/update|}"
       method="post">
     <div class="container">
         <div class="form-group">
@@ -216,17 +221,5 @@
         </div>
     </div>
 </form>
-
-<!--    <div class="div-top">-->
-<!--        <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile == null}"-->
-<!--           th:href="@{|/api/users/${user.id}/candidate-profiles/create|}">Create candidate profile</a>-->
-<!--        <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile != null}"-->
-<!--           th:href="@{|/api/users/${user.id}/candidate-profiles/${user.candidateProfile.id}|}">Continue as Candidate</a>-->
-
-<!--        <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile == null}"-->
-<!--           th:href="@{|/api/users/${user.id}/employer-profiles/create|}">Create employer profile</a>-->
-<!--        <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile != null}"-->
-<!--           th:href="@{|/api/users/${user.id}/employer-profiles/${user.employerProfile.id}|}">Continue as Employer</a>-->
-<!--    </div>-->
 </body>
 </html>
