@@ -1,8 +1,11 @@
 package com.board.job.controller;
 
 import com.board.job.service.ImageService;
+import com.google.common.io.Files;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -26,33 +30,28 @@ import static org.springframework.http.ResponseEntity.*;
 @RequestMapping("/api/users/{owner-id}")
 public class ImageController {
     private final ImageService imageService;
+    @GetMapping("/images/no-image")
+    public Resource getNoImage() throws IOException{
+        return new ByteArrayResource(Files.toByteArray(new File("files/photos/noUserPhoto.jpg")));
+    }
 
-    @GetMapping("/candidate-contacts/{candidate-id}/images/{id}")
-    @CrossOrigin
-    @ResponseBody
+    @GetMapping(value = "/candidate-contacts/{candidate-id}/images/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     @PreAuthorize("@authCandidateContactService.isUsersSameByIdAndUserOwnerCandidateContacts" +
-            "(#ownerId, #candidateId, authentication.principal)")
-    public ResponseEntity<Resource> getByIdCandidateContactsImage(
+            "(#ownerId, #candidateId, authentication.name)")
+    public Resource getByIdCandidateContactsImage(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable long id, Authentication authentication) throws IOException {
+        var file = imageService.readById(id);
+        log.info("=== GET-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        var file = imageService.getByIdCandidateImage(id);
-
-        var resource = new InputStreamResource(new FileInputStream(file));
-        log.info("=== GET-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
-
-        return ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-                .contentType(MediaType.IMAGE_JPEG)
-                .contentLength(file.length())
-                .body(resource);
+        return new ByteArrayResource(file.getProfilePicture());
     }
 
     @GetMapping("/employer-profiles/{employer-id}/images/{id}")
     @CrossOrigin
     @ResponseBody
     @PreAuthorize("@authEmployerProfileService.isUsersSameByIdAndUserOwnerEmployerProfile" +
-            "(#ownerId, #employerId, authentication.principal)")
+            "(#ownerId, #employerId, authentication.name)")
     public ResponseEntity<Resource> getByIdEmployerProfileImage(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable long id, Authentication authentication) throws IOException {
@@ -70,22 +69,23 @@ public class ImageController {
     }
 
     @PostMapping("/candidate-contacts/{candidate-id}/images")
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@authCandidateContactService.isUsersSameByIdAndUserOwnerCandidateContacts" +
-            "(#ownerId, #candidateId, authentication.principal)")
-    public ResponseEntity<String> addCandidatePhoto(
+            "(#ownerId, #candidateId, authentication.name)")
+    public void addCandidatePhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
-            @RequestParam MultipartFile file, Authentication authentication) throws IOException {
+            @RequestParam MultipartFile file, Authentication authentication, HttpServletResponse response) throws IOException {
 
         imageService.createWithCandidate(candidateId, file.getBytes());
         log.info("=== POST-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
-        return status(HttpStatus.CREATED)
-                .body("Your new profile picture successfully uploaded");
+        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
     }
 
     @PostMapping("/employer-profiles/{employer-id}/images")
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@authEmployerProfileService.isUsersSameByIdAndUserOwnerEmployerProfile" +
-            "(#ownerId, #employerId, authentication.principal)")
+            "(#ownerId, #employerId, authentication.name)")
     public ResponseEntity<String> addEmployerPhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @RequestParam MultipartFile file, Authentication authentication) throws IOException {
@@ -97,22 +97,22 @@ public class ImageController {
                 .body("Your new profile picture successfully uploaded");
     }
 
-    @PutMapping("/candidate-contacts/{candidate-id}/images/{id}")
+    @PostMapping("/candidate-contacts/{candidate-id}/images/{id}/update")
     @PreAuthorize("@authImageService.isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainImage" +
-            "(#ownerId, #candidateId, #id, authentication.principal)")
-    public ResponseEntity<String> updateCandidatePhoto(
+            "(#ownerId, #candidateId, #id, authentication.name)")
+    public void updateCandidatePhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId, @PathVariable long id,
-            @RequestBody MultipartFile file, Authentication authentication) throws IOException {
+            @RequestBody MultipartFile file, Authentication authentication, HttpServletResponse response) throws IOException {
 
-        imageService.update(id, file.getBytes());
+        var image = imageService.update(id, file.getBytes());
         log.info("=== PUT-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
-        return ok("Your profile picture successfully updated");
+        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
     }
 
     @PutMapping("/employer-profiles/{employer-id}/images/{id}")
     @PreAuthorize("@authImageService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage" +
-            "(#ownerId, #employerId, #id, authentication.principal)")
+            "(#ownerId, #employerId, #id, authentication.name)")
     public ResponseEntity<String> updateEmployerPhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId, @PathVariable long id,
             @RequestBody MultipartFile file, Authentication authentication) throws IOException {
@@ -123,22 +123,23 @@ public class ImageController {
         return ok("Your profile picture successfully updated");
     }
 
-    @DeleteMapping("/candidate-contacts/{candidate-id}/images/{id}")
+    @GetMapping("/candidate-contacts/{candidate-id}/images/{id}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@authImageService.isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainImage" +
-            "(#ownerId, #candidateId, #id, authentication.principal)")
-    public ResponseEntity<String> deleteCandidatePhoto(
+            "(#ownerId, #candidateId, #id, authentication.name)")
+    public void deleteCandidatePhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
-            @PathVariable long id, Authentication authentication) {
+            @PathVariable long id, Authentication authentication, HttpServletResponse response) throws IOException {
 
         imageService.delete(id);
         log.info("=== DELETE-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
-
-        return ok("Your profile picture successfully deleted");
+        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
     }
 
     @DeleteMapping("/employer-profiles/{employer-id}/images/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@authImageService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage" +
-            "(#ownerId, #employerId, #id, authentication.principal)")
+            "(#ownerId, #employerId, #id, authentication.name)")
     public ResponseEntity<String> deleteEmployerPhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable long id, Authentication authentication) {
