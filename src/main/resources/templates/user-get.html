@@ -64,11 +64,6 @@
             margin-bottom: 20px;
         }
 
-        .container {
-            height: 20px;
-            position: relative;
-        }
-
         .center {
             margin: 0;
             position: absolute;
@@ -123,13 +118,18 @@
         .div-top{
             margin-top: 14px;
         }
+
+        .container-buttons {
+            height: 20px;
+            position: relative;
+        }
     </style>
 </head>
 <body>
 <header>
     <div th:replace="~{headers/header.html}"></div>
 
-    <div th:if="${isAdmin}" class="container">
+    <div th:if="${isAdmin}" class="container-buttons">
         <div class="center">
             <a class="btn btn-purple" th:href="@{/api/users}">Get All Users</a>
             <a class="btn btn-purple" th:href="@{/api/roles}">Get All Roles</a>
