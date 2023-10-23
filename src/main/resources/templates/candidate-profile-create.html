@@ -93,12 +93,12 @@
 </head>
 <body>
 <header>
-    <div th:replace="~{header.html}"></div>
+    <div th:replace="~{headers/header-candidate.html}"></div>
 </header>
 <div class="col-md-offset-2 col-sm-8">
     <h2>Info About Candidate</h2>
 </div>
-<form class="form-horizontal" th:action="@{|/api/users/${ownerId}/candidate-profiles/create|}"
+<form class="form-horizontal" th:action="@{|/api/users/${owner.id}/candidate-profiles|}"
       method="post">
     <div class="container">
         <div class="form-group">
@@ -201,7 +201,7 @@
         <div class="form-group text-center">
             <div class="col-sm-10">
                 <input type="submit" class="btn btn-purple" value="Create"/>
-                <input type="reset" class="btn btn-clear" value="Clear"/>
+                <input type="reset" class="btn btn-clear" value="Reset"/>
             </div>
         </div>
     </div>
