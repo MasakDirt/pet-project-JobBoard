@@ -35,6 +35,11 @@ public class ImageController {
         return new ByteArrayResource(Files.toByteArray(new File("files/photos/noUserPhoto.jpg")));
     }
 
+    @GetMapping("/images/no-image/header")
+    public Resource getNoImageForHeader() throws IOException{
+        return new ByteArrayResource(Files.toByteArray(new File("files/photos/noUserPhoto.jpg")));
+    }
+
     @GetMapping(value = "/candidate-contacts/{candidate-id}/images/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     @PreAuthorize("@authCandidateContactService.isUsersSameByIdAndUserOwnerCandidateContacts" +
             "(#ownerId, #candidateId, authentication.name)")
@@ -43,6 +48,18 @@ public class ImageController {
             @PathVariable long id, Authentication authentication) throws IOException {
         var file = imageService.readById(id);
         log.info("=== GET-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
+
+        return new ByteArrayResource(file.getProfilePicture());
+    }
+
+    @GetMapping(value = "/candidate-contacts/{candidate-id}/images/{id}/header", produces = MediaType.IMAGE_JPEG_VALUE)
+    @PreAuthorize("@authCandidateContactService.isUsersSameByIdAndUserOwnerCandidateContacts" +
+            "(#ownerId, #candidateId, authentication.name)")
+    public Resource getByIdCandidateContactsImageForHeader(
+            @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
+            @PathVariable long id, Authentication authentication) throws IOException {
+        var file = imageService.readById(id);
+        log.info("=== GET-CANDIDATE-IMAGE-HEADER === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return new ByteArrayResource(file.getProfilePicture());
     }
