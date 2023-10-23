@@ -105,7 +105,7 @@
             <label class="col-sm-2 control-label" for="position">Position:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" id="position"
-                       th:field="${candidateProfileRequest.position}"/>
+                       th:field="${candidateProfileRequest.position}" placeholder="Senior Python Developer"/>
             </div>
         </div>
 
@@ -114,7 +114,7 @@
                 Expectations:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" id="salaryExpectations"
-                       th:field="${candidateProfileRequest.salaryExpectations}"/>
+                       th:field="${candidateProfileRequest.salaryExpectations}" placeholder="4000"/>
             </div>
         </div>
 
@@ -122,7 +122,7 @@
             <label class="col-sm-2 control-label" for="workExperience">Work Experience:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" id="workExperience"
-                       th:field="${candidateProfileRequest.workExperience}"/>
+                       th:field="${candidateProfileRequest.workExperience}" placeholder="5.5"/>
             </div>
         </div>
 
@@ -131,7 +131,8 @@
                 Residence:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" id="countryOfResidence"
-                       th:field="${candidateProfileRequest.countryOfResidence}"/>
+                       th:field="${candidateProfileRequest.countryOfResidence}"
+                       placeholder="USA"/>
             </div>
         </div>
 
@@ -139,7 +140,8 @@
             <label class="col-sm-2 control-label" for="cityOfResidence">City of Residence:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" id="cityOfResidence"
-                       th:field="${candidateProfileRequest.cityOfResidence}"/>
+                       th:field="${candidateProfileRequest.cityOfResidence}"
+                       placeholder="Los-Angeles"/>
             </div>
         </div>
 
@@ -185,6 +187,7 @@
             <div class="col-sm-6">
                 <textarea class="form-control" id="experienceExplanation" rows="10"
                           th:field="${candidateProfileRequest.experienceExplanation}"
+                          placeholder="Write your explanation about jobs and skills"
                           style="width: 100%; box-sizing: border-box;"></textarea>
             </div>
         </div>
@@ -193,7 +196,8 @@
             <label class="col-sm-2 control-label" for="achievements">Achievements:</label>
             <div class="col-sm-6">
                 <textarea class="form-control" id="achievements" rows="6"
-                          th:field="${candidateProfileRequest.achievements}">
+                          th:field="${candidateProfileRequest.achievements}"
+                          placeholder="Write your achievements about courses and so on...">
                           style="width: 100%; box-sizing: border-box;"></textarea>
             </div>
         </div>
