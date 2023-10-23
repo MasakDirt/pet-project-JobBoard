@@ -101,7 +101,7 @@
             overflow: hidden;
         }
 
-        #file-input, #file-create, #pdfFile {
+        #file-input, #file-create, #pdfFile, #resume {
             display: none;
         }
 
@@ -119,19 +119,7 @@
 </head>
 <body>
 <header>
-    <div th:replace="~{header.html}"></div>
-
-    <div class="container">
-        <div class="center">
-            <a class="btn btn-purple"
-               th:href="@{|/api/users/${owner.id}/candidate-profiles/${owner.candidateProfile.id}|}">Profile</a>
-
-            <a th:if="${owner.candidateContact != null}" class="btn btn-purple"
-               th:href="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}|}">Contacts</a>
-            <a th:if="${owner.candidateContact == null}" class="btn btn-purple"
-               th:href="@{|/api/users/${owner.id}/candidate-contacts/create}">Contacts</a>
-        </div>
-    </div>
+    <div th:replace="~{headers/header-candidate.html}"></div>
 </header>
 <div class="row">
     <div class="col-xs-6 col-md-4">
@@ -146,7 +134,7 @@
         <div class="col-xs-6 col-md-4">
             <img th:if="${candidateContactRequest.image != null}" class="rounded-image"
                  th:src="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}
-            /images/${owner.candidateContact.image.id}|}" alt="Image"/>
+            /images/${owner.candidateContact.image.id}|}" alt="ImageCandidate"/>
 
             <form th:if="${candidateContactRequest.image != null}"
                   th:action="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}
@@ -175,7 +163,8 @@
             </form>
         </div>
         <div class="col-xs-6 col-md-4">
-            <form th:action="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}/pdfs/${owner.candidateContact.pdf.id}/update|}"
+            <form th:if="${candidateContactRequest.pdf != null}"
+                  th:action="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}/pdfs/${owner.candidateContact.pdf.id}/update|}"
                   method="post" enctype="multipart/form-data">
                 <label for="pdfFile" class="custom-file-upload-label">Select your resume</label>
                 <input type="file" id="pdfFile" name="file" accept=".pdf">
@@ -183,11 +172,19 @@
                 <input type="submit" class="btn btn-upload" value="Upload">
                 <a th:href="|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}
             /pdfs/${owner.candidateContact.pdf.id}/delete|" class="btn btn-upload">Remove</a>
-                <br>
-                <a style="margin-top: 4px" th:if="${owner.candidateContact.pdf != null}" class="btn btn-purple"
+                <a style="margin-top: 4px" class="btn btn-purple"
                    th:target="_blank"
                    th:href="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}/pdfs/${owner.candidateContact.pdf.id}|}">Check
                     Resume</a>
+            </form>
+
+            <form th:unless="${candidateContactRequest.pdf != null}"
+                  th:action="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}/pdfs|}"
+                  method="post" enctype="multipart/form-data">
+                <label for="resume" class="custom-file-upload-label">Select your resume</label>
+                <input type="file" id="resume" name="file" accept=".pdf">
+                <br>
+                <input type="submit" class="btn btn-upload" value="Add">
             </form>
         </div>
     </div>
