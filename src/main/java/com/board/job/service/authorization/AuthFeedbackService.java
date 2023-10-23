@@ -20,7 +20,7 @@ public class AuthFeedbackService {
         var feedback = getFeedback(id);
         return userAuthService.isUsersSame(ownerId, authEmail)
                 && candidateProfileService.getProfile(candidateId).getOwner().getId() == ownerId
-                && authMessengerService.getMessenger(messengerId).getCandidate().getId() == candidateId
+                && authMessengerService.getMessenger(messengerId).getCandidateProfile().getId() == candidateId
                 && feedback.getMessengerId() == messengerId
                 && feedback.getOwnerId() == ownerId;
     }

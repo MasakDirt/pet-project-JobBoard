@@ -89,7 +89,7 @@ public class CandidateProfileController {
     @GetMapping("/create")
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
     public ModelAndView createRequest(@PathVariable("owner-id") long ownerId, ModelMap map) {
-        map.addAttribute("ownerId", ownerId);
+        map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("candidateProfileRequest",new CandidateProfileRequest());
         map.addAttribute("categories", Arrays.stream(Category.values()).map(Category::getValue));
         map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
@@ -98,7 +98,7 @@ public class CandidateProfileController {
         return new ModelAndView("candidate-profile-create", map);
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
     public void create(

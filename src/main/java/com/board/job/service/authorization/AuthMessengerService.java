@@ -19,7 +19,7 @@ public class AuthMessengerService {
         return userAuthService.isAdmin(authEmail) ||
                 (userAuthService.isUsersSame(ownerId, authEmail)
                         && candidateProfileService.getProfile(candidateId).getOwner().getId() == ownerId
-                        && getMessenger(id).getCandidate().getId() == candidateId);
+                        && getMessenger(id).getCandidateProfile().getId() == candidateId);
     }
 
     public boolean isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger(
@@ -27,7 +27,7 @@ public class AuthMessengerService {
     ) {
         return userAuthService.isUsersSame(ownerId, authEmail)
                         && candidateProfileService.getProfile(candidateId).getOwner().getId() == ownerId
-                        && getMessenger(id).getCandidate().getId() == candidateId;
+                        && getMessenger(id).getCandidateProfile().getId() == candidateId;
     }
 
     public boolean isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger(
