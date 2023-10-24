@@ -21,7 +21,8 @@ public interface MessengerMapper {
     @Mapping(target = "category", expression = "java(messenger.getVacancy().getCategory())")
     @Mapping(target = "lookingFor", expression = "java(messenger.getVacancy().getLookingFor())")
     @Mapping(target = "employerName", expression = "java(messenger.getVacancy().getEmployerProfile().getEmployerName())")
-    CutMessengerResponse getCutMessengerResponseFromMessenger(Messenger messenger);
+    @Mapping(target = "lastMessage", source = "lastMessage")
+    CutMessengerResponse getCutMessengerResponseFromMessenger(Messenger messenger, String lastMessage);
 
     @Mapping(target = "feedbacks", expression = "java(refactorMessages(feedbacks))")
     @Mapping(target = "country", expression = "java(messenger.getVacancy().getCountry())")
