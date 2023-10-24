@@ -17,6 +17,7 @@ public interface VacancyMapper {
     @Mapping(target = "employerProfile", expression = "java(vacancy.getEmployerProfile())")
     CutVacancyResponse getCutVacancyResponseFromVacancy(Vacancy vacancy);
 
+    @Mapping(target = "postedAt", expression = "java(vacancy.getPostedAt().format(DateTimeFormatter.ofPattern(\"dd MMM\")))")
     FullVacancyResponse getFullVacancyResponseFromVacancy(Vacancy vacancy);
 
     @Mapping(target = "postedAt", expression = "java(LocalDateTime.now())")
