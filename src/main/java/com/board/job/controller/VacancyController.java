@@ -3,16 +3,13 @@ package com.board.job.controller;
 import com.board.job.model.dto.vacancy.CutVacancyResponse;
 import com.board.job.model.dto.vacancy.FullVacancyResponse;
 import com.board.job.model.dto.vacancy.VacancyRequest;
-import com.board.job.model.entity.Vacancy;
 import com.board.job.model.mapper.VacancyMapper;
 import com.board.job.service.UserService;
 import com.board.job.service.VacancyService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +19,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 
@@ -70,12 +64,14 @@ public class VacancyController {
 
     @GetMapping("/vacancies/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
-    public FullVacancyResponse getById(@PathVariable("owner-id") long ownerId,
-                                       @PathVariable long id, Authentication authentication) {
+    public ModelAndView getById(@PathVariable("owner-id") long ownerId,
+                                @PathVariable long id, Authentication authentication, ModelMap map) {
         var vacancy = mapper.getFullVacancyResponseFromVacancy(vacancyService.readById(id));
+        map.addAttribute("vacancy", vacancy);
+        map.addAttribute("owner", userService.readByEmail(authentication.getName()));
         log.info("=== GET-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return vacancy;
+        return new ModelAndView("vacancy-get", map);
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies")
