@@ -2,10 +2,12 @@ package com.board.job.service;
 
 import com.board.job.model.entity.Feedback;
 import com.board.job.repository.FeedbackRepository;
+import com.google.common.collect.Iterables;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -40,5 +42,14 @@ public class FeedbackService {
 
     public List<Feedback> getAllMessengerFeedbacks(long messengerId) {
         return feedbackRepository.findAllByMessengerId(messengerId);
+    }
+
+    public String getLastFeedbackText(long messengerId) {
+        List<Feedback> feedbacks = getAllMessengerFeedbacks(messengerId)
+                .stream()
+                .sorted(Comparator.comparing(Feedback::getSendAt))
+                .toList();
+
+        return Iterables.getLast(feedbacks).getText();
     }
 }
