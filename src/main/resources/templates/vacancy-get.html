@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Vacancies</title>
+
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .vacancy-card {
+            background-color: #333;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <div th:if="${owner.candidateContact != null}" th:replace="~{headers/header-entities.html}"></div>
+</header>
+<div class="container">
+    <h2>Vacancy</h2>
+    <h3 style="font-weight: bold; color: #6a1e9b" th:text="'For ' + ${vacancy.category.value} + ' Developers'"></h3>
+    <div class="card vacancy-card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-8">
+                    <div class="form-group">
+                        <h2 class="mb-2" th:text="${vacancy.lookingFor}"></h2>
+                    </div>
+
+                    <div class="form-group">
+                        <h4 th:text="'Domain: ' + ${vacancy.domain.value}"></h4>
+                    </div>
+
+                    <div class="form-group">
+                        <h4 th:text="'Contry: ' + ${vacancy.country}"></h4>
+                    </div>
+
+                    <div class="form-group" th:if="vacancy.city != null">
+                        <h5 th:text="'City: ' + ${vacancy.city}"></h5>
+                    </div>
+
+                    <div class="form-group">
+                        <h5 th:text="'English Level: ' + ${vacancy.englishLevel.value}"></h5>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 col-md-4">
+                    <div class="form-group">
+                        <h4 th:text="'Salary: ' + ${vacancy.salaryFrom} + '-' + ${vacancy.salaryTo} + '$'"></h4>
+                    </div>
+
+                    <div class="form-group">
+                        <h5 th:text="'Category: ' + ${vacancy.category.value}"></h5>
+                    </div>
+
+                    <div class="form-group">
+                        <h5 th:text="'Work Experience: ' + ${vacancy.workExperience + ' years'}"></h5>
+                    </div>
+
+                    <div class="form-group">
+                        <h5 th:text="'Work Mode: ' + ${vacancy.workMode.value}"></h5>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <h5 th:text="'Description of Vacancy:'"></h5>
+                <p th:utext="${vacancy.detailDescription}"></p>
+            </div>
+
+            <div class="form-group">
+                <h6 th:text="${vacancy.postedAt}"></h6>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
