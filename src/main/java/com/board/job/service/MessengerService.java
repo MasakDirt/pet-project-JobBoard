@@ -38,8 +38,8 @@ public class MessengerService {
         return messengerRepository.findAll();
     }
 
-    public List<Messenger> getAllByCandidateId(long candidateId) {
-        return messengerRepository.findAllByCandidateId(candidateId);
+    public List<Messenger> getAllByCandidateProfileId(long candidateProfileId) {
+        return messengerRepository.findAllByCandidateProfileId(candidateProfileId);
     }
 
     public List<Messenger> getAllByVacancyId(long vacancyId) {
