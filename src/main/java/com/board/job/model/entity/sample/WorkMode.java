@@ -7,7 +7,7 @@ public enum WorkMode {
     CHOICE_OF_CANDIDATE("Choice of Candidate"), ONLY_OFFICE("Only Office"),
     ONLY_REMOTE("Only Remote"), HYBRID("Hybrid");
 
-    private String value;
+    private final String value;
 
     WorkMode(String value) {
         this.value = value;

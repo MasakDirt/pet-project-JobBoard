@@ -11,7 +11,7 @@ public enum JobDomain {
     BIG_DATA("Big Data"), MEDIA("Media"), MILTECH("Miltech"), MOBILE("Mobile"), SAAS("SAAS"),
     SECURITY("Security"), TELECOM_COMMUNICATIONS("Telecom communications"), TRAVEL("Travel"), OTHER("Other");
 
-    private String value;
+    private final String value;
 
     JobDomain(String value) {
         this.value = value;
