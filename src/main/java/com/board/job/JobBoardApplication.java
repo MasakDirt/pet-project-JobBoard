@@ -354,7 +354,7 @@ public class JobBoardApplication implements CommandLineRunner {
         var messenger = messengerService.create(vacancyId, candidateProfileId);
         log.info("Messenger between company {} and candidate {} successfully created",
                 messenger.getVacancy().getEmployerProfile().getCompanyName(),
-                messenger.getCandidate().getOwner().getName());
+                messenger.getCandidateProfile().getOwner().getName());
 
         return messenger.getId();
     }
