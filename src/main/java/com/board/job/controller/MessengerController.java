@@ -1,11 +1,11 @@
 package com.board.job.controller;
 
 import com.board.job.model.dto.messenger.CutMessengerResponse;
-import com.board.job.model.entity.Messenger;
 import com.board.job.model.mapper.MessengerMapper;
 import com.board.job.service.FeedbackService;
 import com.board.job.service.MessengerService;
 import com.board.job.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -83,22 +84,18 @@ public class MessengerController {
                         messenger.getCandidateProfile().getOwner().getName()));
     }
 
-    @DeleteMapping("/candidate/{candidate-id}/messengers/{id}")
+    @GetMapping("/candidate/{candidate-id}/messengers/{id}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@authMessengerService.isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger" +
             "(#ownerId, #candidateId, #id, authentication.name)")
-    public ResponseEntity<String> deleteByCandidate(
+    public void deleteByCandidate(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
-            @PathVariable long id, Authentication authentication
-    ) {
-        var messenger = messengerService.readById(id);
+            @PathVariable long id, Authentication authentication, HttpServletResponse response) throws IOException {
         messengerService.delete(id);
         log.info("=== DELETE-MESSENGER-BY-CANDIDATE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.ok(
-                String.format("Messenger between %s and candidate %s successfully deleted",
-                        messenger.getVacancy().getEmployerProfile().getCompanyName(),
-                        messenger.getCandidateProfile().getOwner().getName())
-        );
+       response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers",
+               ownerId, candidateId));
     }
 
     @DeleteMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}")
