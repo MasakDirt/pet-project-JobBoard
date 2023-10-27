@@ -33,29 +33,6 @@
             border-color: #6a1e9b;
         }
 
-        .pagination .page-item .page-link {
-            background-color: #8a2be2;
-            border-color: #8a2be2;
-            color: #fff;
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: #6a1e9b;
-            border-color: #6a1e9b;
-        }
-
-        .sorting-container {
-            width: 300px;
-            margin: 200px 15px;
-        }
-
-        .sorting-form {
-            background-color: #333;
-            padding: 15px;
-            border-radius: 5px;
-            color: #fff;
-        }
-
         .main-content {
             display: flex;
             flex-direction: row;
@@ -87,8 +64,15 @@
                             <div class="form-group">
                                 <h3 th:text="${messenger.employerName}"></h3>
                             </div>
-                            <div class="form-group">
-                                <h6 th:text="${messenger.lastMessage.substring(0, 55) + '...'}"></h6>
+
+                            <div th:if="${messenger.lastMessage != null}">
+                                <div class="form-group" th:unless="${messenger.lastMessage.length() > 55}">
+                                    <h6 th:text="${messenger.lastMessage}"></h6>
+                                </div>
+
+                                <div class="form-group" th:if="${messenger.lastMessage.length() > 55}">
+                                    <h6 th:text="${messenger.lastMessage.substring(0, 55) + '...'}"></h6>
+                                </div>
                             </div>
                         </div>
 
@@ -106,6 +90,8 @@
                             <div class="form-group">
                                 <a class="btn btn-purple"
                                    th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.id}/feedbacks|}">Select</a>
+                                <a class="btn btn-purple"
+                                   th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.id}/delete|}">Delete</a>
                             </div>
                         </div>
                     </div>
