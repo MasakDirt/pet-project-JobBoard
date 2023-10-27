@@ -50,6 +50,6 @@ public class FeedbackService {
                 .sorted(Comparator.comparing(Feedback::getSendAt))
                 .toList();
 
-        return Iterables.getLast(feedbacks).getText();
+        return feedbacks.isEmpty() ? "" : Iterables.getLast(feedbacks).getText();
     }
 }
