@@ -246,6 +246,14 @@ public class JobBoardApplication implements CommandLineRunner {
         Feedback feedbackDonald = createFeedback(userDonald.getId(), donaldAndVioletCompany, Strings.textDonald());
 
         Feedback feedbackHelen = createFeedback(userHelen.getId(), helenAndLarryCompany, Strings.textHelen());
+
+        Feedback feedbackVioletToAdmin = createFeedback(userViolet.getId(), adminAndVioletCompany, Strings.textViolet());
+
+        Feedback feedbackVioletToNikole = createFeedback(userViolet.getId(), nikoleAndVioletCompany, Strings.textViolet());
+
+        Feedback feedbackVioletToDonald = createFeedback(userViolet.getId(), donaldAndVioletCompany, Strings.textViolet());
+
+        Feedback feedbackLarryToHelen = createFeedback(userLarry.getId(), helenAndLarryCompany, Strings.textViolet());
     }
 
     private User createUser(String firstName, String lastName, String email, String password, Role role) {
@@ -1083,6 +1091,10 @@ public class JobBoardApplication implements CommandLineRunner {
                                         
                     Nikole Helen
                     """;
+        }
+
+        private static String textViolet() {
+            return "Okay, thank you, we will check your application and get back to you later.";
         }
     }
 }
