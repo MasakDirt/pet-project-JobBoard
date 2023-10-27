@@ -64,25 +64,16 @@ public class ImageController {
         return new ByteArrayResource(file.getProfilePicture());
     }
 
-    @GetMapping("/employer-profiles/{employer-id}/images/{id}")
-    @CrossOrigin
-    @ResponseBody
-    @PreAuthorize("@authEmployerProfileService.isUsersSameByIdAndUserOwnerEmployerProfile" +
-            "(#ownerId, #employerId, authentication.name)")
-    public ResponseEntity<Resource> getByIdEmployerProfileImage(
+    @GetMapping(value = "/employer-profiles/{employer-id}/images/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE', 'EMPLOYER')")
+    public Resource getByIdEmployerProfileImage(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable long id, Authentication authentication) throws IOException {
 
-        var file = imageService.getByIdEmployerImage(id);
-
-        var resource = new InputStreamResource(new FileInputStream(file));
+        var file = imageService.readById(id);
         log.info("=== GET-EMPLOYER-IMAGE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
-        return ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-                .contentType(MediaType.IMAGE_JPEG)
-                .contentLength(file.length())
-                .body(resource);
+        return new ByteArrayResource(file.getProfilePicture());
     }
 
     @PostMapping("/candidate-contacts/{candidate-id}/images")
