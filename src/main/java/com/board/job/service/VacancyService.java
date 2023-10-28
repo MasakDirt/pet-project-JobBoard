@@ -5,10 +5,12 @@ import com.board.job.repository.VacancyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -48,11 +50,24 @@ public class VacancyService {
         return vacancyRepository.findAll();
     }
 
-    public Page<Vacancy> getSorted(Pageable pageable) {
+    public Page<Vacancy> getSorted(Pageable pageable, String searchText) {
+        if (searchText != null && !searchText.trim().isEmpty()) {
+            return findByLookingForContaining(searchText, pageable, pageable.getPageSize());
+        }
         return vacancyRepository.findAll(pageable);
     }
 
-    public List<Vacancy> getAllByEmployerProfileId(long employerId){
+    private Page<Vacancy> findByLookingForContaining(String searchText, Pageable pageable, int size) {
+        return vacancyRepository.findAll()
+                .stream()
+                .filter(vacancy -> vacancy.getLookingFor().contains(searchText))
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> new PageImpl<>(list, pageable, size)
+                ));
+    }
+
+    public List<Vacancy> getAllByEmployerProfileId(long employerId) {
         return vacancyRepository.getVacanciesByEmployerProfileId(employerId);
     }
 }
