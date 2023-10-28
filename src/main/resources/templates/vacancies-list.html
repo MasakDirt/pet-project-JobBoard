@@ -74,7 +74,6 @@
 <div class="container main-content">
     <div class="cards-container">
         <h2>Vacancies</h2>
-
         <div th:each="vacancy: ${vacancies.content}">
             <div class="card vacancy-card">
                 <div class="card-body">
@@ -118,17 +117,17 @@
             <ul class="pagination">
                 <li class="page-item" th:if="${page > 0}">
                     <a class="page-link"
-                       th:href="@{|/api/users/${owner.id}/vacancies?page=${page - 1}&sort_by=${sort_by}&sort_order=${sort_order}|}">&laquo;</a>
+                       th:href="@{|/api/users/${owner.id}/vacancies?page=${page - 1}&sort_by=${sort_by}&sort_order=${sort_order}&searchText=${searchText}|}">&laquo;</a>
                 </li>
                 <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, vacancies.totalPages - 1)}"
                     th:classappend="${pageNumber == page} ? 'active' : ''">
                     <a class="page-link"
-                       th:href="@{|/api/users/${owner.id}/vacancies?page=${pageNumber}&sort_by=${sort_by}&sort_order=${sort_order}|}"
+                       th:href="@{|/api/users/${owner.id}/vacancies?page=${pageNumber}&sort_by=${sort_by}&sort_order=${sort_order}&searchText=${searchText}|}"
                        th:text="${pageNumber + 1}"></a>
                 </li>
                 <li class="page-item" th:if="${page < vacancies.totalPages - 1}">
                     <a class="page-link"
-                       th:href="@{|/api/users/${owner.id}/vacancies?page=${page + 1}&sort_by=${sort_by}&sort_order=${sort_order}|}">&raquo;</a>
+                       th:href="@{|/api/users/${owner.id}/vacancies?page=${page + 1}&sort_by=${sort_by}&sort_order=${sort_order}&searchText=${searchText}|}">&raquo;</a>
                 </li>
             </ul>
         </nav>
@@ -136,6 +135,10 @@
 
     <div class="sorting-container">
         <form class="sorting-form" th:action="@{|/api/users/${owner.id}/vacancies|}" method="get">
+            <label class="sorting-checkbox">
+                <input type="text" name="searchText" placeholder="Search"/>
+            </label>
+
             <h5>Sort By:</h5>
             <label class="sorting-checkbox">
                 <input type="checkbox" name="sort_by" value="lookingFor"> Looking For
@@ -158,10 +161,11 @@
 
             <h5>Sort Order:</h5>
             <label class="sorting-checkbox">
-                <input type="radio" name="sort_order" value="asc"> Ascending
+                <input type="radio" name="sort_order" value="asc"> Smaller-Bigger (A-z)
             </label>
+            <br>
             <label class="sorting-checkbox">
-                <input type="radio" name="sort_order" value="desc"> Descending
+                <input type="radio" name="sort_order" value="desc"> Bigger-Smaller (Z-a)
             </label>
 
             <button type="submit" class="btn btn-primary">Apply Sorting</button>
