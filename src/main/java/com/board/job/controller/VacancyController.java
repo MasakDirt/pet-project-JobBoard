@@ -7,8 +7,8 @@ import com.board.job.model.mapper.VacancyMapper;
 import com.board.job.service.UserService;
 import com.board.job.service.VacancyService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -27,38 +27,50 @@ import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/users/{owner-id}")
 public class VacancyController {
     private final VacancyMapper mapper;
     private final VacancyService vacancyService;
     private final UserService userService;
 
+    private Sort sort;
+
+    @Autowired
+    public VacancyController(VacancyMapper mapper, VacancyService vacancyService, UserService userService) {
+        this.mapper = mapper;
+        this.vacancyService = vacancyService;
+        this.userService = userService;
+    }
+
     @GetMapping("/vacancies")
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
     public ModelAndView getVacancies(
             @PathVariable("owner-id") long ownerId,
-            @RequestParam(name = "sort_by", defaultValue = "id") String[] sortBy,
-            @RequestParam(name = "sort_order", defaultValue = "asc") String sortedOrder,
+            @RequestParam(name = "sort_by", defaultValue = "postedAt") String[] sortBy,
+            @RequestParam(name = "sort_order", defaultValue = "desc") String sortedOrder,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "searchText", required = false, defaultValue = "") String searchText,
             Authentication authentication, ModelMap map) {
 
-        var sort = Sort.by(Sort.Direction.fromString(sortedOrder), sortBy);
-        var pageable = PageRequest.of(page, 5, sort);
-        var vacancyPage = vacancyService.getSorted(pageable);
-        String sortByString = Arrays.toString(sortBy);
+        int size = 5;
+        setSort(sortedOrder, sortBy);
+        var pageable = PageRequest.of(page, size, sort);
+        var vacanciesPage = vacancyService.getSorted(pageable, searchText);
 
         map.addAttribute("page", page);
-        map.addAttribute("vacancies", vacancyPage);
+        map.addAttribute("vacancies", vacanciesPage);
+        map.addAttribute("searchText", searchText);
         map.addAttribute("sort_order", sortedOrder);
         map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("sort_by", getSortByValues(Arrays.toString(sortBy)));
         map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
-        map.addAttribute("sort_by", sortByString.substring(1, sortByString.length() - 1));
-
-
         log.info("=== GET-VACANCIES === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("vacancies-list", map);
+    }
+
+    private String getSortByValues(String sortBy) {
+        return sortBy.substring(1, sortBy.length() - 1);
     }
 
 
@@ -138,5 +150,9 @@ public class VacancyController {
         log.info("=== DELETE-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return ResponseEntity.ok("Vacancy successfully deleted");
+    }
+
+    private void setSort(String sortedOrder, String[] sortBy) {
+        this.sort = Sort.by(Sort.Direction.fromString(sortedOrder), sortBy);
     }
 }
