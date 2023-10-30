@@ -21,6 +21,12 @@
             margin-bottom: 20px;
         }
 
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -80,12 +86,53 @@
                 <p th:utext="${vacancy.detailDescription}"></p>
             </div>
 
-            <div class="form-group">
-                <h6 th:text="${vacancy.postedAt}"></h6>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-8">
+                    <form th:if="${messenger == null}"
+                          th:action="@{|/api/users/${owner.id}/vacancies/${vacancy.id}/candidate/${owner.candidateProfile.id}/messengers|}"
+                          th:method="post">
+                        <div class="form-group">
+                            <input type="button" class="btn btn-purple" id="myButton"
+                                   onclick="replaceButtonWithTextarea()" value="Feedback"/>
+                            <label for="myTextarea">
+                                <textarea id="myTextarea" name="text" rows="4"
+                                          style="display: none; width: 650px"></textarea>
+                            </label>
+                            <input id="sendButton" type="submit" class="btn btn-purple" style="display: none"
+                                   value="Send"/>
+                        </div>
+                    </form>
+
+                    <form th:unless="${messenger == null}">
+                        <div class="form-group">
+                            <input type="button" class="btn btn-purple"
+                                   th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.id}|}"
+                                   value="Check Feedbacks"/>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-xs-6 col-md-4">
+                    <div class="form-group">
+                        <h6 th:text="${vacancy.postedAt}"></h6>
+                    </div>
+                </div>
             </div>
 
         </div>
     </div>
 </div>
+
+<script>
+    function replaceButtonWithTextarea() {
+        const button = document.getElementById('myButton');
+        const textarea = document.getElementById('myTextarea');
+        const sendButton = document.getElementById('sendButton');
+        button.style.display = 'none';
+        textarea.style.display = 'block';
+        sendButton.style.display = 'block';
+    }
+</script>
 </body>
 </html>
