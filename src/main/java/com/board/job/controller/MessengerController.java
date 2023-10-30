@@ -66,10 +66,26 @@ public class MessengerController {
         return responses;
     }
 
+    @PostMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/messengers")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    public void createByCandidate(
+            @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
+            @PathVariable("vacancy-id") long vacancyId, String text, HttpServletResponse response,
+            Authentication authentication) throws IOException {
+
+        var name = authentication.getName();
+        var messengerId = messengerService.create(vacancyId,
+                userService.readByEmail(name).getCandidateProfile().getId()).getId();
+        feedbackService.create(candidateId, messengerId, text);
+        log.info("=== POST-MESSENGER === {} == {}", getAuthorities(authentication), name);
+
+        response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks", ownerId, candidateId, messengerId));
+    }
+
     @PostMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers")
     @PreAuthorize("@authVacancyService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #vacancyId) && hasRole('CANDIDATE')")
-    public ResponseEntity<String> create(
+    public ResponseEntity<String> createByEmployer(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("vacancy-id") long vacancyId, Authentication authentication
     ) {
