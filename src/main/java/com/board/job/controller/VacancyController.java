@@ -4,6 +4,7 @@ import com.board.job.model.dto.vacancy.CutVacancyResponse;
 import com.board.job.model.dto.vacancy.FullVacancyResponse;
 import com.board.job.model.dto.vacancy.VacancyRequest;
 import com.board.job.model.mapper.VacancyMapper;
+import com.board.job.service.MessengerService;
 import com.board.job.service.UserService;
 import com.board.job.service.VacancyService;
 import jakarta.validation.Valid;
@@ -32,14 +33,17 @@ public class VacancyController {
     private final VacancyMapper mapper;
     private final VacancyService vacancyService;
     private final UserService userService;
+    private final MessengerService messengerService;
 
     private Sort sort;
 
     @Autowired
-    public VacancyController(VacancyMapper mapper, VacancyService vacancyService, UserService userService) {
+    public VacancyController(VacancyMapper mapper, VacancyService vacancyService, UserService userService,
+                             MessengerService messengerService) {
         this.mapper = mapper;
         this.vacancyService = vacancyService;
         this.userService = userService;
+        this.messengerService = messengerService;
     }
 
     @GetMapping("/vacancies")
@@ -81,6 +85,7 @@ public class VacancyController {
         var vacancy = mapper.getFullVacancyResponseFromVacancy(vacancyService.readById(id));
         map.addAttribute("vacancy", vacancy);
         map.addAttribute("owner", userService.readByEmail(authentication.getName()));
+        map.addAttribute("messenger", messengerService.readByOwnerAndVacancy(ownerId, id));
         log.info("=== GET-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("vacancy-get", map);
