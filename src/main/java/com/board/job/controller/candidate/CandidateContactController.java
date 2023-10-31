@@ -1,7 +1,6 @@
 package com.board.job.controller.candidate;
 
 import com.board.job.model.dto.candidate_contact.CandidateContactRequest;
-import com.board.job.model.dto.candidate_contact.CandidateContactResponse;
 import com.board.job.model.mapper.candidate.CandidateContactMapper;
 import com.board.job.service.UserService;
 import com.board.job.service.candidate.CandidateContactService;
@@ -10,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
@@ -56,7 +54,7 @@ public class CandidateContactController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
-    public void create(@PathVariable("owner-id") long ownerId, @RequestBody @Valid CandidateContactRequest request,
+    public void create(@PathVariable("owner-id") long ownerId, @Valid CandidateContactRequest request,
                        Authentication authentication, HttpServletResponse response) throws IOException {
         var created = candidateContactService.create(ownerId, mapper.getCandidateContactFromCandidateContactRequest(request));
         log.info("=== POST-CANDIDATE_CONTACT === {} == {}", getAuthorities(authentication), authentication.getName());
