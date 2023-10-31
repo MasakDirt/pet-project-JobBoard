@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
@@ -82,6 +83,7 @@ public class RoleController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public void create(@Valid RoleRequest roleRequest, Authentication authentication,
                        HttpServletResponse response) throws IOException {
 
@@ -101,9 +103,10 @@ public class RoleController {
     }
 
     @PostMapping("/user/{user-id}/add-role")
+    @ResponseStatus(HttpStatus.CREATED)
     public void addUserRole(@PathVariable(value = "user-id") long userId, @Valid RoleRequest roleRequest,
                             Authentication authentication, HttpServletResponse response) throws IOException {
-        userService.updateUserRolesAndGetUser(userId, roleRequest.getName());
+        userService.addUserRole(userId, roleRequest.getName());
         log.info("=== POST-USER-ADD-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
         response.sendRedirect("/api/roles/user/" + userId);
@@ -127,6 +130,7 @@ public class RoleController {
     }
 
     @GetMapping("/{id}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id, Authentication authentication, HttpServletResponse response) throws IOException {
         roleService.delete(id);
         log.info("=== DELETE-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
@@ -135,10 +139,11 @@ public class RoleController {
     }
 
     @GetMapping("/user/{user-id}/delete-role/{role-name}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserRole(@PathVariable(name = "user-id") long userId,
                                @PathVariable(name = "role-name") String roleName, Authentication authentication,
                                HttpServletResponse response) throws IOException {
-        userService.deleteRole(userId, roleName);
+        userService.deleteUserRole(userId, roleName);
         log.info("=== DELETE-USER-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
         response.sendRedirect("/api/roles/user/" + userId);
