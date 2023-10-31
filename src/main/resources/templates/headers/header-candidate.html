@@ -108,21 +108,21 @@
 
 <div class="container-buttons">
     <a class="btn btn-purple" th:href="@{|/api/users/${owner.id}/vacancies|}">Vacancies</a>
-    <a class="btn btn-purple" th:if="owner.candidateContact != null"
-       th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateContact.id}/messengers|}">Messengers</a>
+    <a class="btn btn-purple" th:if="${owner.candidateProfile != null}"
+       th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers|}">Messengers</a>
 </div>
 
 <div class="container-buttons">
     <hr style="max-width: 1600px; margin: 1 auto;">
     <div class="text-left">
-        <a class="btn btn-purple" th:if="${owner.candidateProfile != null}"
+        <a class="btn btn-purple" th:unless="${owner.candidateProfile == null}"
            th:href="@{|/api/users/${owner.id}/candidate-profiles/${owner.candidateProfile.id}|}">Profile</a>
-        <a class="btn btn-purple" th:unless="${owner.candidateProfile != null}"
+        <a class="btn btn-purple" th:if="${owner.candidateProfile == null}"
            th:href="@{|/api/users/${owner.id}/candidate-profiles/create|}">Profile</a>
 
-        <a th:if="${owner.candidateContact != null}" class="btn btn-purple"
+        <a th:unless="${owner.candidateContact == null}" class="btn btn-purple"
            th:href="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}|}">Contacts</a>
-        <a th:unless="${owner.candidateContact != null}" class="btn btn-purple"
+        <a th:if="${owner.candidateContact == null}" class="btn btn-purple"
            th:href="@{|/api/users/${owner.id}/candidate-contacts/create|}">Contacts</a>
     </div>
 </div>
