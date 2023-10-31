@@ -95,7 +95,7 @@
     <div th:replace="~{headers/header-candidate.html}"></div>
 </header>
 <div class="col-md-offset-2 col-sm-8">
-    <h2>Contacts</h2>
+    <h2>Create Contacts</h2>
     <h2 style="font-weight: bold; color: #6a1e9b" th:text="${candidateContactRequest.candidateName}"></h2>
 </div>
 <form class="form-horizontal" th:action="@{|/api/users/${owner.id}/candidate-contacts|}"
@@ -141,6 +141,7 @@
             <label class="col-sm-2 control-label" for="linkedInProfile">LinkedIn:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" id="linkedInProfile"
+                       placeholder="www.linkedin.co/.."
                        th:field="${candidateContactRequest.linkedInProfile}"/>
             </div>
         </div>
@@ -149,6 +150,7 @@
             <label class="col-sm-2 control-label" for="githubUrl">Git Hub:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" id="githubUrl"
+                       placeholder="www.github.co/.."
                        th:field="${candidateContactRequest.githubUrl}"/>
             </div>
         </div>
