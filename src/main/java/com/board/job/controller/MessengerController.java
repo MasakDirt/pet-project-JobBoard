@@ -59,7 +59,10 @@ public class MessengerController {
     ) {
         var responses = messengerService.getAllByVacancyId(vacancyId)
                 .stream()
-                .map(messenger -> mapper.getCutMessengerResponseFromMessenger(messenger, feedbackService.getLastFeedbackText(messenger.getId())))
+                .map(messenger -> mapper.getCutMessengerResponseFromMessenger(
+                                messenger, feedbackService.getLastFeedbackText(messenger.getId())
+                        )
+                )
                 .toList();
         log.info("=== GET-VACANCY-MESSENGERS === {} == {}", getAuthorities(authentication), authentication.getName());
 
@@ -110,8 +113,8 @@ public class MessengerController {
         messengerService.delete(id);
         log.info("=== DELETE-MESSENGER-BY-CANDIDATE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-       response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers",
-               ownerId, candidateId));
+        response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers",
+                ownerId, candidateId));
     }
 
     @DeleteMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}")
