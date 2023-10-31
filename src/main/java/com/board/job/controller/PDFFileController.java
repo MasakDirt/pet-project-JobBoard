@@ -35,7 +35,7 @@ public class PDFFileController {
         map.addAttribute("pdfBase64", pdfBase64);
         log.info("=== GET-PDF_FILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return new ModelAndView("pdf-get", map);
+        return new ModelAndView("candidates/pdf-get", map);
     }
 
     @PostMapping

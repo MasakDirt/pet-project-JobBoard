@@ -82,7 +82,7 @@ public class CandidateProfileController {
         map.addAttribute("ukr_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
 
         log.info("=== GET-CANDIDATE_PROFILE === {} - {}", getAuthorities(authentication), authentication.getName());
-        return new ModelAndView("candidate-profile-get", map);
+        return new ModelAndView("candidates/candidate-profile-get", map);
     }
 
     @GetMapping("/create")
@@ -94,7 +94,7 @@ public class CandidateProfileController {
         map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
         map.addAttribute("ukr_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
 
-        return new ModelAndView("candidate-profile-create", map);
+        return new ModelAndView("candidates/candidate-profile-create", map);
     }
 
     @PostMapping()

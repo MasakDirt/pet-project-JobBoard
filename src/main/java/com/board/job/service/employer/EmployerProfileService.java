@@ -15,7 +15,7 @@ public class EmployerProfileService {
 
     public EmployerProfile create(long ownerId, EmployerProfile employerProfile) {
         employerProfile.setOwnerWithName(
-                userService.updateUserRolesAndGetUser(ownerId, "EMPLOYER")
+                userService.addUserRole(ownerId, "EMPLOYER")
         );
         return employerProfileRepository.save(employerProfile);
     }

@@ -59,7 +59,7 @@ public class VacancyController {
         );
         log.info("=== GET-VACANCIES === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return new ModelAndView("vacancies-list", map);
+        return new ModelAndView("candidates/vacancies-list", map);
     }
 
     private String getSortByValues(String sortBy) {
@@ -79,7 +79,7 @@ public class VacancyController {
         map.addAttribute("messenger", messengerService.readByOwnerAndVacancy(user.getId(), id));
         log.info("=== GET-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return new ModelAndView("vacancy-get", map);
+        return new ModelAndView("candidates/vacancy-get", map);
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies")

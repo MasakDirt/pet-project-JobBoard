@@ -26,12 +26,12 @@ public class EmployerProfileController {
 
     @GetMapping("/{id}")
     @PreAuthorize("@authEmployerProfileService.isUserAdminOrUsersSameByIdAndUserOwnerEmployerProfile" +
-            "(#ownerId, #id, authentication.principal)")
+            "(#ownerId, #id, authentication.name)")
     public EmployerProfileResponse getById(@PathVariable("owner-id") long ownerId,
                                            @PathVariable long id, Authentication authentication) {
 
         var employerProfile = mapper.getEmployerProfileResponseFromEmployerProfile(employerProfileService.readById(id));
-        log.info("=== GET-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== GET-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return employerProfile;
     }

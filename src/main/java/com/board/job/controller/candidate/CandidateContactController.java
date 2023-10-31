@@ -38,7 +38,7 @@ public class CandidateContactController {
         map.addAttribute("candidateContactRequest", mapper
                 .getCandidateContactRequestFromCandidateContact(candidateContactService.readById(id)));
 
-        return new ModelAndView("candidate-contact-get", map);
+        return new ModelAndView("candidates/candidate-contact-get", map);
     }
 
     @GetMapping("/create")
@@ -47,7 +47,7 @@ public class CandidateContactController {
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("candidateContactRequest", new CandidateContactRequest());
 
-        return new ModelAndView("candidate-contact-create", map);
+        return new ModelAndView("candidates/candidate-contact-create", map);
     }
 
     @PostMapping
