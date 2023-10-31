@@ -5,11 +5,7 @@ import com.board.job.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
@@ -18,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.util.Base64;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 
@@ -35,9 +30,7 @@ public class PDFFileController {
     public ModelAndView getById(
             @PathVariable("owner-id") long ownerId, @PathVariable long id,
             Authentication authentication, ModelMap map) throws IOException {
-        var pdf = pdfService.readById(id);
-        byte[] pdfBytes = pdf.getFileContent();
-        String pdfBase64 = Base64.getEncoder().encodeToString(pdfBytes);
+        var pdfBase64 = pdfService.getBase64Pdf(id);
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("pdfBase64", pdfBase64);
         log.info("=== GET-PDF_FILE === {} == {}", getAuthorities(authentication), authentication.getName());
@@ -45,20 +38,8 @@ public class PDFFileController {
         return new ModelAndView("pdf-get", map);
     }
 
-    @GetMapping("/{id}/pdf")
-    @PreAuthorize("@userAuthService.isUsersSame(#ownerId, authentication.name)")
-    public ResponseEntity<Resource> getPdf(
-            @PathVariable("owner-id") long ownerId, @PathVariable long id) throws IOException {
-        var pdf = pdfService.readById(id);
-        ByteArrayResource resource = new ByteArrayResource(pdf.getFileContent());
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=default.pdf")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(resource);
-    }
-
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@authCandidateContactService.isUsersSameByIdAndUserOwnerCandidateContacts" +
             "(#ownerId, #candidateContactId, authentication.name)")
     public void create(@PathVariable("owner-id") long ownerId,
@@ -87,6 +68,7 @@ public class PDFFileController {
     }
 
     @GetMapping("/{id}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@authPDFService.isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainPDF" +
             "(#ownerId, #candidateContactId, #id, authentication.name)")
     public void delete(@PathVariable("owner-id") long ownerId,
