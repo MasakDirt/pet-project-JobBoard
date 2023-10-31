@@ -113,8 +113,12 @@
             <label class="col-sm-2 control-label" for="salaryExpectations">Salary
                 Expectations:</label>
             <div class="col-sm-6">
-                <input class="form-control" type="text" id="salaryExpectations"
-                       th:field="${candidateProfileRequest.salaryExpectations}" placeholder="4000"/>
+                <div class="input-group" style="max-width: 50%;">
+                    <div class="input-group-addon">$</div>
+                    <input class="form-control" type="text" id="salaryExpectations"
+                           th:field="${candidateProfileRequest.salaryExpectations}" placeholder="4000"/>
+                    <div class="input-group-addon">.00</div>
+                </div>
             </div>
         </div>
 
@@ -197,7 +201,7 @@
             <div class="col-sm-6">
                 <textarea class="form-control" id="achievements" rows="6"
                           th:field="${candidateProfileRequest.achievements}"
-                          placeholder="Write your achievements about courses and so on...">
+                          placeholder="Write explanations about achievements and progress in programming...">
                           style="width: 100%; box-sizing: border-box;"></textarea>
             </div>
         </div>
