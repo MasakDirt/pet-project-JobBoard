@@ -76,7 +76,7 @@ public class MessengerController {
         var name = authentication.getName();
         var messengerId = messengerService.create(vacancyId,
                 userService.readByEmail(name).getCandidateProfile().getId()).getId();
-        feedbackService.create(candidateId, messengerId, text);
+        feedbackService.create(userService.readByEmail(authentication.getName()).getId(), messengerId, text);
         log.info("=== POST-MESSENGER === {} == {}", getAuthorities(authentication), name);
 
         response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks", ownerId, candidateId, messengerId));
