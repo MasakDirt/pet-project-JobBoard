@@ -74,15 +74,14 @@ public class CandidateProfileController {
             "@authCandidateProfileService.isUsersSameByIdAndUserOwnerCandidateProfile(#ownerId, #id, authentication.name)")
     public ModelAndView getById(@PathVariable("owner-id") long ownerId, @PathVariable long id,
                                 Authentication authentication, ModelMap map) {
-        log.info("=== GET-CANDIDATE_PROFILE === {} - {}", getAuthorities(authentication), authentication.getName());
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("candidateProfileRequest", mapper.
                 getCandidateProfileRequestFromCandidateProfile(candidateProfileService.readById(id)));
-
         map.addAttribute("categories", Arrays.stream(Category.values()).map(Category::getValue));
         map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
         map.addAttribute("ukr_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
 
+        log.info("=== GET-CANDIDATE_PROFILE === {} - {}", getAuthorities(authentication), authentication.getName());
         return new ModelAndView("candidate-profile-get", map);
     }
 
@@ -101,14 +100,13 @@ public class CandidateProfileController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
-    public void create(
-            @PathVariable("owner-id") long ownerId, @Valid CandidateProfileRequest request,
+    public void create(@PathVariable("owner-id") long ownerId, @Valid CandidateProfileRequest request,
             Authentication authentication, HttpServletResponse response) throws IOException {
 
-        var created = candidateProfileService.create(ownerId, mapper.getCandidateProfileFromCandidateProfileRequest(request));
+        candidateProfileService.create(ownerId, mapper.getCandidateProfileFromCandidateProfileRequest(request));
         log.info("=== POST-CANDIDATE_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/candidate-profiles/%d", ownerId, created.getId()));
+        response.sendRedirect("/api/auth/login");
     }
 
     @PostMapping("/{id}/update")
