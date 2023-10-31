@@ -43,8 +43,7 @@ public class CandidateContactController {
 
     @GetMapping("/create")
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
-    public ModelAndView createRequest(@PathVariable("owner-id") long ownerId,
-                                         Authentication authentication, ModelMap map) {
+    public ModelAndView createRequest(@PathVariable("owner-id") long ownerId, ModelMap map) {
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("candidateContactRequest", new CandidateContactRequest());
 
