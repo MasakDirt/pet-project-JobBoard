@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Error</title>
+
+
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 75vh;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #a80009;
+        }
+    </style>
+</head>
+<body>
+<h2 th:text="${errorResponse.status}"></h2>
+<h3>Oops, there was an error, what should I do?</h3>
+<h4 th:text="${'Your error - ' + errorResponse.message}"></h4>
+<h5>
+    <u th:text="${'URL: ' + errorResponse.path}"></u>
+</h5>
+<h6 style="color:#7439c9;" th:text="${errorResponse.timestamp.format(formatter)}"></h6>
+</body>
+</html>
