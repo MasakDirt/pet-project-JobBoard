@@ -10,11 +10,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
@@ -29,21 +26,18 @@ public class AuthController {
     private final UserMapper mapper;
     private final UserService userService;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
-    public ModelAndView showLoginForm(ModelMap model) {
-        model.addAttribute("loginRequest", new LoginRequest());
-        return new ModelAndView("login", model);
+    public ModelAndView showLoginForm(ModelMap map) {
+        map.addAttribute("loginRequest", new LoginRequest());
+        return new ModelAndView("login", map);
     }
 
     @PostMapping("/login")
     public void login(@Valid LoginRequest loginRequest) {
         var user = userService.readByEmail(loginRequest.getEmail());
+        userService.checkPasswords(loginRequest.getPassword(), user.getPassword());
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Wrong password");
-        }
         log.info("=== POST-LOGIN === auth - {} === time - {}.", user.getEmail(), LocalDateTime.now());
     }
 
