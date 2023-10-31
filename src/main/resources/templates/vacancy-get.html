@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>Vacancies</title>
@@ -89,7 +89,7 @@
 
             <div class="row">
                 <div class="col-xs-12 col-md-8">
-                    <form th:if="${messenger == null}"
+                    <form th:if="${messenger.isEmpty()}"
                           th:action="@{|/api/users/${owner.id}/vacancies/${vacancy.id}/candidate/${owner.candidateProfile.id}/messengers|}"
                           th:method="post">
                         <div class="form-group">
@@ -104,13 +104,11 @@
                         </div>
                     </form>
 
-                    <form th:unless="${messenger == null}">
-                        <div class="form-group">
-                            <input type="button" class="btn btn-purple"
-                                   th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.id}|}"
-                                   value="Check Feedbacks"/>
-                        </div>
-                    </form>
+                    <div class="form-group" th:if="${messenger.isPresent()}">
+                        <a type="button"
+                               th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.get().id}/feedbacks|}"
+                               class="btn btn-purple">Check Feedbacks</a>
+                    </div>
                 </div>
 
                 <div class="col-xs-6 col-md-4">
