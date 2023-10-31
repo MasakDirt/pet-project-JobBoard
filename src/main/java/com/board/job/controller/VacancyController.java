@@ -82,10 +82,12 @@ public class VacancyController {
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
     public ModelAndView getById(@PathVariable("owner-id") long ownerId,
                                 @PathVariable long id, Authentication authentication, ModelMap map) {
+        var user = userService.readByEmail(authentication.getName());
         var vacancy = mapper.getFullVacancyResponseFromVacancy(vacancyService.readById(id));
+
+        map.addAttribute("owner", user);
         map.addAttribute("vacancy", vacancy);
-        map.addAttribute("owner", userService.readByEmail(authentication.getName()));
-        map.addAttribute("messenger", messengerService.readByOwnerAndVacancy(ownerId, id));
+        map.addAttribute("messenger", messengerService.readByOwnerAndVacancy(user.getId(), id));
         log.info("=== GET-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("vacancy-get", map);
