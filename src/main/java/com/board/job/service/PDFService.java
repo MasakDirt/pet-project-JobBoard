@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Base64;
 
 @Service
 @AllArgsConstructor
@@ -32,27 +33,12 @@ public class PDFService {
                 new EntityNotFoundException("File not found"));
     }
 
-    public File getPDFFile(long id) {
-        byte[] pdfBytes = readById(id).getFileContent();
-        String fileName = "UserInfo.pdf";
-        File file = new File(fileName);
-
-        if (pdfBytes != null) {
-            try {
-                FileUtils.writeByteArrayToFile(file, pdfBytes);
-            } catch (IOException exception) {
-                throw new InvalidFile("Select valid file please!");
-            }
-        } else {
-            throw new UserHaveNoPDF("Candidate already haven`t PDF file in contacts, but he/she can upload it.");
-        }
-
-        return file;
+    public String getBase64Pdf(long id) {
+        return Base64.getEncoder().encodeToString(readById(id).getFileContent());
     }
 
     public PDF_File update(long id, byte[] fileBytes) {
         var old = readById(id);
-
         old.setFileContent(fileBytes);
 
         return pdfRepository.save(old);
