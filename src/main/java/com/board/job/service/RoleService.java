@@ -14,11 +14,14 @@ public class RoleService {
     private final RoleRepository roleRepository;
 
     public Role create(String name) {
+        nameChecking(name);
+        return roleRepository.save(new Role(name));
+    }
+
+    private void nameChecking(String name) throws IllegalArgumentException {
         if (name.trim().isEmpty()) {
             throw new IllegalArgumentException("Role name must contain letters!");
         }
-
-        return roleRepository.save(new Role(name));
     }
 
     public Role readById(long id) {
@@ -32,11 +35,8 @@ public class RoleService {
     }
 
     public Role update(long id, String newName) {
-        if (newName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Role name must contain letters!");
-        }
-
-        var old = readById(id);
+        nameChecking(newName);
+        Role old = readById(id);
         old.setName(newName);
 
         return roleRepository.save(old);
