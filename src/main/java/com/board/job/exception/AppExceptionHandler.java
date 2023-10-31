@@ -8,27 +8,29 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
 public class AppExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ErrorResponse> handleResponseStatusException(HttpServletRequest request, ResponseStatusException ex) {
+    public ModelAndView handleResponseStatusException(HttpServletRequest request, ResponseStatusException ex) {
         return getErrorResponse(request, ex.getStatusCode(), ex.getReason());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException ex) {
+    public ModelAndView handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException ex) {
         String message = ex.getFieldErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -38,40 +40,42 @@ public class AppExceptionHandler {
     }
 
     @ExceptionHandler({ConstraintViolationException.class, UserHaveNoPDF.class, IllegalArgumentException.class})
-    public ResponseEntity<ErrorResponse> handleBadRequestExceptions(HttpServletRequest request, RuntimeException ex) {
+    public ModelAndView handleBadRequestExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleBadCredentialsException(HttpServletRequest request, BadCredentialsException ex) {
+    public ModelAndView handleBadCredentialsException(HttpServletRequest request, BadCredentialsException ex) {
         return getErrorResponse(request, HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     @ExceptionHandler({AccessDeniedException.class, UserIsNotEmployer.class})
-    public ResponseEntity<ErrorResponse> handleForbiddenExceptions(HttpServletRequest request, RuntimeException ex) {
+    public ModelAndView handleForbiddenExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
-    @ExceptionHandler({EntityNotFoundException.class, InvalidFile.class})
-    public ResponseEntity<ErrorResponse> handleNotFoundExceptions(HttpServletRequest request, RuntimeException ex) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ModelAndView handleNotFoundExceptions(HttpServletRequest request, EntityNotFoundException ex) {
         return getErrorResponse(request, HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(HttpServletRequest request, Exception ex) {
+    public ModelAndView handleException(HttpServletRequest request, Exception ex) {
         return getErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
-    private ResponseEntity<ErrorResponse> getErrorResponse(HttpServletRequest request, HttpStatusCode httpStatus, String message) {
+    private ModelAndView getErrorResponse(HttpServletRequest request, HttpStatusCode httpStatus, String message) {
         log.error("Exception raised = {} :: URL = {}", message, request.getRequestURL());
-        return ResponseEntity.status(httpStatus)
-                .body(new ErrorResponse(
-                                LocalDateTime.now(),
-                                httpStatus,
-                                message,
-                                request.getRequestURL().toString()
-                        )
-                );
+
+        ModelMap map = new ModelMap();
+        map.addAttribute("errorResponse", new ErrorResponse(
+                LocalDateTime.now(),
+                httpStatus,
+                message,
+                request.getRequestURL().toString()
+        ));
+        map.addAttribute("formatter", DateTimeFormatter.ofPattern("h:mm a"));
+        return new ModelAndView("errors/error", map);
     }
 
 }
