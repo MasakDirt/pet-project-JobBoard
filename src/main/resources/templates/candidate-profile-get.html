@@ -196,11 +196,12 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" th:if="${candidateProfileRequest.achievements}">
         <label class="col-sm-2 control-label" for="achievements">Achievements:</label>
         <div class="col-sm-8">
                 <textarea class="form-control" id="achievements" rows="6"
                           th:field="${candidateProfileRequest.achievements}"
+                          placeholder="Write explanations about achievements and progress in programming..."
                           style="width: 50%; box-sizing: border-box;"></textarea>
         </div>
     </div>
