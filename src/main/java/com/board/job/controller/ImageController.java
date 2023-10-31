@@ -43,10 +43,10 @@ public class ImageController {
     public Resource getByIdCandidateContactsImage(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable long id, Authentication authentication) throws IOException {
-        var file = imageService.readById(id);
+        var profilePicture = imageService.readById(id).getProfilePicture();
         log.info("=== GET-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return new ByteArrayResource(file.getProfilePicture());
+        return new ByteArrayResource(profilePicture);
     }
 
     @GetMapping(value = "/candidate-contacts/{candidate-id}/images/{id}/header", produces = MediaType.IMAGE_JPEG_VALUE)
@@ -55,10 +55,10 @@ public class ImageController {
     public Resource getByIdCandidateContactsImageForHeader(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable long id, Authentication authentication) throws IOException {
-        var file = imageService.readById(id);
+        var profilePicture = imageService.readById(id).getProfilePicture();
         log.info("=== GET-CANDIDATE-IMAGE-HEADER === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return new ByteArrayResource(file.getProfilePicture());
+        return new ByteArrayResource(profilePicture);
     }
 
     @GetMapping(value = "/employer-profiles/{employer-id}/images/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
@@ -67,10 +67,10 @@ public class ImageController {
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable long id, Authentication authentication) throws IOException {
 
-        var file = imageService.readById(id);
+        var profilePicture = imageService.readById(id).getProfilePicture();
         log.info("=== GET-EMPLOYER-IMAGE === {} == {}", getAuthorities(authentication), authentication.getPrincipal());
 
-        return new ByteArrayResource(file.getProfilePicture());
+        return new ByteArrayResource(profilePicture);
     }
 
     @PostMapping("/candidate-contacts/{candidate-id}/images")
