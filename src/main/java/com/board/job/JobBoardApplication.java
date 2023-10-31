@@ -212,8 +212,6 @@ public class JobBoardApplication implements CommandLineRunner {
 
         Image imageHelen = createImageForCandidate(candidateContactHelen.getId(), "files/photos/helenPicture.jpg");
 
-        imageService.updateProfile(imageAdminCandidate.getId(), employerProfileAdmin.getId());
-
         Image imageAdminEmployer = imageService.update(imageAdminCandidate.getId(), setContent("files/photos/adminPhoto.jpg"));
 
         Image imageLarry = createImageForEmployer(employerProfileLarry.getId(), null);
