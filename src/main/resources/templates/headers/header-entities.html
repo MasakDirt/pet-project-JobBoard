@@ -123,8 +123,8 @@
 
 <div class="container-buttons">
     <a class="btn btn-purple" th:href="@{|/api/users/${owner.id}/vacancies|}">Vacancies</a>
-    <a class="btn btn-purple" th:if="owner.candidateContact != null"
-       th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateContact.id}/messengers|}">Messengers</a>
+    <a class="btn btn-purple" th:unless="${owner.candidateProfile == null}"
+       th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers|}">Messengers</a>
 </div>
 
 <script>
