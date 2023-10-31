@@ -3,15 +3,15 @@ package com.board.job.model.dto.user;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 import static com.board.job.model.entity.User.NAME_REGEXP;
 
 @Data
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserUpdateRequest {
     @JsonProperty("first_name")
     @NotNull(message = "Write the first name!")

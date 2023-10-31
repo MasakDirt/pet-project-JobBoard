@@ -1,6 +1,7 @@
 package com.board.job.model.dto.messenger;
 
 import com.board.job.model.dto.feedback.FeedbackResponse;
+import com.board.job.model.entity.Vacancy;
 import com.board.job.model.entity.sample.Category;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,6 +32,7 @@ public class FullMessengerResponse {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    private String companyName;
 
     @NotBlank(message = "You should declare country where candidate must be work.")
     private String country;
@@ -43,6 +45,8 @@ public class FullMessengerResponse {
     @JsonProperty(value = "employer_name")
     @NotBlank(message = "The employer name cannot be blank")
     private String employerName;
+
+    private Vacancy vacancy;
 
     private List<FeedbackResponse> feedbacks;
 }

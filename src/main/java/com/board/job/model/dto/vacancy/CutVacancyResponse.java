@@ -1,5 +1,6 @@
 package com.board.job.model.dto.vacancy;
 
+import com.board.job.model.entity.employer.EmployerProfile;
 import com.board.job.model.entity.sample.Category;
 import com.board.job.model.entity.sample.JobDomain;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -14,8 +15,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Data
 @Getter
@@ -48,5 +47,7 @@ public class CutVacancyResponse {
     @JsonProperty("posted_at")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime postedAt;
+    private String postedAt;
+
+    private EmployerProfile employerProfile;
 }

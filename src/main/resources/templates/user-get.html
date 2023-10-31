@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>User</title>
+
+
+    <style>
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-purple-bigger-left {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+            font-size: 17px;
+            margin-right: 15px;
+        }
+
+        .btn-purple-bigger-right {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+            font-size: 17px;
+            margin-left: 15px;
+        }
+
+        .btn-delete {
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-purple:hover {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+        .btn-delete:hover {
+            background-color: #a84141;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 75vh;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 20px;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .table-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .div-top{
+            margin-top: 14px;
+        }
+
+        .container-buttons {
+            height: 0;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div th:replace="~{headers/header.html}"></div>
+
+    <div th:if="${isAdmin}" class="container-buttons">
+        <div class="center">
+            <a class="btn btn-purple" th:href="@{/api/users}">Get All Users</a>
+            <a class="btn btn-purple" th:href="@{/api/roles}">Get All Roles</a>
+            <a class="btn btn-purple" th:href="@{/api/users/create-admin}">Create admin</a>
+        </div>
+    </div>
+</header>
+<div class="centered">
+    <h2>Info About User</h2>
+    <h2 style="font-weight: bold; color: #6a1e9b" th:text="${user.firstName + ' ' + user.lastName}"></h2>
+    <div class="table-container">
+        <table class="styled-table">
+            <tr>
+                <td>E-mail:</td>
+                <td>
+                    <b th:text="${user.email}"></b>
+                </td>
+            </tr>
+            <tr>
+                <td>First name:</td>
+                <td>
+                    <b th:text="${user.firstName}"></b>
+                </td>
+            </tr>
+            <tr>
+                <td>Last name:</td>
+                <td>
+                    <b th:text="${user.lastName}"></b>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-sm-offset-2 col-sm-10">
+        <a class="btn btn-purple" th:href="@{|/api/users/${user.id}/update|}">Edit</a>
+        <a class="btn btn-purple" th:href="@{|/api/users/names/${user.id}/update|}">Edit names</a>
+        <a class="btn btn-delete" th:href="@{|/api/users/${user.id}/delete|}">Remove</a>
+    </div>
+
+    <div class="div-top">
+            <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile == null}"
+               th:href="@{|/api/users/${user.id}/candidate-profiles/create|}">Create candidate profile</a>
+            <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile != null}"
+               th:href="@{|/api/users/${user.id}/candidate-profiles/${user.candidateProfile.id}|}">Continue as Candidate</a>
+
+            <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile == null}"
+               th:href="@{|/api/users/${user.id}/employer-profiles/create|}">Create employer profile</a>
+            <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile != null}"
+               th:href="@{|/api/users/${user.id}/employer-profiles/${user.employerProfile.id}|}">Continue as Employer</a>
+    </div>
+</div>
+</body>
+</html>

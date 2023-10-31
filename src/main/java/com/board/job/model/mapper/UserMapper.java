@@ -11,6 +11,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     User getUserFromUserCreate(UserCreateRequest userCreateRequest);
+
     UserResponse getUserResponseFromUser(User user);
 
     @Mapping(target = "password", expression = "java(userUpdateRequest.getNewPassword())")

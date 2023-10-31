@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Add Role</title>
+
+    <style>
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-purple:hover {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div th:replace="~{headers/header.html}"></div>
+</header>
+<div class="col-md-offset-2 col-sm-8">
+    <h1>Add role to User</h1>
+</div>
+<form class="form-horizontal" th:action="@{|/api/roles/user/${userId}/add-role|}" th:method="post">
+    <div class="container">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="name">Name:</label>
+                <div class="col-sm-10">
+                    <select class="form-control" name="name" id="name">
+                        <option th:each="role : ${roles}"
+                                th:value="${role}"
+                                th:text="${role}"
+                                th:field="${roleRequest.name}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group text-center">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <input type="submit" class="btn btn-purple" value="Add"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</form>
+</body>
+</html>

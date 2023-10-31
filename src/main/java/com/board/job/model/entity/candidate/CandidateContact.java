@@ -104,4 +104,14 @@ public class CandidateContact {
                 ", pdf=" + pdf +
                 '}';
     }
+
+    public void setCandidateName(String userWriteName, String ownerName) {
+        if (userWriteName == null || userWriteName.trim().isEmpty())
+            this.candidateName = ownerName;
+    }
+
+    public void setEmail(String userWriteEmail, String ownerEmail) {
+        if (userWriteEmail == null || userWriteEmail.trim().isEmpty())
+            this.email = ownerEmail;
+    }
 }

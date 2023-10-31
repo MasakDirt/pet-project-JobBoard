@@ -1,18 +1,12 @@
 package com.board.job.service;
 
-import com.board.job.exception.InvalidFile;
 import com.board.job.model.entity.Image;
 import com.board.job.repository.ImageRepository;
 import com.board.job.service.candidate.CandidateContactService;
 import com.board.job.service.employer.EmployerProfileService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -42,60 +36,9 @@ public class ImageService {
                 new EntityNotFoundException("Image not found"));
     }
 
-    public File getByIdCandidateImage(long id) {
-        var image = readById(id);
-        String fileName = "CandidateImage.jpg";
-        File file = new File(fileName);
-
-        if (Objects.nonNull(image.getContact())) {
-            byte[] imageBytes = image.getProfilePicture();
-            if (Objects.nonNull(imageBytes)) {
-                try {
-                    FileUtils.writeByteArrayToFile(file, imageBytes);
-
-                    return file;
-                } catch (IOException exception) {
-                    throw new InvalidFile("Select valid file please!");
-                }
-            } else {
-                throw new InvalidFile("This candidate have no image.");
-            }
-        }
-        throw new IllegalArgumentException("User has no candidate contacts.");
-    }
-
-    public File getByIdEmployerImage(long id) {
-        var image = readById(id);
-        String fileName = "EmployerImage.jpg";
-        File file = new File(fileName);
-
-        if (Objects.nonNull(image.getProfile())) {
-            byte[] imageBytes = image.getProfilePicture();
-            if (Objects.nonNull(imageBytes)) {
-                try {
-                    FileUtils.writeByteArrayToFile(file, imageBytes);
-
-                    return file;
-                } catch (IOException exception) {
-                    throw new InvalidFile("Select valid file please!");
-                }
-            } else {
-                throw new InvalidFile("This employer have no image.");
-            }
-        }
-        throw new IllegalArgumentException("User has no employer profile.");
-    }
-
     public Image update(long id, byte[] pictureBytes) {
         var image = readById(id);
         image.setProfilePicture(pictureBytes);
-
-        return imageRepository.save(image);
-    }
-
-    public Image updateProfile(long id, long profileId) {
-        var image = readById(id);
-        image.setProfile(employerProfileService.readById(profileId));
 
         return imageRepository.save(image);
     }

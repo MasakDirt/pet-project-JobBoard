@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -30,6 +31,10 @@ public class MessengerService {
                 new EntityNotFoundException("Messenger not found"));
     }
 
+    public Optional<Messenger> readByOwnerAndVacancy(long ownerId, long vacancyId) {
+        return messengerRepository.findByCandidateProfile_OwnerIdAndVacancyId(ownerId, vacancyId);
+    }
+
     public void delete(long id) {
         messengerRepository.delete(readById(id));
     }
@@ -38,8 +43,8 @@ public class MessengerService {
         return messengerRepository.findAll();
     }
 
-    public List<Messenger> getAllByCandidateId(long candidateId) {
-        return messengerRepository.findAllByCandidateId(candidateId);
+    public List<Messenger> getAllByCandidateProfileId(long candidateProfileId) {
+        return messengerRepository.findAllByCandidateProfileId(candidateProfileId);
     }
 
     public List<Messenger> getAllByVacancyId(long vacancyId) {

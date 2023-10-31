@@ -21,7 +21,7 @@ public class CandidateProfileService {
 
     public CandidateProfile create(long ownerId, CandidateProfile candidateProfile) {
         candidateProfile.setOwner(
-                userService.updateUserRolesAndGetUser(ownerId, "CANDIDATE")
+                userService.addUserRole(ownerId, "CANDIDATE")
         );
 
         return candidateProfileRepository.save(candidateProfile);

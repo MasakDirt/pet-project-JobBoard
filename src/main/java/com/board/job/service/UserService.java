@@ -58,10 +58,7 @@ public class UserService {
 
     public User update(long id, User updated, String oldPassword) {
         var oldUser = readById(id);
-
-        if (!passwordEncoder.matches(oldPassword, oldUser.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong old password!");
-        }
+        checkPasswords(oldPassword, oldUser.getPassword());
 
         updated.setId(oldUser.getId());
         updated.setEmail(oldUser.getEmail());
@@ -69,35 +66,58 @@ public class UserService {
         return create(updated, new HashSet<>(roleService.getAllByUserId(oldUser.getId())));
     }
 
+    public void checkPasswords(String oldPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(oldPassword, encodedPassword)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong old password!");
+        }
+    }
+
     public void delete(long id) {
         userRepository.delete(readById(id));
     }
 
-    public User updateUserRolesAndGetUser(long id, String roleName) {
-        var user = readById(id);
-        var role = roleService.readByName(roleName);
-        var roles = roleService.getAllByUserId(id);
+    public void deleteUserRole(long id, String roleName) {
+        User user = readById(id);
+        List<Role> roles = roleService.getAllByUserId(id);
 
-        if (!roles.contains(role)) {
-            roles.add(role);
+        deleteRole(roles, roleService.readByName(roleName));
+        user.setRoles(new HashSet<>(roles));
+        update(user);
+    }
 
-            user.setRoles(new HashSet<>(roles));
-            return update(user);
+    private void deleteRole(List<Role> roles, Role toDelete) {
+        roles.remove(toDelete);
+    }
+
+    public User addUserRole(long id, String roleName) {
+        User user = readById(id);
+        List<Role> roles = roleService.getAllByUserId(id);
+
+        addRole(roles, roleService.readByName(roleName));
+        user.setRoles(new HashSet<>(roles));
+        return update(user);
+    }
+
+    private void addRole(List<Role> roles, Role adding) {
+        if (!roles.contains(adding)) {
+            roles.add(adding);
         }
-
-        return user;
     }
 
     public Pair<EmployerCompany, EmployerProfile> getEmployerData(long id) {
-        var user = readById(id);
-        var employerCompany = user.getEmployerCompany();
-        var employerProfile = user.getEmployerProfile();
+        User user = readById(id);
+        EmployerCompany employerCompany = user.getEmployerCompany();
+        EmployerProfile employerProfile = user.getEmployerProfile();
 
-        if (Objects.isNull(employerCompany) || Objects.isNull(employerProfile)) {
-            throw new UserIsNotEmployer("Please create your employer profile, then you will be permitted to create a vacancy");
+        if (userIsEmployer(employerCompany, employerProfile)) {
+            return Pair.create(employerCompany, employerProfile);
         }
 
-        return Pair.create(employerCompany, employerProfile);
+        throw new UserIsNotEmployer("Please create your employer profile, then you will be permitted to create a vacancy");
+    }
+
+    private boolean userIsEmployer(EmployerCompany employerCompany, EmployerProfile employerProfile) {
+        return !Objects.isNull(employerCompany) && !Objects.isNull(employerProfile);
     }
 
     public List<User> getAll() {

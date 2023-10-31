@@ -1,5 +1,8 @@
 package com.board.job.model.dto.user;
 
+import com.board.job.model.entity.Role;
+import com.board.job.model.entity.candidate.CandidateProfile;
+import com.board.job.model.entity.employer.EmployerProfile;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +10,8 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+
+import java.util.Set;
 
 import static com.board.job.model.entity.User.NAME_REGEXP;
 
@@ -32,4 +37,10 @@ public class UserResponse {
     @Pattern(regexp = "[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}", message = "Must be a valid e-mail address")
     @Column(name = "e_mail", unique = true, nullable = false)
     private String email;
+
+    private CandidateProfile candidateProfile;
+
+    private EmployerProfile employerProfile;
+
+    private Set<Role> roles;
 }

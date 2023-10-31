@@ -1,0 +1,42 @@
+<html  xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <style>
+        .btn-header-back{
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 5px 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .btn-header-logout{
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 10px;
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 6px;
+        }
+
+        .btn-header-back:hover {
+            background-color: #3fcad9;
+        }
+
+        .btn-header-logout:hover {
+            background-color: #1b2526;
+            color: #6a1e9b;
+        }
+    </style>
+</head>
+<body>
+<button class="btn btn-header-back" th:onclick="window.history.back()">⬅️Back</button>
+<a class="btn btn-header-logout" th:href="@{/logout}">Logout</a>
+</body>
+</html>

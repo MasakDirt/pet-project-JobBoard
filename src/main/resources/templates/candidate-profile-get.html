@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Candidate profile</title>
+
+
+    <style>
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-delete, .btn-clear {
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-purple:hover {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+        .btn-delete:hover {
+            background-color: #a84141;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            flex: 2;
+            font-weight: bold;
+        }
+
+        .form-group {
+            flex: 3;
+        }
+
+        input[type = "text"], select, #experienceExplanation, #achievements, #category, #englishLevel,
+        #ukrainianLevel {
+            background-color: rgb(64, 64, 64);
+            color: black;
+            width: 50%;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-size: 17px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div th:replace="~{headers/header-candidate.html}"></div>
+</header>
+<div class="col-md-offset-2 col-sm-8">
+    <h2>Info About Your Profile</h2>
+</div>
+<form class="form-horizontal"
+      th:action="@{|/api/users/${owner.id}/candidate-profiles/${candidateProfileRequest.id}/update|}"
+      method="post">
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="position">Position:</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="position"
+                   th:field="${candidateProfileRequest.position}"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="salaryExpectations">Salary
+            Expectations:</label>
+        <div class="col-sm-8">
+            <div class="input-group" style="max-width: 50%;">
+                <div class="input-group-addon">$</div>
+                <input class="form-control" type="text" id="salaryExpectations"
+                       th:field="${candidateProfileRequest.salaryExpectations}"/>
+                <div class="input-group-addon">.00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="workExperience">Work Experience:</label>
+        <div class="col-sm-8">
+            <div class="input-group" style="max-width: 50%;">
+                <div class="input-group-addon">⚒️</div>
+                <input class="form-control" type="text" id="workExperience"
+                       th:field="${candidateProfileRequest.workExperience}"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="countryOfResidence">Country of
+            Residence:</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="countryOfResidence"
+                   th:field="${candidateProfileRequest.countryOfResidence}"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="cityOfResidence">City of Residence:</label>
+        <div class="col-sm-8">
+            <input class="form-control" type="text" id="cityOfResidence"
+                   th:field="${candidateProfileRequest.cityOfResidence}"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="category"><strong>Category:</strong></label>
+        <div class="col-sm-8">
+            <select class="form-control" name="category" id="category">
+                <option th:each="category : ${categories}"
+                        th:value="${category}"
+                        th:text="${category}"
+                        th:selected="${category == candidateProfileRequest.category.toString()}">
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="englishLevel"><strong>English Level:</strong></label>
+        <div class="col-sm-8">
+            <select class="form-control" name="englishLevel" id="englishLevel">
+                <option th:each="eng_level : ${eng_levels}"
+                        th:value="${eng_level}"
+                        th:text="${eng_level}"
+                        th:selected="${eng_level == candidateProfileRequest.englishLevel.toString()}"/>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="ukrainianLevel"><strong>Ukrainian Level:</strong></label>
+        <div class="col-sm-8">
+            <select class="form-control" name="ukrainianLevel" id="ukrainianLevel">
+                <option th:each="ukr_level : ${ukr_levels}"
+                        th:value="${ukr_level}"
+                        th:text="${ukr_level}"
+                        th:selected="${ukr_level == candidateProfileRequest.ukrainianLevel.toString()}"/>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="experienceExplanation">Experience explanation:</label>
+        <div class="col-sm-8">
+                <textarea class="form-control" id="experienceExplanation" rows="9"
+                          th:field="${candidateProfileRequest.experienceExplanation}"
+                          style="width: 60%; box-sizing: border-box;"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group" th:if="${candidateProfileRequest.achievements}">
+        <label class="col-sm-2 control-label" for="achievements">Achievements:</label>
+        <div class="col-sm-8">
+                <textarea class="form-control" id="achievements" rows="6"
+                          th:field="${candidateProfileRequest.achievements}"
+                          placeholder="Write explanations about achievements and progress in programming..."
+                          style="width: 50%; box-sizing: border-box;"></textarea>
+        </div>
+    </div>
+
+
+    <div class="form-group text-center">
+        <div class="col-sm-10">
+            <input type="submit" class="btn btn-purple" value="Edit"/>
+            <input type="reset" class="btn btn-clear" value="Reset"/>
+            <a class="btn btn-delete"
+               th:href="@{|/api/users/${owner.id}/candidate-profiles/${candidateProfileRequest.id}/delete|}">Remove</a>
+        </div>
+    </div>
+</form>
+</body>
+</html>

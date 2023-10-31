@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Message</title>
+
+
+    <style>
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-clear {
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-purple:hover {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            flex: 2;
+            font-weight: bold;
+        }
+
+        .form-group {
+            flex: 3;
+        }
+
+        input[type = "text"], select {
+            background-color: rgb(64, 64, 64);
+            color: black;
+            width: 50%;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-size: 17px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div th:if="${owner.candidateContact != null}" th:replace="~{headers/header-entities.html}"></div>
+</header>
+<div class="col-md-offset-2 col-sm-8">
+    <h2>Update Message</h2>
+</div>
+<form class="form-horizontal"
+      th:action="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${feedback.messengerId}/feedbacks/${feedback.id}/edit|}"
+      method="post">
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="message">Message:</label>
+        <div class="col-sm-8">
+            <textarea style="width: 60%; box-sizing: border-box;"
+                      class="form-control" name="text" id="message" th:field="${feedback.text}" rows="4"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group text-center">
+        <div class="col-sm-10">
+            <input type="submit" class="btn btn-purple" value="Edit"/>
+            <input type="reset" class="btn btn-clear" value="Reset"/>
+        </div>
+    </div>
+</form>
+</body>
+</html>

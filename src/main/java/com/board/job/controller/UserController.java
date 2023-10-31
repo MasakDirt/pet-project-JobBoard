@@ -1,21 +1,24 @@
 package com.board.job.controller;
 
 import com.board.job.model.dto.user.UserCreateRequest;
-import com.board.job.model.dto.user.UserResponse;
 import com.board.job.model.dto.user.UserUpdateRequest;
 import com.board.job.model.dto.user.UserUpdateRequestWithPassword;
 import com.board.job.model.mapper.UserMapper;
 import com.board.job.service.RoleService;
 import com.board.job.service.UserService;
+import com.board.job.service.authorization.UserAuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,82 +32,111 @@ public class UserController {
     private final UserService userService;
     private final RoleService roleService;
     private final UserMapper mapper;
+    private final UserAuthService userAuthService;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Set<UserResponse> getAll(Authentication authentication) {
+    public ModelAndView getAll(Authentication authentication, ModelMap map) {
         var users = userService.getAll()
                 .stream()
                 .map(mapper::getUserResponseFromUser)
                 .collect(Collectors.toSet());
-        log.info("=== GET-USERS === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== GET-USERS === {} === {}", getAuthorities(authentication), authentication.getName());
+        map.addAttribute("users", users);
 
-        return users;
+        return new ModelAndView("users-list", map);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.principal)")
-    public UserResponse getById(@PathVariable long id, Authentication authentication) {
+    @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
+    public ModelAndView getById(@PathVariable long id, Authentication authentication, ModelMap map) {
         var user = mapper.getUserResponseFromUser(userService.readById(id));
-        log.info("=== GET-USER-ID === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== GET-USER-ID === {} === {}", getAuthorities(authentication), authentication.getName());
+        map.addAttribute("isAdmin", userAuthService.isAdmin(user.getEmail()));
+        map.addAttribute("user", user);
 
-        return user;
+        return new ModelAndView("user-get", map);
     }
 
     @GetMapping("/email")
-    @PreAuthorize("@userAuthService.isUserAdminOrUsersSameByEmail(#email, authentication.principal)")
-    public UserResponse getByEmail(@RequestParam String email, Authentication authentication) {
+    @PreAuthorize("@userAuthService.isUserAdminOrUsersSameByEmail(#email, authentication.name)")
+    public ModelAndView getByEmail(@RequestParam String email, Authentication authentication, ModelMap map) {
         var user = mapper.getUserResponseFromUser(userService.readByEmail(email));
-        log.info("=== GET-USER-EMAIL === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== GET-USER-EMAIL === {} === {}", getAuthorities(authentication), authentication.getName());
+        map.addAttribute("isAdmin", userAuthService.isAdmin(user.getEmail()));
+        map.addAttribute("user", user);
 
-        return user;
+        return new ModelAndView("user-get", map);
+    }
+
+    @GetMapping("/create-admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView getCreateRequest(ModelMap map) {
+        map.addAttribute("createRequest", new UserCreateRequest());
+
+        return new ModelAndView("user-create", map);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> createAdmin(@RequestBody @Valid UserCreateRequest createRequest,
-                                              Authentication authentication) {
+    public void createAdmin(@Valid UserCreateRequest createRequest, Authentication authentication,
+                            HttpServletResponse response) throws IOException {
+
         var created = userService.create(
                 mapper.getUserFromUserCreate(createRequest),
-                Set.of(roleService.readByName("ADMIN"))
-        );
-        log.info("=== POST-USER-ADMIN === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+                Set.of(roleService.readByName("ADMIN")));
+        log.info("=== POST-USER-ADMIN === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                String.format("User admin with name %s successfully created", created.getName())
-        );
+        response.sendRedirect("/api/users/" + created.getId());
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("@userAuthService.isUsersSame(#id, authentication.principal)")
-    public ResponseEntity<String> update(@PathVariable long id, Authentication authentication,
-                                         @RequestBody @Valid UserUpdateRequestWithPassword request) {
+    @GetMapping("/{id}/update")
+    @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
+    public ModelAndView getUpdateRequest(@PathVariable long id, ModelMap map) {
+        map.addAttribute("id", id);
+        map.addAttribute("updateRequest", new UserUpdateRequestWithPassword());
 
-        var updated = userService.update(id,
+        return new ModelAndView("user-update", map);
+    }
+
+    @PostMapping("/{id}/update")
+    @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
+    public void update(@PathVariable long id, Authentication authentication,
+                       @Valid UserUpdateRequestWithPassword request, HttpServletResponse response) throws IOException {
+
+        userService.update(id,
                 mapper.getUserFromUserUpdateRequestPass(request), request.getOldPassword());
-        log.info("=== PUT-USER === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== PUT-USER === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.ok(String.format("User with name %s successfully updated", updated.getName()));
+        response.sendRedirect("/api/users/" + id);
     }
 
-    @PutMapping("/names/{id}")
-    @PreAuthorize("@userAuthService.isUsersSame(#id, authentication.principal)")
-    public ResponseEntity<String> updateNames(@PathVariable long id, Authentication authentication,
-                                         @RequestBody @Valid UserUpdateRequest request) {
+    @GetMapping("/names/{id}/update")
+    @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
+    public ModelAndView getUpdateNamesRequest(@PathVariable long id, ModelMap map) {
+        map.addAttribute("id", id);
+        map.addAttribute("updateRequest", new UserUpdateRequest());
 
-        var updated = userService.updateNames(id, mapper.getUserFromUserUpdateRequest(request));
-        log.info("=== PUT-USER === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
-
-        return ResponseEntity.ok(String.format("User with name %s successfully updated", updated.getName()));
+        return new ModelAndView("user-update-names", map);
     }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("@userAuthService.isUsersSame(#id, authentication.principal)")
-    public ResponseEntity<String> delete(@PathVariable long id, Authentication authentication) {
-        var user = userService.readById(id);
+    @PostMapping("/names/{id}/update")
+    @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
+    public void updateNames(@PathVariable long id, Authentication authentication,
+                            @Valid UserUpdateRequest request, HttpServletResponse response) throws IOException {
+
+        userService.updateNames(id, mapper.getUserFromUserUpdateRequest(request));
+        log.info("=== PUT-USER-NAMES === {} === {}", getAuthorities(authentication), authentication.getName());
+        response.sendRedirect("/api/users/" + id);
+    }
+
+    @GetMapping("/{id}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
+    public void delete(@PathVariable long id, Authentication authentication, HttpServletResponse response) throws IOException {
         userService.delete(id);
-        log.info("=== DELETE-USER === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== DELETE-USER === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.ok(String.format("User with name %s successfully deleted", user.getName()));
+        response.sendRedirect("/api/auth/login");
     }
 }

@@ -1,17 +1,23 @@
 package com.board.job.controller;
 
+import com.board.job.model.dto.role.RoleRequest;
 import com.board.job.model.dto.role.RoleResponse;
+import com.board.job.model.entity.Role;
 import com.board.job.model.mapper.RoleMapper;
 import com.board.job.service.RoleService;
+import com.board.job.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Set;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
@@ -24,75 +30,122 @@ import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 public class RoleController {
     private final RoleService roleService;
     private final RoleMapper mapper;
+    private final UserService userService;
 
     @GetMapping
-    public Set<RoleResponse> getAll(Authentication authentication) {
+    public ModelAndView getAll(Authentication authentication, ModelMap map) {
         var roles = roleService.getAll()
                 .stream()
                 .map(mapper::getRoleResponseFromRole)
                 .collect(Collectors.toSet());
-        log.info("=== GET-ROLES === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== GET-ROLES === {} === {}", getAuthorities(authentication), authentication.getName());
+        map.addAttribute("roles", roles);
 
-        return roles;
+        return new ModelAndView("roles-list", map);
     }
 
     @GetMapping("/user/{user-id}")
-    public Set<RoleResponse> getAllUserRoles(@PathVariable(value = "user-id") long userId, Authentication authentication) {
+    public ModelAndView getAllUserRoles(@PathVariable(value = "user-id") long userId, Authentication authentication,
+                                        ModelMap map) {
         var roles = roleService.getAllByUserId(userId)
                 .stream()
                 .map(mapper::getRoleResponseFromRole)
                 .collect(Collectors.toSet());
-        log.info("=== GET-USER-ROLES === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== GET-USER-ROLES === {} === {}", getAuthorities(authentication), authentication.getName());
+        map.addAttribute("roles", roles);
+        map.addAttribute("userId", userId);
+        map.addAttribute("userName", userService.readById(userId).getName());
 
-        return roles;
+        return new ModelAndView("user-roles-get", map);
     }
 
     @GetMapping("/{id}")
-    public RoleResponse getRole(@PathVariable long id, Authentication authentication) {
+    public ModelAndView getRole(@PathVariable long id, Authentication authentication, ModelMap map) {
         var role = mapper.getRoleResponseFromRole(roleService.readById(id));
-        log.info("=== GET-ROLE-ID === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
-
-        return role;
+        log.info("=== GET-ROLE-ID === {} === {}", getAuthorities(authentication), authentication.getName());
+        map.addAttribute("role", role);
+        return new ModelAndView("role-get", map);
     }
 
     @GetMapping("/name")
     public RoleResponse getRoleByName(@RequestParam String name, Authentication authentication) {
         var role = mapper.getRoleResponseFromRole(roleService.readByName(name));
-        log.info("=== GET-ROLE-NAME === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== GET-ROLE-NAME === {} === {}", getAuthorities(authentication), authentication.getName());
 
         return role;
     }
 
+    @GetMapping("/create")
+    public ModelAndView createRequest(ModelMap map) {
+        map.addAttribute("roleRequest", new RoleRequest());
+
+        return new ModelAndView("role-create", map);
+    }
+
     @PostMapping
-    public ResponseEntity<String> create(@RequestParam String name, Authentication authentication) {
-        var role = roleService.create(name);
-        log.info("=== POST-ROLE === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@Valid RoleRequest roleRequest, Authentication authentication,
+                       HttpServletResponse response) throws IOException {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                String.format("Role with name %s created", role.getName())
-        );
+        roleService.create(roleRequest.getName());
+        log.info("=== POST-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
+
+        response.sendRedirect("/api/roles");
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable long id, @RequestParam String name,
-                                         Authentication authentication) {
-        var oldRoleName = roleService.readById(id).getName();
-        var roleNewName = roleService.update(id, name).getName();
-        log.info("=== PUT-ROLE === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+    @GetMapping("/user/{user-id}/add-role")
+    public ModelAndView addUserRoleRequest(@PathVariable(value = "user-id") long userId, ModelMap map) {
+        map.addAttribute("userId", userId);
+        map.addAttribute("roleRequest", new RoleRequest());
+        map.addAttribute("roles", roleService.getAll().stream().map(Role::getName));
 
-        return ResponseEntity.ok(
-                String.format("Role old name %s updated to %s", oldRoleName, roleNewName)
-        );
+        return new ModelAndView("role-user-add", map);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable long id, Authentication authentication) {
-        var roleName = roleService.readById(id).getName();
+    @PostMapping("/user/{user-id}/add-role")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addUserRole(@PathVariable(value = "user-id") long userId, @Valid RoleRequest roleRequest,
+                            Authentication authentication, HttpServletResponse response) throws IOException {
+        userService.addUserRole(userId, roleRequest.getName());
+        log.info("=== POST-USER-ADD-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
+
+        response.sendRedirect("/api/roles/user/" + userId);
+    }
+
+    @GetMapping("/{id}/update")
+    public ModelAndView updateRequest(@PathVariable long id, ModelMap map) {
+        map.addAttribute("id", id);
+        map.addAttribute("roleRequest", new RoleRequest());
+
+        return new ModelAndView("role-update", map);
+    }
+
+    @PostMapping("/{id}/update")
+    public void update(@PathVariable long id, @Valid RoleRequest roleRequest,
+                       Authentication authentication, HttpServletResponse response) throws IOException {
+        roleService.update(id, roleRequest.getName());
+        log.info("=== PUT-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
+
+        response.sendRedirect("/api/roles");
+    }
+
+    @GetMapping("/{id}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable long id, Authentication authentication, HttpServletResponse response) throws IOException {
         roleService.delete(id);
-        log.info("=== DELETE-ROLE === {} === {}", getAuthorities(authentication), authentication.getPrincipal());
+        log.info("=== DELETE-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.ok(
-                String.format("Role with name %s successfully deleted", roleName)
-        );
+        response.sendRedirect("/api/roles");
+    }
+
+    @GetMapping("/user/{user-id}/delete-role/{role-name}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserRole(@PathVariable(name = "user-id") long userId,
+                               @PathVariable(name = "role-name") String roleName, Authentication authentication,
+                               HttpServletResponse response) throws IOException {
+        userService.deleteUserRole(userId, roleName);
+        log.info("=== DELETE-USER-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
+
+        response.sendRedirect("/api/roles/user/" + userId);
     }
 }

@@ -25,14 +25,14 @@ public class Messenger {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "candidate_id")
-    private CandidateProfile candidate;
+    private CandidateProfile candidateProfile;
 
     public Messenger() {
     }
 
     private Messenger(Vacancy vacancy, CandidateProfile candidate) {
         this.vacancy = vacancy;
-        this.candidate = candidate;
+        this.candidateProfile = candidate;
     }
 
     @Override

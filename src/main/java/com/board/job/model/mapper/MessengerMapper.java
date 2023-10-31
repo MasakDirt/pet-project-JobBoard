@@ -21,13 +21,16 @@ public interface MessengerMapper {
     @Mapping(target = "category", expression = "java(messenger.getVacancy().getCategory())")
     @Mapping(target = "lookingFor", expression = "java(messenger.getVacancy().getLookingFor())")
     @Mapping(target = "employerName", expression = "java(messenger.getVacancy().getEmployerProfile().getEmployerName())")
-    CutMessengerResponse getCutMessengerResponseFromMessenger(Messenger messenger);
+    @Mapping(target = "lastMessage", source = "lastMessage")
+    CutMessengerResponse getCutMessengerResponseFromMessenger(Messenger messenger, String lastMessage);
 
+    @Mapping(target = "vacancy", expression = "java(messenger.getVacancy())")
     @Mapping(target = "feedbacks", expression = "java(refactorMessages(feedbacks))")
     @Mapping(target = "country", expression = "java(messenger.getVacancy().getCountry())")
     @Mapping(target = "postedAt", expression = "java(messenger.getVacancy().getPostedAt())")
     @Mapping(target = "category", expression = "java(messenger.getVacancy().getCategory())")
     @Mapping(target = "lookingFor", expression = "java(messenger.getVacancy().getLookingFor())")
+    @Mapping(target = "companyName", expression = "java(messenger.getVacancy().getEmployerProfile().getCompanyName())")
     @Mapping(target = "employerName", expression = "java(messenger.getVacancy().getEmployerProfile().getEmployerName())")
     FullMessengerResponse getFullMessengerResponseFromMessenger(Messenger messenger, List<Feedback> feedbacks);
 

@@ -12,4 +12,6 @@ public interface CandidateContactMapper {
     CandidateContactResponse getCandidateContactResponseFromCandidateContact(CandidateContact contact);
 
     CandidateContact getCandidateContactFromCandidateContactRequest(CandidateContactRequest request);
+
+    CandidateContactRequest getCandidateContactRequestFromCandidateContact(CandidateContact candidateContact);
 }

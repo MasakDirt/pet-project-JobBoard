@@ -71,7 +71,7 @@ public class CandidateProfile {
     private User owner;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "candidateProfile", cascade = CascadeType.ALL)
     private List<Messenger> messengers;
 
     public CandidateProfile() {

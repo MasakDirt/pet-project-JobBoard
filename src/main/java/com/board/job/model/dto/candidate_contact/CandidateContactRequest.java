@@ -1,17 +1,20 @@
 package com.board.job.model.dto.candidate_contact;
 
+import com.board.job.model.entity.Image;
+import com.board.job.model.entity.PDF_File;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 @Data
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CandidateContactRequest {
+    private long id;
 
     @JsonProperty(value = "candidate_name")
     private String candidateName;
@@ -43,4 +46,8 @@ public class CandidateContactRequest {
             message = "Must be a valid portfolio link!")
     @JsonProperty(value = "portfolio_url")
     private String portfolioUrl;
+
+    private Image image;
+
+    private PDF_File pdf;
 }

@@ -1,5 +1,6 @@
 package com.board.job.service.candidate;
 
+import com.board.job.model.entity.User;
 import com.board.job.model.entity.candidate.CandidateContact;
 import com.board.job.repository.candidate.CandidateContactRepository;
 import com.board.job.service.UserService;
@@ -14,16 +15,11 @@ public class CandidateContactService {
     private final CandidateContactRepository candidateContactRepository;
 
     public CandidateContact create(long ownerId, CandidateContact candidateContact) {
-        var owner = userService.readById(ownerId);
+        User owner = userService.readById(ownerId);
         candidateContact.setOwner(owner);
-        var candidateName = candidateContact.getCandidateName();
-        var candidateEmail = candidateContact.getEmail();
 
-        if (candidateName == null || candidateName.trim().isEmpty())
-            candidateContact.setCandidateName(owner.getName());
-
-        if (candidateEmail == null || candidateEmail.trim().isEmpty())
-            candidateContact.setEmail(owner.getEmail());
+        candidateContact.setCandidateName(candidateContact.getCandidateName(), owner.getName());
+        candidateContact.setEmail(candidateContact.getEmail(), owner.getEmail());
 
         return candidateContactRepository.save(candidateContact);
     }
