@@ -50,20 +50,25 @@ public class VacancyService {
         return vacancyRepository.findAll();
     }
 
-    public Page<Vacancy> getSorted(Pageable pageable, String searchText) {
-        if (searchText != null && !searchText.trim().isEmpty()) {
-            return findByLookingForContaining(searchText, pageable, pageable.getPageSize());
+    public Page<Vacancy> getSortedVacancies(Pageable pageable, String searchText) {
+        if (checkSearchText(searchText)) {
+            return findBySearchText(pageable, searchText);
         }
+
         return vacancyRepository.findAll(pageable);
     }
 
-    private Page<Vacancy> findByLookingForContaining(String searchText, Pageable pageable, int size) {
+    private boolean checkSearchText(String searchText) {
+        return searchText != null && !searchText.trim().isEmpty();
+    }
+
+    private Page<Vacancy> findBySearchText(Pageable pageable, String searchText) {
         return vacancyRepository.findAll()
                 .stream()
                 .filter(vacancy -> vacancy.getLookingFor().contains(searchText))
                 .collect(Collectors.collectingAndThen(
                         Collectors.toList(),
-                        list -> new PageImpl<>(list, pageable, size)
+                        list -> new PageImpl<>(list, pageable, pageable.getPageSize())
                 ));
     }
 
