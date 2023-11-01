@@ -95,7 +95,7 @@
         <div id="continue-as-employer-container">
             <a class="btn btn-employer"
                th:if="${owner.employerProfile == null}"
-               th:href="@{|/api/users/${user.id}/employer-profiles/create|}">Continue as Employer</a>
+               th:href="@{|/api/users/${owner.id}/employer-profiles/create|}">Continue as Employer</a>
             <a class="btn btn-employer"
                th:unless="${owner.employerProfile == null}"
                th:href="@{|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}|}">Continue as
