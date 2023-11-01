@@ -42,7 +42,7 @@ public class VacancyController {
             @PathVariable("owner-id") long ownerId,
             @RequestParam(name = "sort_by", defaultValue = "postedAt") String[] sortBy,
             @RequestParam(name = "sort_order", defaultValue = "desc") String sortedOrder,
-            @RequestParam(name = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(name = "searchText", required = false, defaultValue = "") String searchText,
             Authentication authentication, ModelMap map) {
 
