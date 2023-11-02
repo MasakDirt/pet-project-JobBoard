@@ -59,10 +59,10 @@ public class EmployerProfileController {
                        @Valid EmployerProfileRequest request, Authentication authentication,
                        HttpServletResponse response) throws IOException {
 
-        var created = employerProfileService.create(ownerId, mapper.getEmployerProfileFromEmployerProfileRequest(request));
+        employerProfileService.create(ownerId, mapper.getEmployerProfileFromEmployerProfileRequest(request));
         log.info("=== POST-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/auth/login"));
+        response.sendRedirect("/api/auth/login");
     }
 
     @PostMapping("/{id}/update")
@@ -72,7 +72,7 @@ public class EmployerProfileController {
                        @Valid EmployerProfileRequest request, Authentication authentication,
                        HttpServletResponse response) throws IOException {
 
-        var updated = employerProfileService.update(id, mapper.getEmployerProfileFromEmployerProfileRequest(request));
+        employerProfileService.update(id, mapper.getEmployerProfileFromEmployerProfileRequest(request));
         log.info("=== PUT-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
         response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, id));
