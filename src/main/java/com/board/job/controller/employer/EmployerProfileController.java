@@ -42,7 +42,7 @@ public class EmployerProfileController {
         return new ModelAndView("employers/employer-profile-get", map);
     }
 
-    @GetMapping("/{id}/create")
+    @GetMapping("/create")
     @PreAuthorize("@userAuthService.isUsersSame(#ownerId, authentication.name)")
     public ModelAndView getCreateForm(@PathVariable("owner-id") long ownerId, ModelMap map) {
 
@@ -62,7 +62,7 @@ public class EmployerProfileController {
         var created = employerProfileService.create(ownerId, mapper.getEmployerProfileFromEmployerProfileRequest(request));
         log.info("=== POST-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, created.getId()));
+        response.sendRedirect(String.format("/api/auth/login"));
     }
 
     @PostMapping("/{id}/update")
