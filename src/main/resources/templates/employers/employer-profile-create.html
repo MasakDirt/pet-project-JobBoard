@@ -90,8 +90,9 @@
 <header>
     <div th:replace="~{headers/header-employer.html}"></div>
 </header>
+<br>
 <form class="form-horizontal"
-      th:action="@{|/api/users/${owner.id}/employer-profile|}"
+      th:action="@{|/api/users/${owner.id}/employer-profiles|}"
       method="post">
     <div class="form-group">
         <label class="col-sm-2 control-label" for="employerName">Employer Name:</label>
