@@ -38,21 +38,9 @@ public class CandidateProfileController {
     private final UserService userService;
     private final CandidateProfileService candidateProfileService;
 
-    @GetMapping
+    @GetMapping()
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
-    public Set<CutCandidateProfileResponse> getAll(Authentication authentication) {
-        var response = candidateProfileService.getAll()
-                .stream()
-                .map(mapper::getCutCandidateProfileResponseFromCandidateProfile)
-                .collect(Collectors.toSet());
-        log.info("=== GET-CANDIDATE_PROFILES === {} == {}", getAuthorities(authentication), authentication.getName());
-
-        return response;
-    }
-
-    @GetMapping("/sorted")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
-    public List<CutCandidateProfileResponse> getSortedVacancies(
+    public List<CutCandidateProfileResponse> getSortedCandidates(
             @RequestParam(name = "sort_by", defaultValue = "id") String[] sortBy,
             @RequestParam(name = "sort_order", defaultValue = "desc") String sortedOrder,
             @RequestParam(defaultValue = "0") int page, Authentication authentication) {
