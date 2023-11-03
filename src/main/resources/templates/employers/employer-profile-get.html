@@ -121,7 +121,7 @@
 <header>
     <div th:replace="~{headers/header-employer.html}"></div>
 </header>
-
+<br>
 <div class="row">
     <div class="col-xs-6 col-md-4">
         <div class="col-md-offset-2 col-sm-8">
@@ -165,7 +165,7 @@
     <div class="col-xs-6 col-md-4">
     </div>
 </div>
-
+<br>
 <form class="form-horizontal"
       th:action="@{|/api/users/${owner.id}/employer-profiles/${employerProfile.id}/update|}"
       method="post">
