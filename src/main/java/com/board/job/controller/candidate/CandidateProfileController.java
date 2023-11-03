@@ -4,6 +4,7 @@ import com.board.job.model.dto.candidate_profile.CandidateProfileRequest;
 import com.board.job.model.entity.sample.Category;
 import com.board.job.model.entity.sample.LanguageLevel;
 import com.board.job.model.mapper.candidate.CandidateProfileMapper;
+import com.board.job.service.MessengerService;
 import com.board.job.service.UserService;
 import com.board.job.service.candidate.CandidateProfileService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,13 +29,13 @@ import static com.board.job.controller.HelperForPagesCollections.*;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/users/{owner-id}/candidate-profiles")
 public class CandidateProfileController {
     private final CandidateProfileMapper mapper;
     private final UserService userService;
+    private final MessengerService messengerService;
     private final CandidateProfileService candidateProfileService;
 
-    @GetMapping
+    @GetMapping("/api/users/{owner-id}/candidate-profiles")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
     public ModelAndView getSortedCandidates(
             @RequestParam(name = "sort_by", defaultValue = "id") String[] sortBy,
@@ -58,23 +59,39 @@ public class CandidateProfileController {
         return new ModelAndView("employers/candidates-list", map);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/users/{owner-id}/candidate-profiles/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER') || " +
             "@authCandidateProfileService.isUsersSameByIdAndUserOwnerCandidateProfile(#ownerId, #id, authentication.name)")
     public ModelAndView getById(@PathVariable("owner-id") long ownerId, @PathVariable long id,
                                 Authentication authentication, ModelMap map) {
-        map.addAttribute("owner", userService.readById(ownerId));
-        map.addAttribute("candidateProfileRequest", mapper.
-                getCandidateProfileRequestFromCandidateProfile(candidateProfileService.readById(id)));
-        map.addAttribute("categories", Arrays.stream(Category.values()).map(Category::getValue));
-        map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
-        map.addAttribute("ukr_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
+        addingMapAttributesToGetForm(ownerId, id, map);
 
         log.info("=== GET-CANDIDATE_PROFILE === {} - {}", getAuthorities(authentication), authentication.getName());
         return new ModelAndView("candidates/candidate-profile-get", map);
     }
 
-    @GetMapping("/create")
+    @GetMapping("/api/users/{owner-id}/employer/{employer-id}/candidate-profiles/{candidate-id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    public ModelAndView getCandidateByEmployer(@PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+                                               @PathVariable("candidate-id") long candidateId, Authentication authentication,
+                                               ModelMap map) {
+        addingMapAttributesToGetForm(ownerId, candidateId, map);
+        map.addAttribute("messenger", messengerService.readByEmployerProfileIdAndCandidateProfileId(employerId, candidateId));
+
+        log.info("=== GET-CANDIDATE_PROFILE === {} - {}", getAuthorities(authentication), authentication.getName());
+        return new ModelAndView("employers/candidate-get", map);
+    }
+
+    private void addingMapAttributesToGetForm(long ownerId, long candidateId, ModelMap map) {
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("candidateProfileRequest", mapper.
+                getCandidateProfileRequestFromCandidateProfile(candidateProfileService.readById(candidateId)));
+        map.addAttribute("categories", Arrays.stream(Category.values()).map(Category::getValue));
+        map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
+        map.addAttribute("ukr_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
+    }
+
+    @GetMapping("/api/users/{owner-id}/candidate-profiles/create")
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
     public ModelAndView createRequest(@PathVariable("owner-id") long ownerId, ModelMap map) {
         map.addAttribute("owner", userService.readById(ownerId));
@@ -86,7 +103,7 @@ public class CandidateProfileController {
         return new ModelAndView("candidates/candidate-profile-create", map);
     }
 
-    @PostMapping
+    @PostMapping("/api/users/{owner-id}/candidate-profiles")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
     public void create(@PathVariable("owner-id") long ownerId, @Valid CandidateProfileRequest request,
@@ -98,7 +115,7 @@ public class CandidateProfileController {
         response.sendRedirect("/api/auth/login");
     }
 
-    @PostMapping("/{id}/update")
+    @PostMapping("/api/users/{owner-id}/candidate-profiles/{id}/update")
     @PreAuthorize("@authCandidateProfileService.isUsersSameByIdAndUserOwnerCandidateProfile(#ownerId, #id, authentication.name)")
     public void update(@PathVariable("owner-id") long ownerId, @PathVariable long id,
                        @Valid CandidateProfileRequest request, Authentication authentication,
@@ -110,7 +127,7 @@ public class CandidateProfileController {
         response.sendRedirect(String.format("/api/users/%d/candidate-profiles/%d", ownerId, id));
     }
 
-    @GetMapping("/{id}/delete")
+    @GetMapping("/api/users/{owner-id}/candidate-profiles/{id}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@authCandidateProfileService.isUsersSameByIdAndUserOwnerCandidateProfile(#ownerId, #id, authentication.name)")
     public void delete(
