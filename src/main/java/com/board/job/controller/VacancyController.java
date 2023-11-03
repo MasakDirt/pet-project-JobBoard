@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static com.board.job.controller.HelperForPagesCollections.getSortByValues;
 
 @Slf4j
 @RestController
@@ -61,11 +62,6 @@ public class VacancyController {
 
         return new ModelAndView("candidates/vacancies-list", map);
     }
-
-    private String getSortByValues(String sortBy) {
-        return sortBy.substring(1, sortBy.length() - 1);
-    }
-
 
     @GetMapping("/vacancies/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
