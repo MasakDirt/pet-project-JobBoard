@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Candidate</title>
+
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .vacancy-card {
+            background-color: #333;
+            margin-bottom: 20px;
+        }
+
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div th:replace="~{headers/header-entities-employer.html}"></div>
+</header>
+<div class="container">
+    <h2>Candidate</h2>
+    <h3 style="font-weight: bold; color: #6a1e9b" th:text="'For Category: ' + ${candidateProfileRequest.category}"></h3>
+    <div class="card vacancy-card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-8">
+                    <div class="form-group">
+                        <h2 class="mb-2" th:text="${candidateProfileRequest.position}"></h2>
+                    </div>
+
+                    <div class="form-group">
+                        <h4 th:text="'Country: ' + ${candidateProfileRequest.countryOfResidence}"></h4>
+                    </div>
+
+                    <div class="form-group" th:if="${candidateProfileRequest.cityOfResidence != null}">
+                        <h4 th:text="'City: ' + ${candidateProfileRequest.cityOfResidence}"></h4>
+                    </div>
+
+                    <div class="form-group">
+                        <h5 th:text="'English Level: ' + ${candidateProfileRequest.englishLevel}"></h5>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 col-md-4">
+                    <div class="form-group">
+                        <h4 th:text="'Salary: ' + ${candidateProfileRequest.salaryExpectations} + '$'"></h4>
+                    </div>
+
+                    <div class="form-group">
+                        <h5 th:text="'Category: ' + ${candidateProfileRequest.category}"></h5>
+                    </div>
+
+                    <div class="form-group">
+                        <h5 th:text="'Work Experience: ' + ${candidateProfileRequest.workExperience + ' years'}"></h5>
+                    </div>
+
+                    <div class="form-group">
+                        <h5 th:text="'Ukrainian Level: ' + ${candidateProfileRequest.ukrainianLevel}"></h5>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <h5 th:text="'Experience:'"></h5>
+                <p th:utext="${candidateProfileRequest.experienceExplanation}"></p>
+            </div>
+
+            <div class="form-group" th:if="${candidateProfileRequest.achievements != null}">
+                <h6 th:text="'Achievements:'"></h6>
+                <p th:utext="${candidateProfileRequest.achievements}"></p>
+            </div>
+
+
+<!--            <div class="row">-->
+<!--                <div class="col-xs-12 col-md-8">-->
+<!--                    <form th:if="${messenger.isEmpty()}"-->
+<!--                          th:action="@{|/api/users/${owner.id}/vacancies/${vacancy.id}/candidate/${owner.candidateProfile.id}/messengers|}"-->
+<!--                          th:method="post">-->
+<!--                        <div class="form-group">-->
+<!--                            <input type="button" class="btn btn-purple" id="myButton"-->
+<!--                                   onclick="replaceButtonWithTextarea()" value="Feedback"/>-->
+<!--                            <label for="myTextarea">-->
+<!--                                <textarea id="myTextarea" name="text" rows="4"-->
+<!--                                          style="display: none; width: 650px"></textarea>-->
+<!--                            </label>-->
+<!--                            <input id="sendButton" type="submit" class="btn btn-purple" style="display: none"-->
+<!--                                   value="Send"/>-->
+<!--                        </div>-->
+<!--                    </form>-->
+
+<!--                    <div class="form-group" th:if="${messenger.isPresent()}">-->
+<!--                        <a type="button"-->
+<!--                           th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.get().id}/feedbacks|}"-->
+<!--                           class="btn btn-purple">Check Feedbacks</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function replaceButtonWithTextarea() {
+        const button = document.getElementById('myButton');
+        const textarea = document.getElementById('myTextarea');
+        const sendButton = document.getElementById('sendButton');
+        button.style.display = 'none';
+        textarea.style.display = 'block';
+        sendButton.style.display = 'block';
+    }
+</script>
+</body>
+</html>
