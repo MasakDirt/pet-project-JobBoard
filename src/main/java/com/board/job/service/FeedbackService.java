@@ -15,13 +15,23 @@ import java.util.List;
 public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
 
-    public Feedback create(long ownerId, long messengerId, String text) {
+    public Feedback create(long ownerId, long messengerForVacancyReplyId, long messengerForEmployerReplyId, String text) {
+        checkForSelectingTwoMessengers(messengerForVacancyReplyId, messengerForEmployerReplyId);;
+
         var feedback = new Feedback();
         feedback.setText(text);
         feedback.setOwnerId(ownerId);
-        feedback.setMessengerId(messengerId);
+        feedback.setMessengerForVacanciesReplyId(messengerForVacancyReplyId);
+        feedback.setMessengerForEmployerReplyId(messengerForEmployerReplyId);
 
         return feedbackRepository.save(feedback);
+    }
+
+    private void checkForSelectingTwoMessengers(long messengerForVacancyReplyId, long messengerForEmployerReplyId) throws IllegalArgumentException {
+        if ((messengerForVacancyReplyId > 0 && messengerForEmployerReplyId > 0)
+                || (messengerForVacancyReplyId == messengerForEmployerReplyId)) {
+         throw new IllegalArgumentException("User cannot select 2 messengers");
+        }
     }
 
     public Feedback readById(String id) {
@@ -40,12 +50,12 @@ public class FeedbackService {
         feedbackRepository.delete(readById(id));
     }
 
-    public List<Feedback> getAllMessengerFeedbacks(long messengerId) {
-        return feedbackRepository.findAllByMessengerId(messengerId);
+    public List<Feedback> getAllVacancyMessengerFeedbacks(long messengerId) {
+        return feedbackRepository.findAllByMessengerForVacanciesReplyId(messengerId);
     }
 
     public String getLastFeedbackText(long messengerId) {
-        List<Feedback> feedbacks = getAllMessengerFeedbacks(messengerId)
+        List<Feedback> feedbacks = getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()
                 .sorted(Comparator.comparing(Feedback::getSendAt))
                 .toList();
