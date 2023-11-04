@@ -20,8 +20,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static java.lang.Integer.MIN_VALUE;
 
 @Slf4j
 @RestController
@@ -42,7 +44,7 @@ public class FeedbackController {
             @PathVariable long messengerId, Authentication authentication, ModelMap map
     ) {
         var messenger = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(messengerId),
-                feedbackService.getAllMessengerFeedbacks(messengerId));
+                feedbackService.getAllVacancyMessengerFeedbacks(messengerId));
         log.info("=== GET-CANDIDATE-MESSENGER-FEEDBACKS === {} == {}", getAuthorities(authentication), authentication.getName());
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
@@ -59,7 +61,7 @@ public class FeedbackController {
             @PathVariable("vacancy-id") long vacancyId, @PathVariable long id, Authentication authentication
     ) {
         var responses = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(id),
-                feedbackService.getAllMessengerFeedbacks(id));
+                feedbackService.getAllVacancyMessengerFeedbacks(id));
         log.info("=== GET-VACANCY-MESSENGER-FEEDBACKS === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return responses;
@@ -99,9 +101,9 @@ public class FeedbackController {
     public void createByCandidate(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable("messenger-id") long messengerId, String text, Authentication authentication,
-            HttpServletResponse response) throws IOException {
+            Random random, HttpServletResponse response) throws IOException {
 
-        feedbackService.create(ownerId, messengerId, text);
+        feedbackService.create(ownerId, messengerId, random.nextInt(MIN_VALUE, 0), text);
         log.info("=== POST-CANDIDATE-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
         response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
@@ -114,9 +116,9 @@ public class FeedbackController {
     public ResponseEntity<String> createByEmployer(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("vacancy-id") long vacancyId, @PathVariable("messenger-id") long messengerId,
-            @RequestParam String text, Authentication authentication
+            @RequestParam String text, Random random, Authentication authentication
     ) {
-        feedbackService.create(ownerId, messengerId, text);
+        feedbackService.create(ownerId, messengerId, random.nextInt(MIN_VALUE, 0), text);
         log.info("=== POST-EMPLOYER-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return ResponseEntity.status(HttpStatus.CREATED)
