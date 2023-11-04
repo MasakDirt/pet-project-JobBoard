@@ -13,6 +13,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class MessengerService {
+    //    ---------------- VACANCIES REPLY ---------------
     private final MessengerRepository messengerRepository;
     private final VacancyService vacancyService;
     private final CandidateProfileService candidateProfileService;
@@ -33,6 +34,10 @@ public class MessengerService {
 
     public Optional<Messenger> readByOwnerAndVacancy(long ownerId, long vacancyId) {
         return messengerRepository.findByCandidateProfile_OwnerIdAndVacancyId(ownerId, vacancyId);
+    }
+
+    public Optional<Messenger> readByEmployerProfileIdAndCandidateProfileId(long employerProfileId, long candidateProfileId) {
+        return messengerRepository.findByVacancy_EmployerProfileIdAndCandidateProfileId(employerProfileId, candidateProfileId);
     }
 
     public void delete(long id) {
