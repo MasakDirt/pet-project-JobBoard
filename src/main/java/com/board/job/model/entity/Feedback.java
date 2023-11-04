@@ -25,8 +25,11 @@ public class Feedback {
     @CreationTimestamp
     private LocalDateTime sendAt;
 
-    @Column(name = "messenger_id")
-    private long messengerId;
+    @Column(name = "messenger_vacancy_reply_id")
+    private long messengerForVacanciesReplyId;
+
+    @Column(name = "messenger_employer_reply_id")
+    private long messengerForEmployerReplyId;
 
     @Column(name = "owner_id")
     private long ownerId;
@@ -40,12 +43,14 @@ public class Feedback {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Feedback feedback = (Feedback) o;
-        return messengerId == feedback.messengerId && Objects.equals(id, feedback.id) && Objects.equals(text, feedback.text);
+        return messengerForVacanciesReplyId == feedback.messengerForVacanciesReplyId &&
+                messengerForEmployerReplyId == feedback.messengerForEmployerReplyId &&
+                Objects.equals(id, feedback.id) && Objects.equals(text, feedback.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, messengerId);
+        return Objects.hash(id, text, messengerForVacanciesReplyId, messengerForEmployerReplyId);
     }
 
     @Override
@@ -53,7 +58,8 @@ public class Feedback {
         return "Feedback{" +
                 "id='" + id + '\'' +
                 ", text='" + text + '\'' +
-                ", messengerId=" + messengerId +
+                ", messengerForVacanciesReplyId=" + messengerForVacanciesReplyId +
+                ", messengerForEmployerReplyId=" + messengerForEmployerReplyId +
                 '}';
     }
 }
