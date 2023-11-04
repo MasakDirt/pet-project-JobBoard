@@ -15,25 +15,25 @@ public class AuthFeedbackService {
     private final FeedbackService feedbackService;
 
     public boolean isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback(
-            long ownerId, long candidateId, long messengerId, String id, String authEmail
+            long ownerId, long candidateId, long messengerForVacanciesReplyId, String id, String authEmail
     ) {
         var feedback = getFeedback(id);
         return userAuthService.isUsersSame(ownerId, authEmail)
                 && candidateProfileService.getProfile(candidateId).getOwner().getId() == ownerId
-                && authMessengerService.getMessenger(messengerId).getCandidateProfile().getId() == candidateId
-                && feedback.getMessengerId() == messengerId
+                && authMessengerService.getMessenger(messengerForVacanciesReplyId).getCandidateProfile().getId() == candidateId
+                && feedback.getMessengerForVacanciesReplyId() == messengerForVacanciesReplyId
                 && feedback.getOwnerId() == ownerId;
     }
 
     public boolean isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback(
-            long ownerId, long employerId, long vacancyId, long messengerId, String id,  String authEmail
+            long ownerId, long employerId, long vacancyId, long messengerForVacanciesReplyId, String id,  String authEmail
     ) {
-        var messenger = authMessengerService.getMessenger(messengerId);
+        var messenger = authMessengerService.getMessenger(messengerForVacanciesReplyId);
         return userAuthService.isUsersSame(ownerId, authEmail)
                 && employerProfileService.getEmployer(employerId).getOwner().getId() == ownerId
                 && messenger.getVacancy().getEmployerProfile().getId() == employerId
                 && messenger.getVacancy().getId() == vacancyId
-                && getFeedback(id).getMessengerId() == messengerId;
+                && getFeedback(id).getMessengerForVacanciesReplyId() == messengerForVacanciesReplyId;
     }
 
     private Feedback getFeedback(String id) {
