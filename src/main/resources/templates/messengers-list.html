@@ -52,46 +52,46 @@
     <div class="cards-container">
         <h2>Messengers</h2>
 
-        <div th:each="messenger: ${messengers}">
+        <div th:each="messengerForVacanciesReply: ${messengers}">
             <div class="card vacancy-card">
                 <div class="card-body">
                     <div class="row">
 
                         <div class="col-xs-12 col-sm-6 col-md-8">
                             <div class="form-group">
-                                <h2 class="mb-2" th:text="${messenger.lookingFor}"></h2>
+                                <h2 class="mb-2" th:text="${messengerForVacanciesReply.lookingFor}"></h2>
                             </div>
                             <div class="form-group">
-                                <h3 th:text="${messenger.employerName}"></h3>
+                                <h3 th:text="${messengerForVacanciesReply.employerName}"></h3>
                             </div>
 
-                            <div th:if="${messenger.lastMessage != null}">
-                                <div class="form-group" th:unless="${messenger.lastMessage.length() > 55}">
-                                    <h6 th:text="${messenger.lastMessage}"></h6>
+                            <div th:if="${messengerForVacanciesReply.lastMessage != null}">
+                                <div class="form-group" th:unless="${messengerForVacanciesReply.lastMessage.length() > 55}">
+                                    <h6 th:text="${messengerForVacanciesReply.lastMessage}"></h6>
                                 </div>
 
-                                <div class="form-group" th:if="${messenger.lastMessage.length() > 55}">
-                                    <h6 th:text="${messenger.lastMessage.substring(0, 55) + '...'}"></h6>
+                                <div class="form-group" th:if="${messengerForVacanciesReply.lastMessage.length() > 55}">
+                                    <h6 th:text="${messengerForVacanciesReply.lastMessage.substring(0, 55) + '...'}"></h6>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xs-6 col-md-4">
                             <div class="form-group">
-                                <h4 th:text="${messenger.category.value}"></h4>
+                                <h4 th:text="${messengerForVacanciesReply.category.value}"></h4>
                             </div>
                             <div class="form-group">
-                                <h5 th:text="${messenger.country}"></h5>
+                                <h5 th:text="${messengerForVacanciesReply.country}"></h5>
                             </div>
 
                             <div class="form-group">
-                                <h6 th:text="${messenger.postedAt.format(dateFormatter)}"></h6>
+                                <h6 th:text="${messengerForVacanciesReply.postedAt.format(dateFormatter)}"></h6>
                             </div>
                             <div class="form-group">
                                 <a class="btn btn-purple"
-                                   th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.id}/feedbacks|}">Select</a>
+                                   th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messengerForVacanciesReply.id}/feedbacks|}">Select</a>
                                 <a class="btn btn-purple"
-                                   th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.id}/delete|}">Delete</a>
+                                   th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messengerForVacanciesReply.id}/delete|}">Delete</a>
                             </div>
                         </div>
                     </div>

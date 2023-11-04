@@ -11,8 +11,8 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@Table(name = "messengers")
-public class Messenger {
+@Table(name = "messengers_for_vacancies_reply")
+public class MessengerForVacanciesReply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -27,10 +27,10 @@ public class Messenger {
     @JoinColumn(name = "candidate_id")
     private CandidateProfile candidateProfile;
 
-    public Messenger() {
+    public MessengerForVacanciesReply() {
     }
 
-    private Messenger(Vacancy vacancy, CandidateProfile candidate) {
+    private MessengerForVacanciesReply(Vacancy vacancy, CandidateProfile candidate) {
         this.vacancy = vacancy;
         this.candidateProfile = candidate;
     }
@@ -39,8 +39,8 @@ public class Messenger {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Messenger messenger = (Messenger) o;
-        return id == messenger.id;
+        MessengerForVacanciesReply messengerForVacanciesReply = (MessengerForVacanciesReply) o;
+        return id == messengerForVacanciesReply.id;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class Messenger {
                 '}';
     }
 
-    public static Messenger of(Vacancy vacancy, CandidateProfile candidateProfile) {
-        return new Messenger(vacancy, candidateProfile);
+    public static MessengerForVacanciesReply of(Vacancy vacancy, CandidateProfile candidateProfile) {
+        return new MessengerForVacanciesReply(vacancy, candidateProfile);
     }
 }

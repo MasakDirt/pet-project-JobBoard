@@ -1,6 +1,6 @@
 package com.board.job.service;
 
-import com.board.job.model.entity.Messenger;
+import com.board.job.model.entity.MessengerForVacanciesReply;
 import com.board.job.repository.MessengerRepository;
 import com.board.job.service.candidate.CandidateProfileService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,25 +18,25 @@ public class MessengerService {
     private final VacancyService vacancyService;
     private final CandidateProfileService candidateProfileService;
 
-    public Messenger create(long vacancyId, long candidateProfileId) {
+    public MessengerForVacanciesReply create(long vacancyId, long candidateProfileId) {
         return messengerRepository.save(
-                Messenger.of(
+                MessengerForVacanciesReply.of(
                         vacancyService.readById(vacancyId),
                         candidateProfileService.readById(candidateProfileId)
                 )
         );
     }
 
-    public Messenger readById(long id) {
+    public MessengerForVacanciesReply readById(long id) {
         return messengerRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Messenger not found"));
     }
 
-    public Optional<Messenger> readByOwnerAndVacancy(long ownerId, long vacancyId) {
+    public Optional<MessengerForVacanciesReply> readByOwnerAndVacancy(long ownerId, long vacancyId) {
         return messengerRepository.findByCandidateProfile_OwnerIdAndVacancyId(ownerId, vacancyId);
     }
 
-    public Optional<Messenger> readByEmployerProfileIdAndCandidateProfileId(long employerProfileId, long candidateProfileId) {
+    public Optional<MessengerForVacanciesReply> readByEmployerProfileIdAndCandidateProfileId(long employerProfileId, long candidateProfileId) {
         return messengerRepository.findByVacancy_EmployerProfileIdAndCandidateProfileId(employerProfileId, candidateProfileId);
     }
 
@@ -44,15 +44,15 @@ public class MessengerService {
         messengerRepository.delete(readById(id));
     }
 
-    public List<Messenger> getAll() {
+    public List<MessengerForVacanciesReply> getAll() {
         return messengerRepository.findAll();
     }
 
-    public List<Messenger> getAllByCandidateProfileId(long candidateProfileId) {
+    public List<MessengerForVacanciesReply> getAllByCandidateProfileId(long candidateProfileId) {
         return messengerRepository.findAllByCandidateProfileId(candidateProfileId);
     }
 
-    public List<Messenger> getAllByVacancyId(long vacancyId) {
+    public List<MessengerForVacanciesReply> getAllByVacancyId(long vacancyId) {
         return messengerRepository.findAllByVacancyId(vacancyId);
     }
 }

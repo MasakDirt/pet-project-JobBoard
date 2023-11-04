@@ -4,7 +4,6 @@ import com.board.job.controller.HelperForPagesCollections;
 import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.repository.candidate.CandidateProfileRepository;
 import com.board.job.service.UserService;
-import com.board.job.service.VacancyService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,10 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.domain.Sort.*;
 
 @Service
 @AllArgsConstructor
@@ -40,7 +36,7 @@ public class CandidateProfileService {
         var old = readById(id);
         updated.setId(id);
         updated.setOwner(old.getOwner());
-        updated.setMessengers(old.getMessengers());
+        updated.setMessengerForVacanciesReplies(old.getMessengerForVacanciesReplies());
         return candidateProfileRepository.save(updated);
     }
 

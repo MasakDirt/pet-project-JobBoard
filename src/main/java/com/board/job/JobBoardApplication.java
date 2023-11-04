@@ -28,7 +28,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
+
+import static java.lang.Integer.*;
 
 @Slf4j
 @AllArgsConstructor
@@ -47,6 +50,7 @@ public class JobBoardApplication implements CommandLineRunner {
     private final FeedbackService feedbackService;
     private final ImageService imageService;
     private final PDFService pdfService;
+    private final MessengerForEmployersReplyService messengerForEmployersReplyService;
 
     private static void setToProperties() {
         String username = System.getenv("username");
@@ -205,53 +209,47 @@ public class JobBoardApplication implements CommandLineRunner {
 
         //      !!!! IMAGES !!!!
         Image imageAdminCandidate = createImageForCandidate(candidateContactAdmin.getId(), null);
-
         Image imageNikole = createImageForCandidate(candidateContactNikole.getId(), "files/photos/nicolas.jpg");
-
         Image imageDonald = createImageForCandidate(candidateContactDonald.getId(), "files/photos/donaldPicture.jpg");
-
         Image imageHelen = createImageForCandidate(candidateContactHelen.getId(), "files/photos/helenPicture.jpg");
-
         Image imageAdminEmployer = imageService.update(imageAdminCandidate.getId(), setContent("files/photos/adminPhoto.jpg"));
-
         Image imageLarry = createImageForEmployer(employerProfileLarry.getId(), null);
-
         Image imageViolet = createImageForEmployer(employerProfileViolet.getId(), "files/photos/violetPhoto.jpg");
 
 //      !!!! PDF FILES !!!!
         PDF_File pdfAdmin = createPDF(candidateContactAdmin.getId(), "files/pdf/CV_Maksym_Korniev.pdf");
-
         PDF_File pdfNikole = createPDF(candidateContactNikole.getId(), "files/pdf/Certificate_Maksym_Korniev.pdf");
-
         PDF_File pdfDonald = createPDF(candidateContactDonald.getId(), "files/pdf/Certificate_Maksym_Korniev.pdf");
-
         PDF_File pdfHelen = createPDF(candidateContactHelen.getId(), null);
 
 //      !!!! MESSENGERS !!!!
         long adminAndVioletCompany = createMessenger(vacancyQAViolet.getId(), candidateProfileAdmin.getId());
-
         long nikoleAndVioletCompany = createMessenger(vacancyPythonViolet.getId(), candidateProfileNikole.getId());
-
         long donaldAndVioletCompany = createMessenger(vacancyCPlusPlusViolet.getId(), candidateProfileDonald.getId());
-
         long helenAndLarryCompany = createMessenger(vacancyTraineeJavaLarry.getId(), candidateProfileHelen.getId());
 
-//      !!!! FEEDBACKS !!!!
-        Feedback feedbackAdmin = createFeedback(userAdmin.getId(), adminAndVioletCompany, Strings.textAdmin());
+//       !!!! MESSENGERS FOR EMPLOYERS REPLY!!!!
+        long violetReplyToHelen = createMessengerForEmployersReply(employerProfileViolet.getId(), candidateProfileHelen.getId());
+        long adminReplyToNikole = createMessengerForEmployersReply(employerProfileAdmin.getId(), candidateProfileNikole.getId());
+        long violetReplyToDonald = createMessengerForEmployersReply(employerProfileViolet.getId(), candidateProfileDonald.getId());
+        long larryReplyToHelen = createMessengerForEmployersReply(employerProfileLarry.getId(), candidateProfileHelen.getId());
 
-        Feedback feedbackNikole = createFeedback(userNikole.getId(), nikoleAndVioletCompany, Strings.textNikole());
+//      !!!! FEEDBACKS FOR VACANCIES !!!!
+        Random random = new Random();
+        Feedback feedbackAdmin = createFeedback(userAdmin.getId(), adminAndVioletCompany, random.nextInt(MIN_VALUE, 0),  Strings.textAdmin());
+        Feedback feedbackNikole = createFeedback(userNikole.getId(), nikoleAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textNikole());
+        Feedback feedbackDonald = createFeedback(userDonald.getId(), donaldAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textDonald());
+        Feedback feedbackHelen = createFeedback(userHelen.getId(), helenAndLarryCompany, random.nextInt(MIN_VALUE, 0), Strings.textHelen());
+        Feedback feedbackVioletToAdmin = createFeedback(userViolet.getId(), adminAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textViolet());
+        Feedback feedbackVioletToNikole = createFeedback(userViolet.getId(), nikoleAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textViolet());
+        Feedback feedbackVioletToDonald = createFeedback(userViolet.getId(), donaldAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textViolet());
+        Feedback feedbackLarryToHelen = createFeedback(userLarry.getId(), helenAndLarryCompany, random.nextInt(MIN_VALUE, 0), Strings.textViolet());
 
-        Feedback feedbackDonald = createFeedback(userDonald.getId(), donaldAndVioletCompany, Strings.textDonald());
-
-        Feedback feedbackHelen = createFeedback(userHelen.getId(), helenAndLarryCompany, Strings.textHelen());
-
-        Feedback feedbackVioletToAdmin = createFeedback(userViolet.getId(), adminAndVioletCompany, Strings.textViolet());
-
-        Feedback feedbackVioletToNikole = createFeedback(userViolet.getId(), nikoleAndVioletCompany, Strings.textViolet());
-
-        Feedback feedbackVioletToDonald = createFeedback(userViolet.getId(), donaldAndVioletCompany, Strings.textViolet());
-
-        Feedback feedbackLarryToHelen = createFeedback(userLarry.getId(), helenAndLarryCompany, Strings.textViolet());
+//     !!!! FEEDBACKS FOR EMPLOYERS !!!!
+        Feedback feedbackVioletReplyToHelen = createFeedback(userViolet.getId(), random.nextInt(MIN_VALUE, 0), violetReplyToHelen, "");
+        Feedback feedbackAdminReplyToNikole = createFeedback(userAdmin.getId(), random.nextInt(MIN_VALUE, 0), adminReplyToNikole, "");
+        Feedback feedbackVioletReplyToDonald = createFeedback(userViolet.getId(), random.nextInt(MIN_VALUE, 0), violetReplyToDonald, "");
+        Feedback feedbackLarryReplyToHelen = createFeedback(userLarry.getId(), random.nextInt(MIN_VALUE, 0), larryReplyToHelen, "");
     }
 
     private User createUser(String firstName, String lastName, String email, String password, Role role) {
@@ -365,11 +363,28 @@ public class JobBoardApplication implements CommandLineRunner {
         return messenger.getId();
     }
 
-    private Feedback createFeedback(long ownerId, long messengerId, String text) {
-        var feedback = feedbackService.create(ownerId, messengerId, text);
-        log.info("Feedback for messenger {} successfully created", messengerId);
+    private long createMessengerForEmployersReply(long employerProfileId, long candidateProfileId) {
+        var messenger = messengerForEmployersReplyService.create(employerProfileId, candidateProfileId);
+        log.info("Messenger between employer {} and candidate {} successfully created",
+                messenger.getEmployerProfile().getEmployerName(),
+                messenger.getCandidateProfile().getOwner().getName());
+
+        return messenger.getId();
+    }
+
+    private Feedback createFeedback(long ownerId, long messengerForVacancyReplyId, long messengerForEmployerReplyId, String text) {
+        var feedback = feedbackService.create(ownerId, messengerForVacancyReplyId, messengerForEmployerReplyId, text);
+        selectLoggingForFeedbacks(messengerForVacancyReplyId, messengerForEmployerReplyId);
 
         return feedback;
+    }
+
+    private void selectLoggingForFeedbacks(long messengerForVacancyReplyId, long messengerForEmployerReplyId) {
+        if (messengerForVacancyReplyId > 0) {
+            log.info("Feedback for vacancy messenger {} successfully created", messengerForVacancyReplyId);
+        } else {
+            log.info("Feedback for employer messenger {} successfully created", messengerForEmployerReplyId);
+        }
     }
 
     private Image createImageForCandidate(long candidateId, String filename) {

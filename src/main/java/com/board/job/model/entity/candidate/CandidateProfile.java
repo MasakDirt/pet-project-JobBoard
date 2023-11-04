@@ -1,6 +1,6 @@
 package com.board.job.model.entity.candidate;
 
-import com.board.job.model.entity.Messenger;
+import com.board.job.model.entity.MessengerForVacanciesReply;
 import com.board.job.model.entity.MessengerForEmployersReply;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.sample.Category;
@@ -73,7 +73,7 @@ public class CandidateProfile {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "candidateProfile", cascade = CascadeType.ALL)
-    private List<Messenger> messengers;
+    private List<MessengerForVacanciesReply> messengerForVacanciesReplies;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "candidateProfile", cascade = CascadeType.ALL)

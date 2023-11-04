@@ -1,6 +1,6 @@
 package com.board.job.service.authorization;
 
-import com.board.job.model.entity.Messenger;
+import com.board.job.model.entity.MessengerForVacanciesReply;
 import com.board.job.service.MessengerService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class AuthMessengerService {
                         && messenger.getVacancy().getId() == vacancyId;
     }
 
-    public Messenger getMessenger(long id) {
+    public MessengerForVacanciesReply getMessenger(long id) {
         return messengerService.readById(id);
     }
 }

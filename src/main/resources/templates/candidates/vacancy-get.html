@@ -89,7 +89,7 @@
 
             <div class="row">
                 <div class="col-xs-12 col-md-8">
-                    <form th:if="${messenger.isEmpty()}"
+                    <form th:if="${messengerForVacanciesReply.isEmpty()}"
                           th:action="@{|/api/users/${owner.id}/vacancies/${vacancy.id}/candidate/${owner.candidateProfile.id}/messengers|}"
                           th:method="post">
                         <div class="form-group">
@@ -104,9 +104,9 @@
                         </div>
                     </form>
 
-                    <div class="form-group" th:if="${messenger.isPresent()}">
+                    <div class="form-group" th:if="${messengerForVacanciesReply.isPresent()}">
                         <a type="button"
-                               th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.get().id}/feedbacks|}"
+                               th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messengerForVacanciesReply.get().id}/feedbacks|}"
                                class="btn btn-purple">Check Feedbacks</a>
                     </div>
                 </div>
