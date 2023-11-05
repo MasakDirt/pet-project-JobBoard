@@ -15,23 +15,13 @@ import java.util.List;
 public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
 
-    public Feedback create(long ownerId, long messengerForVacancyReplyId, long messengerForEmployerReplyId, String text) {
-        checkForSelectingTwoMessengers(messengerForVacancyReplyId, messengerForEmployerReplyId);;
-
+    public Feedback create(long ownerId, long messengerForVacancyReplyId, String text) {
         var feedback = new Feedback();
         feedback.setText(text);
         feedback.setOwnerId(ownerId);
-        feedback.setMessengerForVacanciesReplyId(messengerForVacancyReplyId);
-        feedback.setMessengerForEmployerReplyId(messengerForEmployerReplyId);
+        feedback.setMessengerId(messengerForVacancyReplyId);
 
         return feedbackRepository.save(feedback);
-    }
-
-    private void checkForSelectingTwoMessengers(long messengerForVacancyReplyId, long messengerForEmployerReplyId) throws IllegalArgumentException {
-        if ((messengerForVacancyReplyId > 0 && messengerForEmployerReplyId > 0)
-                || (messengerForVacancyReplyId == messengerForEmployerReplyId)) {
-         throw new IllegalArgumentException("User cannot select 2 messengers");
-        }
     }
 
     public Feedback readById(String id) {
@@ -51,7 +41,7 @@ public class FeedbackService {
     }
 
     public List<Feedback> getAllVacancyMessengerFeedbacks(long messengerId) {
-        return feedbackRepository.findAllByMessengerForVacanciesReplyId(messengerId);
+        return feedbackRepository.findAllByMessengerId(messengerId);
     }
 
     public String getLastFeedbackText(long messengerId) {
