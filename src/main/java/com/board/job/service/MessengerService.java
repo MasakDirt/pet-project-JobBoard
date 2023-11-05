@@ -1,6 +1,6 @@
 package com.board.job.service;
 
-import com.board.job.model.entity.MessengerForVacanciesReply;
+import com.board.job.model.entity.Messenger;
 import com.board.job.repository.MessengerRepository;
 import com.board.job.service.candidate.CandidateProfileService;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,30 +13,29 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class MessengerService {
-    //    ---------------- VACANCIES REPLY ---------------
     private final MessengerRepository messengerRepository;
     private final VacancyService vacancyService;
     private final CandidateProfileService candidateProfileService;
 
-    public MessengerForVacanciesReply create(long vacancyId, long candidateProfileId) {
+    public Messenger create(long vacancyId, long candidateProfileId) {
         return messengerRepository.save(
-                MessengerForVacanciesReply.of(
+                Messenger.of(
                         vacancyService.readById(vacancyId),
                         candidateProfileService.readById(candidateProfileId)
                 )
         );
     }
 
-    public MessengerForVacanciesReply readById(long id) {
+    public Messenger readById(long id) {
         return messengerRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Messenger not found"));
     }
 
-    public Optional<MessengerForVacanciesReply> readByOwnerAndVacancy(long ownerId, long vacancyId) {
+    public Optional<Messenger> readByOwnerAndVacancy(long ownerId, long vacancyId) {
         return messengerRepository.findByCandidateProfile_OwnerIdAndVacancyId(ownerId, vacancyId);
     }
 
-    public Optional<MessengerForVacanciesReply> readByEmployerProfileIdAndCandidateProfileId(long employerProfileId, long candidateProfileId) {
+    public Optional<Messenger> readByEmployerProfileIdAndCandidateProfileId(long employerProfileId, long candidateProfileId) {
         return messengerRepository.findByVacancy_EmployerProfileIdAndCandidateProfileId(employerProfileId, candidateProfileId);
     }
 
@@ -44,15 +43,15 @@ public class MessengerService {
         messengerRepository.delete(readById(id));
     }
 
-    public List<MessengerForVacanciesReply> getAll() {
+    public List<Messenger> getAll() {
         return messengerRepository.findAll();
     }
 
-    public List<MessengerForVacanciesReply> getAllByCandidateProfileId(long candidateProfileId) {
+    public List<Messenger> getAllByCandidateProfileId(long candidateProfileId) {
         return messengerRepository.findAllByCandidateProfileId(candidateProfileId);
     }
 
-    public List<MessengerForVacanciesReply> getAllByVacancyId(long vacancyId) {
+    public List<Messenger> getAllByVacancyId(long vacancyId) {
         return messengerRepository.findAllByVacancyId(vacancyId);
     }
 }

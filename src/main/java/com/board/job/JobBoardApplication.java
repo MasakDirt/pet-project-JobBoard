@@ -50,7 +50,6 @@ public class JobBoardApplication implements CommandLineRunner {
     private final FeedbackService feedbackService;
     private final ImageService imageService;
     private final PDFService pdfService;
-    private final MessengerForEmployersReplyService messengerForEmployersReplyService;
 
     private static void setToProperties() {
         String username = System.getenv("username");
@@ -228,28 +227,16 @@ public class JobBoardApplication implements CommandLineRunner {
         long donaldAndVioletCompany = createMessenger(vacancyCPlusPlusViolet.getId(), candidateProfileDonald.getId());
         long helenAndLarryCompany = createMessenger(vacancyTraineeJavaLarry.getId(), candidateProfileHelen.getId());
 
-//       !!!! MESSENGERS FOR EMPLOYERS REPLY!!!!
-        long violetReplyToHelen = createMessengerForEmployersReply(employerProfileViolet.getId(), candidateProfileHelen.getId());
-        long adminReplyToNikole = createMessengerForEmployersReply(employerProfileAdmin.getId(), candidateProfileNikole.getId());
-        long violetReplyToDonald = createMessengerForEmployersReply(employerProfileViolet.getId(), candidateProfileDonald.getId());
-        long larryReplyToHelen = createMessengerForEmployersReply(employerProfileLarry.getId(), candidateProfileHelen.getId());
-
 //      !!!! FEEDBACKS FOR VACANCIES !!!!
         Random random = new Random();
-        Feedback feedbackAdmin = createFeedback(userAdmin.getId(), adminAndVioletCompany, random.nextInt(MIN_VALUE, 0),  Strings.textAdmin());
-        Feedback feedbackNikole = createFeedback(userNikole.getId(), nikoleAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textNikole());
-        Feedback feedbackDonald = createFeedback(userDonald.getId(), donaldAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textDonald());
-        Feedback feedbackHelen = createFeedback(userHelen.getId(), helenAndLarryCompany, random.nextInt(MIN_VALUE, 0), Strings.textHelen());
-        Feedback feedbackVioletToAdmin = createFeedback(userViolet.getId(), adminAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textViolet());
-        Feedback feedbackVioletToNikole = createFeedback(userViolet.getId(), nikoleAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textViolet());
-        Feedback feedbackVioletToDonald = createFeedback(userViolet.getId(), donaldAndVioletCompany, random.nextInt(MIN_VALUE, 0), Strings.textViolet());
-        Feedback feedbackLarryToHelen = createFeedback(userLarry.getId(), helenAndLarryCompany, random.nextInt(MIN_VALUE, 0), Strings.textViolet());
-
-//     !!!! FEEDBACKS FOR EMPLOYERS !!!!
-        Feedback feedbackVioletReplyToHelen = createFeedback(userViolet.getId(), random.nextInt(MIN_VALUE, 0), violetReplyToHelen, "");
-        Feedback feedbackAdminReplyToNikole = createFeedback(userAdmin.getId(), random.nextInt(MIN_VALUE, 0), adminReplyToNikole, "");
-        Feedback feedbackVioletReplyToDonald = createFeedback(userViolet.getId(), random.nextInt(MIN_VALUE, 0), violetReplyToDonald, "");
-        Feedback feedbackLarryReplyToHelen = createFeedback(userLarry.getId(), random.nextInt(MIN_VALUE, 0), larryReplyToHelen, "");
+        Feedback feedbackAdmin = createFeedback(userAdmin.getId(), adminAndVioletCompany, Strings.textAdmin());
+        Feedback feedbackNikole = createFeedback(userNikole.getId(), nikoleAndVioletCompany, Strings.textNikole());
+        Feedback feedbackDonald = createFeedback(userDonald.getId(), donaldAndVioletCompany, Strings.textDonald());
+        Feedback feedbackHelen = createFeedback(userHelen.getId(), helenAndLarryCompany, Strings.textHelen());
+        Feedback feedbackVioletToAdmin = createFeedback(userViolet.getId(), adminAndVioletCompany, Strings.textViolet());
+        Feedback feedbackVioletToNikole = createFeedback(userViolet.getId(), nikoleAndVioletCompany, Strings.textViolet());
+        Feedback feedbackVioletToDonald = createFeedback(userViolet.getId(), donaldAndVioletCompany, Strings.textViolet());
+        Feedback feedbackLarryToHelen = createFeedback(userLarry.getId(), helenAndLarryCompany, Strings.textViolet());
     }
 
     private User createUser(String firstName, String lastName, String email, String password, Role role) {
@@ -363,28 +350,8 @@ public class JobBoardApplication implements CommandLineRunner {
         return messenger.getId();
     }
 
-    private long createMessengerForEmployersReply(long employerProfileId, long candidateProfileId) {
-        var messenger = messengerForEmployersReplyService.create(employerProfileId, candidateProfileId);
-        log.info("Messenger between employer {} and candidate {} successfully created",
-                messenger.getEmployerProfile().getEmployerName(),
-                messenger.getCandidateProfile().getOwner().getName());
-
-        return messenger.getId();
-    }
-
-    private Feedback createFeedback(long ownerId, long messengerForVacancyReplyId, long messengerForEmployerReplyId, String text) {
-        var feedback = feedbackService.create(ownerId, messengerForVacancyReplyId, messengerForEmployerReplyId, text);
-        selectLoggingForFeedbacks(messengerForVacancyReplyId, messengerForEmployerReplyId);
-
-        return feedback;
-    }
-
-    private void selectLoggingForFeedbacks(long messengerForVacancyReplyId, long messengerForEmployerReplyId) {
-        if (messengerForVacancyReplyId > 0) {
-            log.info("Feedback for vacancy messenger {} successfully created", messengerForVacancyReplyId);
-        } else {
-            log.info("Feedback for employer messenger {} successfully created", messengerForEmployerReplyId);
-        }
+    private Feedback createFeedback(long ownerId, long messengerForVacancyReplyId, String text) {
+        return feedbackService.create(ownerId, messengerForVacancyReplyId, text);
     }
 
     private Image createImageForCandidate(long candidateId, String filename) {

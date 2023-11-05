@@ -1,7 +1,6 @@
 package com.board.job.model.entity;
 
 import com.board.job.model.entity.candidate.CandidateProfile;
-import com.board.job.model.entity.employer.EmployerProfile;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,27 +11,27 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@Table(name = "messengers_for_employers_reply")
-public class MessengerForEmployersReply {
+@Table(name = "messengers")
+public class Messenger {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @JsonBackReference
-    @JoinColumn(name = "employer_profile_id")
+    @JoinColumn(name = "vacancy_id")
     @ManyToOne(fetch = FetchType.EAGER)
-    private EmployerProfile employerProfile;
+    private Vacancy vacancy;
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "candidate_profile_id")
+    @JoinColumn(name = "candidate_id")
     private CandidateProfile candidateProfile;
 
-    public MessengerForEmployersReply() {
+    public Messenger() {
     }
 
-    private MessengerForEmployersReply(EmployerProfile employerProfile, CandidateProfile candidate) {
-        this.employerProfile = employerProfile;
+    private Messenger(Vacancy vacancy, CandidateProfile candidate) {
+        this.vacancy = vacancy;
         this.candidateProfile = candidate;
     }
 
@@ -40,7 +39,7 @@ public class MessengerForEmployersReply {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MessengerForEmployersReply messenger = (MessengerForEmployersReply) o;
+        Messenger messenger = (Messenger) o;
         return id == messenger.id;
     }
 
@@ -56,7 +55,7 @@ public class MessengerForEmployersReply {
                 '}';
     }
 
-    public static MessengerForEmployersReply of(EmployerProfile employerProfile, CandidateProfile candidateProfile) {
-        return new MessengerForEmployersReply(employerProfile, candidateProfile);
+    public static Messenger of(Vacancy vacancy, CandidateProfile candidateProfile) {
+        return new Messenger(vacancy, candidateProfile);
     }
 }

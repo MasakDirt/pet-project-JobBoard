@@ -1,7 +1,6 @@
 package com.board.job.model.entity.employer;
 
 import com.board.job.model.entity.Image;
-import com.board.job.model.entity.MessengerForEmployersReply;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.Vacancy;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -58,10 +57,6 @@ public class EmployerProfile {
     @JsonBackReference
     @JoinColumn(name = "owner_id")
     private User owner;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "employerProfile", cascade = CascadeType.ALL)
-    private List<MessengerForEmployersReply> messengersForEmployersReply;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "employerProfile", cascade = CascadeType.ALL)

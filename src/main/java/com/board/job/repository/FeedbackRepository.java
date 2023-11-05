@@ -8,5 +8,5 @@ import java.util.List;
 
 @EnableMongoRepositories
 public interface FeedbackRepository extends MongoRepository<Feedback, String> {
-    List<Feedback> findAllByMessengerForVacanciesReplyId(long messengerId);
+    List<Feedback> findAllByMessengerId(long messengerId);
 }
