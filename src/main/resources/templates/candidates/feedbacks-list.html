@@ -94,55 +94,55 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-md-2">
-                        <img th:if="${messengerForVacanciesReply.vacancy != null && messengerForVacanciesReply.vacancy.employerProfile.image != null}"
+                        <img th:if="${messenger.vacancy != null && messenger.vacancy.employerProfile.image != null}"
                              class="rounded-image"
-                             th:src="@{|/api/users/${messengerForVacanciesReply.vacancy.employerProfile.owner.id}/employer-profiles/${messengerForVacanciesReply.vacancy.employerProfile.id}/images/${messengerForVacanciesReply.vacancy.employerProfile.image.id}|}"
+                             th:src="@{|/api/users/${messenger.vacancy.employerProfile.owner.id}/employer-profiles/${messenger.vacancy.employerProfile.id}/images/${messenger.vacancy.employerProfile.image.id}|}"
                              alt="Image"
                              onclick="toggleLogoutButton()"/>
 
-                        <img th:unless="${messengerForVacanciesReply.vacancy != null && messengerForVacanciesReply.vacancy.employerProfile.image != null}"
+                        <img th:unless="${messenger.vacancy != null && messenger.vacancy.employerProfile.image != null}"
                              class="rounded-image"
-                             th:src="@{|/api/users/${messengerForVacanciesReply.vacancy.employerProfile.id}/images/no-image|}"
+                             th:src="@{|/api/users/${messenger.vacancy.employerProfile.id}/images/no-image|}"
                              alt="No image"
                              onclick="toggleLogoutButton()"/>
                     </div>
                     <div class="col-md-2">
-                        <h3 th:text="${messengerForVacanciesReply.employerName}"></h3>
-                        <h6 th:text="${'Company: ' + messengerForVacanciesReply.companyName}"></h6>
+                        <h3 th:text="${messenger.employerName}"></h3>
+                        <h6 th:text="${'Company: ' + messenger.companyName}"></h6>
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
                 <h2 class="mb-2">
-                    <a th:href="@{|/api/users/${messengerForVacanciesReply.vacancy.employerProfile.owner.id}/vacancies/${messengerForVacanciesReply.vacancy.id}|}"
-                       th:text="'Vacancy for ' + ${messengerForVacanciesReply.lookingFor}" style="text-decoration: none; color: inherit;"></a>
+                    <a th:href="@{|/api/users/${messenger.vacancy.employerProfile.owner.id}/vacancies/${messenger.vacancy.id}|}"
+                       th:text="'Vacancy for ' + ${messenger.lookingFor}" style="text-decoration: none; color: inherit;"></a>
                 </h2>
             </div>
         </div>
 
         <div class="col-xs-6 col-md-4">
             <div class="form-group">
-                <h4 th:text="'Category: ' + ${messengerForVacanciesReply.category.value}"></h4>
+                <h4 th:text="'Category: ' + ${messenger.category.value}"></h4>
             </div>
             <div class="form-group">
-                <h5 th:text="${messengerForVacanciesReply.country}"></h5>
+                <h5 th:text="${messenger.country}"></h5>
             </div>
 
             <div class="form-group">
-                <h6 th:text="${messengerForVacanciesReply.postedAt.format(dateFormatter)}"></h6>
+                <h6 th:text="${messenger.postedAt.format(dateFormatter)}"></h6>
             </div>
         </div>
 
         <div class="message-container">
-            <div class="row message-container" th:each="feedback: ${messengerForVacanciesReply.feedbacks}">
+            <div class="row message-container" th:each="feedback: ${messenger.feedbacks}">
                 <div class="col-md-3 col-md-offset-3 message sent-message" th:if="${owner.id == feedback.ownerId}">
                     <label th:text="${feedback.text}" onclick="toggleMessageOptions(this)"></label>
                     <div class="message-options">
-                        <a th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messengerForVacanciesReply.id}/feedbacks/${feedback.id}/edit|}"
+                        <a th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.id}/feedbacks/${feedback.id}/edit|}"
                            class="btn btn-purple">Edit</a>
                         <a class="btn btn-purple"
-                           th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messengerForVacanciesReply.id}/feedbacks/${feedback.id}/delete|}">Delete</a>
+                           th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.id}/feedbacks/${feedback.id}/delete|}">Delete</a>
                     </div>
                 </div>
                 <div class="col-md-3 col-md-offset-3 message received-message"
@@ -154,7 +154,7 @@
     </div>
 
     <form class="form-inline"
-          th:action="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messengerForVacanciesReply.id}/feedbacks|}"
+          th:action="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.id}/feedbacks|}"
           th:method="post">
         <div class="form-group">
             <label>
