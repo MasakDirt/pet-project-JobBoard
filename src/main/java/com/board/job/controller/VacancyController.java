@@ -63,6 +63,21 @@ public class VacancyController {
         return new ModelAndView("candidates/vacancies-list", map);
     }
 
+    @GetMapping("/employer-profiles/{employer-id}/vacancies/candidate/{candidate-id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
+    public ModelAndView getAllForSelect(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            @PathVariable("candidate-id") long candidateId, Authentication authentication, ModelMap map) {
+
+        map.addAttribute("candidateId", candidateId);
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
+        map.addAttribute("vacancies", vacancyService.getAllByEmployerProfileId(employerId));
+        log.info("=== GET-VACANCIES-FOR-EMPLOYER-SELECTION === {} == {}", getAuthorities(authentication), authentication.getName());
+
+        return new ModelAndView("employers/vacancies-for-select", map);
+    }
+
     @GetMapping("/vacancies/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
     public ModelAndView getById(@PathVariable("owner-id") long ownerId,
