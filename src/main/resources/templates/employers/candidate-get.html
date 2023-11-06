@@ -55,6 +55,12 @@
                     <div class="form-group">
                         <h5 th:text="'English Level: ' + ${candidateProfileRequest.englishLevel}"></h5>
                     </div>
+
+                    <div class="form-group">
+                        <a type="button"
+                           th:href="@{|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}/vacancies/candidate/${candidateProfileRequest.id}|}"
+                           class="btn btn-purple">Select Vacancy For Messenger</a>
+                    </div>
                 </div>
 
                 <div class="col-xs-6 col-md-4">
