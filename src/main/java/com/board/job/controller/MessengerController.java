@@ -5,6 +5,7 @@ import com.board.job.model.mapper.MessengerMapper;
 import com.board.job.service.FeedbackService;
 import com.board.job.service.MessengerService;
 import com.board.job.service.UserService;
+import com.board.job.service.VacancyService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Random;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
-import static java.lang.Integer.MIN_VALUE;
 
 @Slf4j
 @RestController
@@ -33,6 +32,7 @@ public class MessengerController {
     private final MessengerMapper mapper;
     private final MessengerService messengerService;
     private final FeedbackService feedbackService;
+    private final VacancyService vacancyService;
 
     @GetMapping("/candidate/{candidate-id}/messengers")
     @PreAuthorize("@authCandidateProfileService.isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfile" +
@@ -76,52 +76,30 @@ public class MessengerController {
     public void createByCandidate(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable("vacancy-id") long vacancyId, String text, HttpServletResponse response,
-            Random random, Authentication authentication) throws IOException {
+            Authentication authentication) throws IOException {
 
         var name = authentication.getName();
         var messengerId = messengerService.create(vacancyId,
                 userService.readByEmail(name).getCandidateProfile().getId()).getId();
-        feedbackService.create(userService.readByEmail(authentication.getName()).getId(), messengerId, random.nextInt(MIN_VALUE, 0), text);
-        log.info("=== POST-MESSENGER === {} == {}", getAuthorities(authentication), name);
+        feedbackService.create(userService.readByEmail(authentication.getName()).getId(), messengerId, text);
+        log.info("=== POST-MESSENGER-CANDIDATE === {} == {}", getAuthorities(authentication), name);
 
         response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks", ownerId, candidateId, messengerId));
     }
 
-    @PostMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers")
-    @PreAuthorize("@authVacancyService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
-            "(#ownerId, #employerId, #vacancyId) && hasRole('CANDIDATE')")
-    public ResponseEntity<String> createByEmployer(
-            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable("vacancy-id") long vacancyId, Authentication authentication
-    ) {
+    @PostMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/employer-profile/{employer-id}/messengers")
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public void createByEmployer(
+            @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
+            @PathVariable("vacancy-id") long vacancyId, Authentication authentication,
+            HttpServletResponse response) throws IOException {
         var name = authentication.getName();
-        var messenger = messengerService.create(vacancyId,
-                userService.readByEmail(name).getCandidateProfile().getId());
-        log.info("=== POST-MESSENGER === {} == {}", getAuthorities(authentication), name);
+        var messenger = messengerService.create(vacancyId, candidateId);
+        log.info("=== POST-MESSENGER-EMPLOYER === {} == {}", getAuthorities(authentication), name);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(String.format("Messenger between %s and candidate %s successfully created",
-                        messenger.getVacancy().getEmployerProfile().getCompanyName(),
-                        messenger.getCandidateProfile().getOwner().getName()));
+        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                ownerId, vacancyService.readById(vacancyId).getEmployerProfile().getId(), vacancyId, messenger.getId()));
     }
-
-//    @PostMapping("/employer-profile/{employer-id}/candidate-profiles/{candidate-id}/messengers")
-//    @PreAuthorize("@authVacancyService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy" +
-//            "(#ownerId, #employerId, #vacancyId) && hasRole('CANDIDATE')")
-//    public ResponseEntity<String> createByEmployerForCandidateMessengers(
-//            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-//            @PathVariable("candidate-id") long candidateId, Authentication authentication
-//    ) {
-//        var name = authentication.getName();
-//        var messenger = messengerService.create(vacancyId,
-//                userService.readByEmail(name).getCandidateProfile().getId());
-//        log.info("=== POST-MESSENGER === {} == {}", getAuthorities(authentication), name);
-//
-//        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body(String.format("Messenger between %s and candidate %s successfully created",
-//                        messenger.getVacancy().getEmployerProfile().getCompanyName(),
-//                        messenger.getCandidateProfile().getOwner().getName()));
-//    }
 
     @GetMapping("/candidate/{candidate-id}/messengers/{id}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
