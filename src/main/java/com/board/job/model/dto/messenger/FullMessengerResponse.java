@@ -2,6 +2,7 @@ package com.board.job.model.dto.messenger;
 
 import com.board.job.model.dto.feedback.FeedbackResponse;
 import com.board.job.model.entity.Vacancy;
+import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.model.entity.sample.Category;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,6 +48,8 @@ public class FullMessengerResponse {
     private String employerName;
 
     private Vacancy vacancy;
+
+    private CandidateProfile candidateProfile;
 
     private List<FeedbackResponse> feedbacks;
 }
