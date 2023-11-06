@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Chat</title>
+
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-purple:hover {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+
+        .message-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            padding: 5px;
+            margin: 5px;
+            border-radius: 15px;
+            max-width: 100%;
+            position: relative;
+        }
+
+        .message-options {
+            position: absolute;
+            display: none;
+            margin: 10px;
+            z-index: 1;
+        }
+
+        .message:hover .message-options {
+            display: block;
+        }
+
+        .sent-message {
+            background-color: #8a2be2;
+            align-self: flex-end;
+            color: #fff;
+        }
+
+        .received-message {
+            background-color: #333;
+            align-self: flex-start;
+            color: #af9d88;
+        }
+
+        .message label {
+            white-space: pre-wrap;
+        }
+
+        .received-message label,
+        .sent-message label {
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        .rounded-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div th:replace="~{headers/header-entities-employer.html}"></div>
+</header>
+<div class="container">
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-2">
+                        <img th:if="${messenger.vacancy != null && messenger.vacancy.employerProfile.image != null}"
+                             class="rounded-image"
+                             th:src="@{|/api/users/${messenger.candidateProfile.owner.id}/candidate-contacts/${candidate.owner.candidateContact.id}/images/${messenger.candidateProfile.owner.candidateContact.image.id}|}"
+                             alt="Image"/>
+
+                        <img th:unless="${messenger.vacancy != null && messenger.vacancy.employerProfile.image != null}"
+                             class="rounded-image"
+                             th:src="@{|/api/users/${candidate.owner.candidateContact.id}/images/no-image|}"
+                             alt="No image"/>
+                    </div>
+                    <div class="col-md-2">
+                        <h3>
+                            <a th:href="@{|/api/users/${owner.id}/employer/${messenger.vacancy.employerProfile.id}/candidate-profiles/${candidate.id}|}"
+                               th:text="${candidate.position}" style="text-decoration: none; color: inherit;"></a>
+                        </h3>
+                        <h6 th:text="${'Experience: ' + candidate.workExperience + ' years'}"></h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <h2 class="mb-2">
+                    <a th:href="@{|/api/users/${owner.id}/employer/${messenger.vacancy.employerProfile.id}/candidate-profiles/${candidate.id}|}"
+                       th:text="'Candidate - ' + ${candidate.owner.candidateContact.candidateName}" style="text-decoration: none; color: inherit;"></a>
+                </h2>
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-md-4">
+            <div class="form-group">
+                <h4 th:text="'Salary: ' + ${candidate.salaryExpectations} + '$'"></h4>
+            </div>
+            <div class="form-group">
+                <h5 th:text="${candidate.countryOfResidence}"></h5>
+            </div>
+            <div class="form-group">
+                <h6 th:text="${candidate.cityOfResidence}"></h6>
+            </div>
+        </div>
+
+        <div class="message-container">
+            <div class="row message-container" th:each="feedback: ${messenger.feedbacks}">
+                <div class="col-md-3 col-md-offset-3 message sent-message" th:if="${owner.id == feedback.ownerId}">
+                    <label th:text="${feedback.text}" onclick="toggleMessageOptions(this)"></label>
+                    <div class="message-options">
+                        <a th:href="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/${messenger.vacancy.id}/messengers/${messenger.id}/feedbacks/${feedback.id}/edit|}"
+                           class="btn btn-purple">Edit</a>
+                        <a class="btn btn-purple"
+                           th:href="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/${messenger.vacancy.id}/messengers/${messenger.id}/feedbacks/${feedback.id}/delete|}">Delete</a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-md-offset-3 message received-message"
+                     th:unless="${owner.id == feedback.ownerId}">
+                    <label th:text="${feedback.text}"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form class="form-inline"
+          th:action="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/${messenger.vacancy.id}/messengers/${messenger.id}/feedbacks|}"
+          th:method="post">
+        <div class="form-group">
+            <label>
+                <textarea class="form-control" style="width: 650px" rows="5" name="text"></textarea>
+            </label>
+        </div>
+        <div class="input-group-append form-group">
+            <input type="submit" class="btn btn-purple" value="Send"/>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function toggleMessageOptions(label) {
+        const messageContainer = label.parentNode;
+        const messageOptions = messageContainer.querySelector(".message-options");
+
+        if (messageOptions.style.display === "none" || messageOptions.style.display === "") {
+            messageOptions.style.display = "block";
+        } else {
+            messageOptions.style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>
