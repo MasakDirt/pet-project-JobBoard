@@ -40,7 +40,8 @@ public class Feedback {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Feedback feedback = (Feedback) o;
-        return messengerId == feedback.messengerId && Objects.equals(id, feedback.id) && Objects.equals(text, feedback.text);
+        return messengerId == feedback.messengerId &&
+                Objects.equals(id, feedback.id) && Objects.equals(text, feedback.text);
     }
 
     @Override

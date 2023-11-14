@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static com.board.job.controller.HelperForPagesCollections.getSortByValues;
 
 @Slf4j
 @RestController
@@ -42,7 +43,7 @@ public class VacancyController {
             @PathVariable("owner-id") long ownerId,
             @RequestParam(name = "sort_by", defaultValue = "postedAt") String[] sortBy,
             @RequestParam(name = "sort_order", defaultValue = "desc") String sortedOrder,
-            @RequestParam(name = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(name = "searchText", required = false, defaultValue = "") String searchText,
             Authentication authentication, ModelMap map) {
 
@@ -59,13 +60,23 @@ public class VacancyController {
         );
         log.info("=== GET-VACANCIES === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return new ModelAndView("vacancies-list", map);
+        return new ModelAndView("candidates/vacancies-list", map);
     }
 
-    private String getSortByValues(String sortBy) {
-        return sortBy.substring(1, sortBy.length() - 1);
-    }
+    @GetMapping("/employer-profiles/{employer-id}/vacancies/candidate/{candidate-id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
+    public ModelAndView getAllForSelect(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            @PathVariable("candidate-id") long candidateId, Authentication authentication, ModelMap map) {
 
+        map.addAttribute("candidateId", candidateId);
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
+        map.addAttribute("vacancies", vacancyService.getAllByEmployerProfileId(employerId));
+        log.info("=== GET-VACANCIES-FOR-EMPLOYER-SELECTION === {} == {}", getAuthorities(authentication), authentication.getName());
+
+        return new ModelAndView("employers/vacancies-for-select", map);
+    }
 
     @GetMapping("/vacancies/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
@@ -79,7 +90,7 @@ public class VacancyController {
         map.addAttribute("messenger", messengerService.readByOwnerAndVacancy(user.getId(), id));
         log.info("=== GET-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return new ModelAndView("vacancy-get", map);
+        return new ModelAndView("candidates/vacancy-get", map);
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies")

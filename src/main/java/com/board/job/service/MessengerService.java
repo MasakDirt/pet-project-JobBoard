@@ -35,6 +35,10 @@ public class MessengerService {
         return messengerRepository.findByCandidateProfile_OwnerIdAndVacancyId(ownerId, vacancyId);
     }
 
+    public Optional<Messenger> readByEmployerProfileIdAndCandidateProfileId(long employerProfileId, long candidateProfileId) {
+        return messengerRepository.findByVacancy_EmployerProfileIdAndCandidateProfileId(employerProfileId, candidateProfileId);
+    }
+
     public void delete(long id) {
         messengerRepository.delete(readById(id));
     }

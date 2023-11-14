@@ -15,11 +15,11 @@ import java.util.List;
 public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
 
-    public Feedback create(long ownerId, long messengerId, String text) {
+    public Feedback create(long ownerId, long messengerForVacancyReplyId, String text) {
         var feedback = new Feedback();
         feedback.setText(text);
         feedback.setOwnerId(ownerId);
-        feedback.setMessengerId(messengerId);
+        feedback.setMessengerId(messengerForVacancyReplyId);
 
         return feedbackRepository.save(feedback);
     }
@@ -40,12 +40,12 @@ public class FeedbackService {
         feedbackRepository.delete(readById(id));
     }
 
-    public List<Feedback> getAllMessengerFeedbacks(long messengerId) {
+    public List<Feedback> getAllVacancyMessengerFeedbacks(long messengerId) {
         return feedbackRepository.findAllByMessengerId(messengerId);
     }
 
     public String getLastFeedbackText(long messengerId) {
-        List<Feedback> feedbacks = getAllMessengerFeedbacks(messengerId)
+        List<Feedback> feedbacks = getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()
                 .sorted(Comparator.comparing(Feedback::getSendAt))
                 .toList();

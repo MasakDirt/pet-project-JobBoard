@@ -1,17 +1,12 @@
 package com.board.job.service;
 
-import com.board.job.exception.InvalidFile;
-import com.board.job.exception.UserHaveNoPDF;
 import com.board.job.model.entity.PDF_File;
 import com.board.job.repository.PDFRepository;
 import com.board.job.service.candidate.CandidateContactService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Base64;
 
 @Service

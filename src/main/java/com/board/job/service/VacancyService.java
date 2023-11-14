@@ -1,5 +1,6 @@
 package com.board.job.service;
 
+import com.board.job.controller.HelperForPagesCollections;
 import com.board.job.model.entity.Vacancy;
 import com.board.job.repository.VacancyRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -51,15 +52,11 @@ public class VacancyService {
     }
 
     public Page<Vacancy> getSortedVacancies(Pageable pageable, String searchText) {
-        if (checkSearchText(searchText)) {
+        if (HelperForPagesCollections.checkSearchText(searchText)) {
             return findBySearchText(pageable, searchText);
         }
 
         return vacancyRepository.findAll(pageable);
-    }
-
-    private boolean checkSearchText(String searchText) {
-        return searchText != null && !searchText.trim().isEmpty();
     }
 
     private Page<Vacancy> findBySearchText(Pageable pageable, String searchText) {

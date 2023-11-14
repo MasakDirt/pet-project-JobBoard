@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Candidates</title>
+
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .vacancy-card {
+            background-color: #333;
+            margin-bottom: 20px;
+        }
+
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-purple:hover {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+        .pagination .page-item .page-link {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+        .sorting-container {
+            width: 300px;
+            margin: 200px 15px;
+        }
+
+        .sorting-form {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 5px;
+            color: #fff;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .cards-container {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div th:replace="~{headers/header-entities-employer.html}"></div>
+</header>
+<div class="container main-content">
+    <div class="cards-container">
+        <h2>Candidates</h2>
+        <div th:each="candidate: ${candidates.content}">
+            <div class="card vacancy-card">
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-sm-6 col-md-8">
+                            <div class="form-group">
+                                <h2 class="mb-2" th:text="${candidate.position}"></h2>
+                            </div>
+                            <div class="form-group">
+                                <h5 th:text="${candidate.countryOfResidence}"></h5>
+                            </div>
+                            <div class="form-group">
+                                <h4 th:text="${candidate.cityOfResidence}"></h4>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-purple"
+                                   th:href="@{|/api/users/${owner.id}/employer/${owner.employerProfile.id}/candidate-profiles/${candidate.id}|}">Check</a>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6 col-md-4">
+                            <div class="form-group">
+                                <h4 th:text="${candidate.category.value}"></h4>
+                            </div>
+                            <div class="form-group">
+                                <h4 th:text="'English: ' + ${candidate.englishLevel.value}"></h4>
+                            </div>
+                            <div class="form-group">
+                                <h5 th:text="'Salary: ' + ${candidate.salaryExpectations} + '$'"></h5>
+                            </div>
+
+                            <div class="form-group">
+                                <h5 th:text="'Work Experience: ' + ${candidate.workExperience + ' years'}"></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" th:if="${page > 0}">
+                    <a class="page-link"
+                       th:href="@{|/api/users/${owner.id}/candidate-profiles?page=${page - 1}&sort_by=${sort_by}&sort_order=${sort_order}&searchText=${searchText}|}">&laquo;</a>
+                </li>
+                <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, candidates.totalPages - 1)}"
+                    th:classappend="${pageNumber == page} ? 'active' : ''">
+                    <a class="page-link"
+                       th:href="@{|/api/users/${owner.id}/candidate-profiles?page=${pageNumber}&sort_by=${sort_by}&sort_order=${sort_order}&searchText=${searchText}|}"
+                       th:text="${pageNumber + 1}"></a>
+                </li>
+                <li class="page-item" th:if="${page < candidates.totalPages - 1}">
+                    <a class="page-link"
+                       th:href="@{|/api/users/${owner.id}/candidate-profiles?page=${page + 1}&sort_by=${sort_by}&sort_order=${sort_order}&searchText=${searchText}|}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="sorting-container">
+        <form class="sorting-form" th:action="@{|/api/users/${owner.id}/candidate-profiles|}" method="get">
+            <label class="sorting-checkbox">
+                <input type="text" name="searchText" placeholder="Search"/>
+            </label>
+
+            <h5>Sort By:</h5>
+            <label class="sorting-checkbox">
+                <input type="checkbox" name="sort_by" value="position">Position
+            </label>
+            <label class="sorting-checkbox">
+                <input type="checkbox" name="sort_by" value="salaryExpectations"> Salary
+            </label>
+            <label class="sorting-checkbox">
+                <input type="checkbox" name="sort_by" value="workExperience"> Work Experience
+            </label>
+            <label class="sorting-checkbox">
+                <input type="checkbox" name="sort_by" value="countryOfResidence"> Country Of Residence
+            </label>
+            <label class="sorting-checkbox">
+                <input type="checkbox" name="sort_by" value="category"> Category
+            </label>
+            <label class="sorting-checkbox">
+                <input type="checkbox" name="sort_by" value="englishLevel"> English Level
+            </label>
+
+            <h5>Sort Order:</h5>
+            <label class="sorting-checkbox">
+                <input type="radio" name="sort_order" value="asc"> Smaller-Bigger (A-z)
+            </label>
+            <br>
+            <label class="sorting-checkbox">
+                <input type="radio" name="sort_order" value="desc"> Bigger-Smaller (Z-a)
+            </label>
+
+            <button type="submit" class="btn btn-primary">Apply Sorting</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

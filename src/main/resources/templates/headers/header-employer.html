@@ -23,6 +23,7 @@
             top: 13%;
             right: 0.8%;
             padding: 6px;
+            z-index: 1;
         }
 
         .btn-employer {
@@ -81,12 +82,12 @@
 <button class="btn btn-header-back" th:onclick="window.history.back()">⬅️Back</button>
 
 <div id="peeking-slot" style="position: relative;">
-    <img th:if="${owner.candidateContact != null && owner.candidateContact.image != null}" class="header-rounded-image"
-         th:src="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}/images/${owner.candidateContact.image.id}/header|}"
+    <img th:if="${owner.employerProfile != null && owner.employerProfile.image != null}" class="header-rounded-image"
+         th:src="@{|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}/images/${owner.employerProfile.image.id}/header|}"
          alt="Image"
          onclick="toggleLogoutButton()"/>
 
-    <img th:unless="${owner.candidateContact != null && owner.candidateContact.image != null}"
+    <img th:unless="${owner.employerProfile != null && owner.employerProfile.image != null}"
          class="header-rounded-image"
          th:src="@{|/api/users/${owner.id}/images/no-image/header|}" alt="No image"
          onclick="toggleLogoutButton()"/>
@@ -94,12 +95,12 @@
     <div id="toggle-buttons-container" style="display: none;">
         <div id="continue-as-employer-container">
             <a class="btn btn-employer"
-               th:if="${owner.employerProfile == null}"
-               th:href="@{|/api/users/${owner.id}/employer-profiles/create|}">Continue as Employer</a>
+               th:if="${owner.candidateProfile == null}"
+               th:href="@{|/api/users/${owner.id}/candidate-profiles/create|}">Continue as Candidate</a>
             <a class="btn btn-employer"
-               th:unless="${owner.employerProfile == null}"
-               th:href="@{|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}|}">Continue as
-                Employer</a>
+               th:unless="${owner.candidateProfile == null}"
+               th:href="@{|/api/users/${owner.id}/candidate-profiles/${owner.candidateProfile.id}|}">Continue as
+                Candidate</a>
         </div>
 
         <a id="logout-button" class="btn btn-logout" th:href="@{/logout}">Logout</a>
@@ -107,24 +108,24 @@
 </div>
 
 <div class="container-buttons">
-    <a class="btn btn-purple" th:if="${owner.candidateProfile != null}"
-       th:href="@{|/api/users/${owner.id}/vacancies|}">Vacancies</a>
-    <a class="btn btn-purple" th:if="${owner.candidateProfile != null}"
-       th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers|}">Messengers</a>
+    <a class="btn btn-purple" th:if="${owner.employerProfile != null}"
+       th:href="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies|}">Company-Vacancies</a>
+    <a class="btn btn-purple" th:if="${owner.employerProfile != null}"
+       th:href="@{|/api/users/${owner.id}/candidate-profiles|}">Candidates</a>
 </div>
 
 <div class="container-buttons">
     <hr style="max-width: 1600px; margin: 1 auto;">
     <div class="text-left">
-        <a class="btn btn-purple" th:unless="${owner.candidateProfile == null}"
-           th:href="@{|/api/users/${owner.id}/candidate-profiles/${owner.candidateProfile.id}|}">Profile</a>
-        <a class="btn btn-purple" th:if="${owner.candidateProfile == null}"
-           th:href="@{|/api/users/${owner.id}/candidate-profiles/create|}">Profile</a>
+        <a class="btn btn-purple" th:unless="${owner.employerProfile == null}"
+           th:href="@{|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}|}">Profile</a>
+        <a class="btn btn-purple" th:if="${owner.employerProfile == null}"
+           th:href="@{|/api/users/${owner.id}/employer-profiles/create|}">Profile</a>
 
-        <a th:unless="${owner.candidateContact == null}" class="btn btn-purple"
-           th:href="@{|/api/users/${owner.id}/candidate-contacts/${owner.candidateContact.id}|}">Contacts</a>
-        <a th:if="${owner.candidateContact == null}" class="btn btn-purple"
-           th:href="@{|/api/users/${owner.id}/candidate-contacts/create|}">Contacts</a>
+        <a th:unless="${owner.employerCompany == null}" class="btn btn-purple"
+           th:href="@{|/api/users/${owner.id}/employer-companies/${owner.employerCompany.id}|}">Company</a>
+        <a th:if="${owner.employerCompany == null}" class="btn btn-purple"
+           th:href="@{|/api/users/${owner.id}/employer-companies/create|}">Company</a>
     </div>
 </div>
 

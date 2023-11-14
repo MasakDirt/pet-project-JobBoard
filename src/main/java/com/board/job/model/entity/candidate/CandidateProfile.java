@@ -72,7 +72,7 @@ public class CandidateProfile {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "candidateProfile", cascade = CascadeType.ALL)
-    private List<Messenger> messengers;
+    private List<Messenger> messengerForVacanciesReplies;
 
     public CandidateProfile() {
     }

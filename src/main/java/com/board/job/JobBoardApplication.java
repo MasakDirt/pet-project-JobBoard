@@ -28,7 +28,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
+
+import static java.lang.Integer.*;
 
 @Slf4j
 @AllArgsConstructor
@@ -205,52 +208,34 @@ public class JobBoardApplication implements CommandLineRunner {
 
         //      !!!! IMAGES !!!!
         Image imageAdminCandidate = createImageForCandidate(candidateContactAdmin.getId(), null);
-
         Image imageNikole = createImageForCandidate(candidateContactNikole.getId(), "files/photos/nicolas.jpg");
-
         Image imageDonald = createImageForCandidate(candidateContactDonald.getId(), "files/photos/donaldPicture.jpg");
-
         Image imageHelen = createImageForCandidate(candidateContactHelen.getId(), "files/photos/helenPicture.jpg");
-
         Image imageAdminEmployer = imageService.update(imageAdminCandidate.getId(), setContent("files/photos/adminPhoto.jpg"));
-
         Image imageLarry = createImageForEmployer(employerProfileLarry.getId(), null);
-
         Image imageViolet = createImageForEmployer(employerProfileViolet.getId(), "files/photos/violetPhoto.jpg");
 
 //      !!!! PDF FILES !!!!
         PDF_File pdfAdmin = createPDF(candidateContactAdmin.getId(), "files/pdf/CV_Maksym_Korniev.pdf");
-
         PDF_File pdfNikole = createPDF(candidateContactNikole.getId(), "files/pdf/Certificate_Maksym_Korniev.pdf");
-
         PDF_File pdfDonald = createPDF(candidateContactDonald.getId(), "files/pdf/Certificate_Maksym_Korniev.pdf");
-
         PDF_File pdfHelen = createPDF(candidateContactHelen.getId(), null);
 
 //      !!!! MESSENGERS !!!!
         long adminAndVioletCompany = createMessenger(vacancyQAViolet.getId(), candidateProfileAdmin.getId());
-
         long nikoleAndVioletCompany = createMessenger(vacancyPythonViolet.getId(), candidateProfileNikole.getId());
-
         long donaldAndVioletCompany = createMessenger(vacancyCPlusPlusViolet.getId(), candidateProfileDonald.getId());
-
         long helenAndLarryCompany = createMessenger(vacancyTraineeJavaLarry.getId(), candidateProfileHelen.getId());
 
-//      !!!! FEEDBACKS !!!!
+//      !!!! FEEDBACKS FOR VACANCIES !!!!
+        Random random = new Random();
         Feedback feedbackAdmin = createFeedback(userAdmin.getId(), adminAndVioletCompany, Strings.textAdmin());
-
         Feedback feedbackNikole = createFeedback(userNikole.getId(), nikoleAndVioletCompany, Strings.textNikole());
-
         Feedback feedbackDonald = createFeedback(userDonald.getId(), donaldAndVioletCompany, Strings.textDonald());
-
         Feedback feedbackHelen = createFeedback(userHelen.getId(), helenAndLarryCompany, Strings.textHelen());
-
         Feedback feedbackVioletToAdmin = createFeedback(userViolet.getId(), adminAndVioletCompany, Strings.textViolet());
-
         Feedback feedbackVioletToNikole = createFeedback(userViolet.getId(), nikoleAndVioletCompany, Strings.textViolet());
-
         Feedback feedbackVioletToDonald = createFeedback(userViolet.getId(), donaldAndVioletCompany, Strings.textViolet());
-
         Feedback feedbackLarryToHelen = createFeedback(userLarry.getId(), helenAndLarryCompany, Strings.textViolet());
     }
 
@@ -365,11 +350,8 @@ public class JobBoardApplication implements CommandLineRunner {
         return messenger.getId();
     }
 
-    private Feedback createFeedback(long ownerId, long messengerId, String text) {
-        var feedback = feedbackService.create(ownerId, messengerId, text);
-        log.info("Feedback for messenger {} successfully created", messengerId);
-
-        return feedback;
+    private Feedback createFeedback(long ownerId, long messengerForVacancyReplyId, String text) {
+        return feedbackService.create(ownerId, messengerForVacancyReplyId, text);
     }
 
     private Image createImageForCandidate(long candidateId, String filename) {

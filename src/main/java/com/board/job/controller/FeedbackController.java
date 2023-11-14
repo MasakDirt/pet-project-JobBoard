@@ -1,7 +1,6 @@
 package com.board.job.controller;
 
 import com.board.job.model.dto.feedback.FeedbackResponse;
-import com.board.job.model.dto.messenger.FullMessengerResponse;
 import com.board.job.model.mapper.FeedbackMapper;
 import com.board.job.model.mapper.MessengerMapper;
 import com.board.job.service.FeedbackService;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
@@ -20,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 
@@ -41,28 +40,31 @@ public class FeedbackController {
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable long messengerId, Authentication authentication, ModelMap map
     ) {
-        var messenger = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(messengerId),
-                feedbackService.getAllMessengerFeedbacks(messengerId));
-        log.info("=== GET-CANDIDATE-MESSENGER-FEEDBACKS === {} == {}", getAuthorities(authentication), authentication.getName());
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
-        map.addAttribute("messenger", messenger);
+        map.addAttribute("messenger", messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(messengerId),
+                feedbackService.getAllVacancyMessengerFeedbacks(messengerId)));
+        log.info("=== GET-CANDIDATE-MESSENGER-FEEDBACKS === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return new ModelAndView("feedbacks-list", map);
+        return new ModelAndView("candidates/feedbacks-list", map);
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}/feedbacks")
     @PreAuthorize("@authMessengerService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger" +
             "(#ownerId, #employerId, #vacancyId, #id, authentication.name)")
-    public FullMessengerResponse getAllEmployerMessengerFeedbacks(
+    public ModelAndView getAllEmployerMessengerFeedbacks(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable("vacancy-id") long vacancyId, @PathVariable long id, Authentication authentication
-    ) {
-        var responses = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(id),
-                feedbackService.getAllMessengerFeedbacks(id));
+            @PathVariable("vacancy-id") long vacancyId, @PathVariable long id, Authentication authentication, ModelMap map) {
+        var messenger = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(id),
+                feedbackService.getAllVacancyMessengerFeedbacks(id));
+
+        map.addAttribute("messenger", messenger);
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("candidate", messenger.getCandidateProfile());
+        map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
         log.info("=== GET-VACANCY-MESSENGER-FEEDBACKS === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return responses;
+        return new ModelAndView("employers/feedbacks-list", map);
     }
 
     @GetMapping("/candidate/{candidate-id}/messengers/{messenger-id}/feedbacks/{id}")
@@ -99,7 +101,7 @@ public class FeedbackController {
     public void createByCandidate(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable("messenger-id") long messengerId, String text, Authentication authentication,
-            HttpServletResponse response) throws IOException {
+            Random random, HttpServletResponse response) throws IOException {
 
         feedbackService.create(ownerId, messengerId, text);
         log.info("=== POST-CANDIDATE-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
@@ -109,18 +111,18 @@ public class FeedbackController {
     }
 
     @PostMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks")
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@authMessengerService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger" +
             "(#ownerId, #employerId, #vacancyId, #messengerId, authentication.name)")
-    public ResponseEntity<String> createByEmployer(
+    public void createByEmployer(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("vacancy-id") long vacancyId, @PathVariable("messenger-id") long messengerId,
-            @RequestParam String text, Authentication authentication
-    ) {
+            @RequestParam String text, Authentication authentication, HttpServletResponse response) throws IOException {
         feedbackService.create(ownerId, messengerId, text);
         log.info("=== POST-EMPLOYER-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(String.format("Feedback with text %s successfully created", text));
+        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                ownerId, employerId, vacancyId, messengerId));
     }
 
     @GetMapping("/candidate/{candidate-id}/messengers/{messenger-id}/feedbacks/{id}/edit")
@@ -134,7 +136,7 @@ public class FeedbackController {
         map.addAttribute("feedback", feedbackService.readById(id));
         log.info("=== GET-FORM-FOR-UPDATE-CANDIDATE-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return new ModelAndView("feedback-update", map);
+        return new ModelAndView("candidates/feedback-update", map);
     }
 
     @PostMapping("/candidate/{candidate-id}/messengers/{messenger-id}/feedbacks/{id}/edit")
@@ -151,18 +153,35 @@ public class FeedbackController {
                 ownerId, candidateId, messengerId));
     }
 
-    @PutMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}")
+    @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/edit")
     @PreAuthorize("@authFeedbackService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback" +
             "(#ownerId, #employerId, #vacancyId, #messengerId, #id, authentication.name)")
-    public ResponseEntity<String> updateByEmployer(
+    public ModelAndView getFormForUpdateByEmployer(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            @PathVariable("vacancy-id") long vacancyId, @PathVariable("messenger-id") long messengerId, @PathVariable String id,
+            Authentication authentication, ModelMap map) {
+        map.addAttribute("employerId", employerId);
+        map.addAttribute("vacancyId", vacancyId);
+        map.addAttribute("messengerId", messengerId);
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("feedback", feedbackService.readById(id));
+        log.info("=== GET-FORM-FOR-UPDATE-EMPLOYER-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
+
+        return new ModelAndView("employers/feedback-update", map);
+    }
+
+    @PostMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/edit")
+    @PreAuthorize("@authFeedbackService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback" +
+            "(#ownerId, #employerId, #vacancyId, #messengerId, #id, authentication.name)")
+    public void updateByEmployer(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("vacancy-id") long vacancyId, @PathVariable("messenger-id") long messengerId,
-            @PathVariable String id, @RequestParam String text, Authentication authentication
-    ) {
+            @PathVariable String id, String text, Authentication authentication, HttpServletResponse response) throws IOException {
         feedbackService.update(id, text);
         log.info("=== PUT-EMPLOYER-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.ok(String.format("Feedback with text %s successfully updated", text));
+        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                ownerId, employerId, vacancyId, messengerId));
     }
 
     @GetMapping("/candidate/{candidate-id}/messengers/{messenger-id}/feedbacks/{id}/delete")
@@ -180,15 +199,18 @@ public class FeedbackController {
                 ownerId, candidateId, messengerId));
     }
 
-    @DeleteMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}")
+    @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@authFeedbackService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback" +
             "(#ownerId, #employerId, #vacancyId, #messengerId, #id, authentication.name)")
     public void deleteByEmployer(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("vacancy-id") long vacancyId, @PathVariable("messenger-id") long messengerId,
-            @PathVariable String id, Authentication authentication, HttpServletResponse response) {
+            @PathVariable String id, Authentication authentication, HttpServletResponse response) throws IOException {
         feedbackService.delete(id);
         log.info("=== DELETE-EMPLOYER-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
+
+        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                ownerId, employerId, vacancyId, messengerId));
     }
 }

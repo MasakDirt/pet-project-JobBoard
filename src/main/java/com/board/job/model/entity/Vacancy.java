@@ -86,7 +86,7 @@ public class Vacancy {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL)
-    private List<Messenger> messengers;
+    private List<Messenger> messengerForVacanciesReplies;
 
     public Vacancy() {
         postedAt = LocalDateTime.now();

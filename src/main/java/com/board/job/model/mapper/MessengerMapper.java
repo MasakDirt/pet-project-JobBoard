@@ -29,6 +29,7 @@ public interface MessengerMapper {
     @Mapping(target = "country", expression = "java(messenger.getVacancy().getCountry())")
     @Mapping(target = "postedAt", expression = "java(messenger.getVacancy().getPostedAt())")
     @Mapping(target = "category", expression = "java(messenger.getVacancy().getCategory())")
+    @Mapping(target = "candidateProfile", expression = "java(messenger.getCandidateProfile())")
     @Mapping(target = "lookingFor", expression = "java(messenger.getVacancy().getLookingFor())")
     @Mapping(target = "companyName", expression = "java(messenger.getVacancy().getEmployerProfile().getCompanyName())")
     @Mapping(target = "employerName", expression = "java(messenger.getVacancy().getEmployerProfile().getEmployerName())")

@@ -1,5 +1,6 @@
 package com.board.job.model.dto.employer_profile;
 
+import com.board.job.model.entity.Image;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -38,4 +39,6 @@ public class EmployerProfileResponse {
     @Pattern(regexp = "^www\\.linkedin\\.co.*$",
             message = "Must be a valid LinkedIn link!")
     private String linkedInProfile;
+
+    private Image image;
 }

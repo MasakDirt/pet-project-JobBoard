@@ -14,4 +14,5 @@ public interface MessengerRepository  extends JpaRepository<Messenger, Long> {
     List<Messenger> findAllByVacancyId(long vacancyId);
 
     Optional<Messenger> findByCandidateProfile_OwnerIdAndVacancyId(long ownerId, long vacancyId);
+    Optional<Messenger> findByVacancy_EmployerProfileIdAndCandidateProfileId(long employerProfileId, long candidateProfileId);
 }
