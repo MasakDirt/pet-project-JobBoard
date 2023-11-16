@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
@@ -20,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 
