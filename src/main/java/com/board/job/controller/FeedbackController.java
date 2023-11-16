@@ -1,6 +1,5 @@
 package com.board.job.controller;
 
-import com.board.job.model.dto.feedback.FeedbackResponse;
 import com.board.job.model.mapper.FeedbackMapper;
 import com.board.job.model.mapper.MessengerMapper;
 import com.board.job.service.FeedbackService;
@@ -65,33 +64,6 @@ public class FeedbackController {
         log.info("=== GET-VACANCY-MESSENGER-FEEDBACKS === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("employers/feedbacks-list", map);
-    }
-
-    @GetMapping("/candidate/{candidate-id}/messengers/{messenger-id}/feedbacks/{id}")
-    @PreAuthorize("@authFeedbackService.isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback" +
-            "(#ownerId, #candidateId, #messengerId, #id, authentication.name)")
-    public FeedbackResponse getFeedbackByCandidate(
-            @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
-            @PathVariable("messenger-id") long messengerId, @PathVariable String id, Authentication authentication
-    ) {
-        var response = mapper.getFeedbackResponseFromFeedback(feedbackService.readById(id));
-        log.info("=== GET-CANDIDATE-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
-
-        return response;
-    }
-
-    @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}")
-    @PreAuthorize("@authFeedbackService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback" +
-            "(#ownerId, #employerId, #vacancyId, #messengerId, #id, authentication.name)")
-    public FeedbackResponse getFeedbackByEmployer(
-            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable("vacancy-id") long vacancyId, @PathVariable("messenger-id") long messengerId,
-            @PathVariable String id, Authentication authentication
-    ) {
-        var response = mapper.getFeedbackResponseFromFeedback(feedbackService.readById(id));
-        log.info("=== GET-EMPLOYER-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
-
-        return response;
     }
 
     @PostMapping("/candidate/{candidate-id}/messengers/{messenger-id}/feedbacks")
