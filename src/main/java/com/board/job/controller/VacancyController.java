@@ -121,7 +121,6 @@ public class VacancyController {
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("domains", Arrays.stream(JobDomain.values()).map(JobDomain::getValue));
         map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
-        map.addAttribute("ukr_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
         map.addAttribute("categories", Arrays.stream(Category.values()).map(Category::getValue));
         map.addAttribute("workModes", Arrays.stream(WorkMode.values()).map(WorkMode::getValue));
         map.addAttribute("vacancy", mapper.getVacancyRequestFromVacancy(vacancyService.readById(id)));
@@ -154,7 +153,7 @@ public class VacancyController {
         vacancyService.update(id, mapper.getVacancyFromVacancyRequest(request));
         log.info("=== PUT-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies", ownerId, employerId));
+        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s", ownerId, employerId, id));
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies/{id}/delete")
