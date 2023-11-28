@@ -202,7 +202,6 @@ public class FeedbackControllerTests {
         long messengerId = 1L;
         String id = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream().findAny().get().getId();
-        String text = "Updated";
 
         mvc.perform(get(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}/edit",
                         ownerId, candidateId, messengerId, id)
