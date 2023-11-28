@@ -41,7 +41,7 @@ public class FeedbackServiceTests {
         long ownerId = 1L;
         long messengerId = 2L;
         String text = "text";
-        List<Feedback> before = feedbackService.getAllMessengerFeedbacks(messengerId);
+        List<Feedback> before = feedbackService.getAllVacancyMessengerFeedbacks(messengerId);
 
         Feedback expected = new Feedback();
         expected.setText(text);
@@ -50,7 +50,7 @@ public class FeedbackServiceTests {
 
         Feedback actual = feedbackService.create(ownerId, messengerId, text);
         expected.setId(actual.getId());
-        List<Feedback> after = feedbackService.getAllMessengerFeedbacks(messengerId);
+        List<Feedback> after = feedbackService.getAllVacancyMessengerFeedbacks(messengerId);
 
         assertTrue(before.size() < after.size(),
                 "Before creating feedback list must be smaller than after.");
@@ -123,7 +123,7 @@ public class FeedbackServiceTests {
                 .filter(feedback -> feedback.getMessengerId() == messengerId)
                 .toList();
 
-        List<Feedback> actual = feedbackService.getAllMessengerFeedbacks(messengerId);
+        List<Feedback> actual = feedbackService.getAllVacancyMessengerFeedbacks(messengerId);
 
         assertEquals(expected, actual,
                 "Lists must be same");
