@@ -15,14 +15,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
@@ -118,30 +117,45 @@ public class VacancyController {
     public ModelAndView getEmployerVacancy(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable long id, Authentication authentication, ModelMap map) {
-        map.addAttribute("owner", userService.readById(ownerId));
-        map.addAttribute("domains", Arrays.stream(JobDomain.values()).map(JobDomain::getValue));
-        map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
-        map.addAttribute("categories", Arrays.stream(Category.values()).map(Category::getValue));
-        map.addAttribute("workModes", Arrays.stream(WorkMode.values()).map(WorkMode::getValue));
         map.addAttribute("vacancy", mapper.getVacancyRequestFromVacancy(vacancyService.readById(id)));
+        addAttributesForGetForms(map, ownerId);
         log.info("=== GET-EMPLOYER-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("employers/vacancy-get", map);
     }
 
 
+    @GetMapping("/employer-profile/{employer-id}/vacancies/create")
+    @PreAuthorize("@authEmployerProfileService.isUsersSameByIdAndUserOwnerEmployerProfile" +
+            "(#ownerId, #employerId, authentication.name)")
+    public ModelAndView getCreateForm(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            ModelMap map) {
+        map.addAttribute("vacancy", new VacancyRequest());
+        addAttributesForGetForms(map, ownerId);
+
+        return new ModelAndView("employers/vacancy-create", map);
+    }
+
+    private void addAttributesForGetForms(ModelMap map, long ownerId) {
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("domains", Arrays.stream(JobDomain.values()).map(JobDomain::getValue));
+        map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
+        map.addAttribute("categories", Arrays.stream(Category.values()).map(Category::getValue));
+        map.addAttribute("workModes", Arrays.stream(WorkMode.values()).map(WorkMode::getValue));
+    }
+
     @PostMapping("/employer-profile/{employer-id}/vacancies")
     @PreAuthorize("@authEmployerProfileService.isUsersSameByIdAndUserOwnerEmployerProfile" +
             "(#ownerId, #employerId, authentication.name)")
-    public ResponseEntity<String> create(
+    public void create(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @RequestBody @Valid VacancyRequest request, Authentication authentication) {
+            @Valid VacancyRequest request, Authentication authentication, HttpServletResponse response) throws IOException {
 
-        var vacancy = vacancyService.create(ownerId, mapper.getVacancyFromVacancyRequest(request));
+        vacancyService.create(ownerId, mapper.getVacancyFromVacancyRequest(request));
         log.info("=== POST-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(String.format("Vacancy for employer %s successfully created.", vacancy.getEmployerProfile().getEmployerName()));
+        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies", ownerId, employerId));
     }
 
     @PostMapping("/employer-profile/{employer-id}/vacancies/{id}/update")
