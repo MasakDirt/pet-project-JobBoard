@@ -121,7 +121,7 @@ public class ImageController {
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId, @PathVariable long id,
             @RequestBody MultipartFile file, Authentication authentication, HttpServletResponse response) throws IOException {
 
-        var image = imageService.update(id, file.getBytes());
+        imageService.update(id, file.getBytes());
         log.info("=== PUT-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
         response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
