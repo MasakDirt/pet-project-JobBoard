@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Create Vacancy</title>
+
+    <style>
+        .btn-purple {
+            background-color: #8a2be2;
+            border-color: #8a2be2;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn-clear {
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-purple:hover {
+            background-color: #6a1e9b;
+            border-color: #6a1e9b;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            flex: 2;
+            font-weight: bold;
+        }
+
+        .form-group {
+            flex: 3;
+        }
+
+        input[type = "text"], select, #category, #englishLevel, #domain, #work_mode {
+            background-color: rgb(64, 64, 64);
+            color: black;
+            width: 50%;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-size: 17px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div th:replace="~{headers/header-entities-employer.html}"></div>
+</header>
+<div class="col-md-offset-2 col-sm-8">
+    <h2>Creation</h2>
+</div>
+
+<div class="container">
+    <form class="form-horizontal"
+          th:action="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies|}"
+          method="post">
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="lookingFor">Looking For:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="lookingFor"
+                       th:field="${vacancy.lookingFor}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="country">Country:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="country"
+                       th:field="${vacancy.country}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="city">City:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="city"
+                       th:field="${vacancy.city}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="salaryFrom">Salary From:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="salaryFrom"
+                       th:field="${vacancy.salaryFrom}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="salaryTo">Salary To:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="salaryTo"
+                       th:field="${vacancy.salaryTo}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="workExperience">Work experience:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="workExperience"
+                       th:field="${vacancy.workExperience}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="category"><strong>Category:</strong></label>
+            <div class="col-sm-10">
+                <select class="form-control" name="category" id="category">
+                    <option th:each="category : ${categories}"
+                            th:value="${category}"
+                            th:text="${category}"
+                            th:selected="${category == vacancy.category}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="work_mode"><strong>Work Mode:</strong></label>
+            <div class="col-sm-10">
+                <select class="form-control" name="workMode" id="work_mode">
+                    <option th:each="work_mode : ${workModes}"
+                            th:value="${work_mode}"
+                            th:text="${work_mode}"
+                            th:selected="${work_mode == vacancy.workMode}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="domain"><strong>Domain:</strong></label>
+            <div class="col-sm-10">
+                <select class="form-control" name="domain" id="domain">
+                    <option th:each="domain : ${domains}"
+                            th:value="${domain}"
+                            th:text="${domain}"
+                            th:selected="${domain == vacancy.domain}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="englishLevel"><strong>English Level:</strong></label>
+            <div class="col-sm-10">
+                <select class="form-control" name="englishLevel" id="englishLevel">
+                    <option th:each="eng_level : ${eng_levels}"
+                            th:value="${eng_level}"
+                            th:text="${eng_level}"
+                            th:selected="${eng_level == vacancy.englishLevel}"/>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="detailDescription">Detail Description:</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" id="detailDescription" rows="9"
+                          th:field="${vacancy.detailDescription}"
+                          style="width: 60%; box-sizing: border-box;"></textarea>
+            </div>
+        </div>
+        <hr>
+
+        <div class="form-group text-center">
+            <div class="col-sm-10">
+                <input type="submit" class="btn btn-purple" value="Create"/>
+                <input type="reset" class="btn btn-clear" value="Reset"/>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
