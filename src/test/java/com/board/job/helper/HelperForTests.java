@@ -9,10 +9,13 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 public class HelperForTests {
     public static final String ACCESS_DENIED = "\"status\":\"FORBIDDEN\",\"message\":\"Access Denied\"";
@@ -68,5 +71,13 @@ public class HelperForTests {
                 .content(asJsonString(userCreate)));
 
         return getUserToken(mvc, "maks@mail.co", "1234");
+    }
+
+    public static ResultMatcher getErrorView() {
+        return view().name("errors/error");
+    }
+
+    public static ResultMatcher getErrorAttributes() {
+        return model().attributeExists("formatter", "errorResponse");
     }
 }
