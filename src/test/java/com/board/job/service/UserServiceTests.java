@@ -82,7 +82,6 @@ public class UserServiceTests {
 
     @Test
     public void test_Invalid_Create() {
-        User user = userService.readById(4L);
         Role role = roleService.readById(2L);
 
         assertAll(
