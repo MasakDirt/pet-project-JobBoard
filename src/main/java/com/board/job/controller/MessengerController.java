@@ -6,11 +6,11 @@ import com.board.job.service.FeedbackService;
 import com.board.job.service.MessengerService;
 import com.board.job.service.UserService;
 import com.board.job.service.VacancyService;
+import com.board.job.service.candidate.CandidateProfileService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
@@ -19,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 
@@ -33,6 +32,7 @@ public class MessengerController {
     private final MessengerService messengerService;
     private final FeedbackService feedbackService;
     private final VacancyService vacancyService;
+    private final CandidateProfileService candidateProfileService;
 
     @GetMapping("/candidate/{candidate-id}/messengers")
     @PreAuthorize("@authCandidateProfileService.isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfile" +
@@ -44,31 +44,39 @@ public class MessengerController {
                 .stream()
                 .map(messenger -> mapper.getCutMessengerResponseFromMessenger(messenger, feedbackService.getLastFeedbackText(messenger.getId())))
                 .toList();
-        log.info("=== GET-CANDIDATE-MESSENGERS === {} == {}", getAuthorities(authentication), authentication.getName());
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
         map.addAttribute("messengers", messengers);
+        log.info("=== GET-CANDIDATE-MESSENGERS === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("messengers-list", map);
     }
 
-    @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers")
+    @GetMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/employer-profile/{employer-id}/messengers")
     @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #vacancyId, authentication.name)")
-    public List<CutMessengerResponse> getAllVacancyMessengers(
-            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable("vacancy-id") long vacancyId, Authentication authentication
+    public ModelAndView getAllVacancyMessengers(
+            @PathVariable("owner-id") long ownerId, @PathVariable("vacancy-id") long vacancyId,
+            @PathVariable("candidate-id") long candidateProfileId, @PathVariable("employer-id") long employerId,
+            Authentication authentication, ModelMap map
     ) {
-        var responses = messengerService.getAllByVacancyId(vacancyId)
+        var messengers = messengerService.getAllByVacancyId(vacancyId)
                 .stream()
                 .map(messenger -> mapper.getCutMessengerResponseFromMessenger(
                                 messenger, feedbackService.getLastFeedbackText(messenger.getId())
                         )
                 )
                 .toList();
+
+        map.addAttribute("vacancyId", vacancyId);
+        map.addAttribute("employerId", employerId);
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
+        map.addAttribute("messengers", messengers);
+        map.addAttribute("candidate", candidateProfileService.readById(candidateProfileId));
         log.info("=== GET-VACANCY-MESSENGERS === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return responses;
+        return new ModelAndView("employers/employer-messengers-list", map);
     }
 
     @PostMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/messengers")
@@ -115,21 +123,18 @@ public class MessengerController {
                 ownerId, candidateId));
     }
 
-    @DeleteMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}")
+    @GetMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/employer-profile/{employer-id}/messengers/{id}/delete")
     @PreAuthorize("@authMessengerService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger" +
             "(#ownerId, #employerId, #vacancyId, #id, authentication.name)")
-    public ResponseEntity<String> deleteByEmployer(
+    public void deleteByEmployer(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable("vacancy-id") long vacancyId, @PathVariable long id, Authentication authentication
-    ) {
-        var messenger = messengerService.readById(id);
+            @PathVariable("candidate-id") long candidateId, @PathVariable("vacancy-id") long vacancyId,
+            @PathVariable long id, Authentication authentication, HttpServletResponse response
+    ) throws Exception {
         messengerService.delete(id);
         log.info("=== DELETE-MESSENGER-BY-EMPLOYER === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.ok(
-                String.format("Messenger between %s and candidate %s successfully deleted",
-                        messenger.getVacancy().getEmployerProfile().getCompanyName(),
-                        messenger.getCandidateProfile().getOwner().getName())
-        );
+        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers",
+                ownerId, vacancyService.readById(vacancyId).getEmployerProfile().getId(), vacancyId));
     }
 }

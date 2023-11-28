@@ -56,10 +56,16 @@
                         <h5 th:text="'English Level: ' + ${candidateProfileRequest.englishLevel}"></h5>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" th:if="${messenger.isEmpty()}">
                         <a type="button"
                            th:href="@{|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}/vacancies/candidate/${candidateProfileRequest.id}|}"
                            class="btn btn-purple">Select Vacancy For Messenger</a>
+                    </div>
+
+                    <div class="form-group" th:if="${messenger.isPresent()}">
+                        <a type="button"
+                           th:href="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/${messenger.get().vacancy.id}/messengers/${messenger.get().id}/feedbacks|}"
+                           class="btn btn-purple">Messenger</a>
                     </div>
                 </div>
 

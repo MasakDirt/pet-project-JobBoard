@@ -9,7 +9,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
-import static org.springframework.http.ResponseEntity.*;
 
 @Slf4j
 @RestController
@@ -121,7 +119,7 @@ public class ImageController {
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId, @PathVariable long id,
             @RequestBody MultipartFile file, Authentication authentication, HttpServletResponse response) throws IOException {
 
-        var image = imageService.update(id, file.getBytes());
+        imageService.update(id, file.getBytes());
         log.info("=== PUT-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
         response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));

@@ -55,10 +55,10 @@ public class CandidateContactController {
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
     public void create(@PathVariable("owner-id") long ownerId, @Valid CandidateContactRequest request,
                        Authentication authentication, HttpServletResponse response) throws IOException {
-        var created = candidateContactService.create(ownerId, mapper.getCandidateContactFromCandidateContactRequest(request));
+        long createdId = candidateContactService.create(ownerId, mapper.getCandidateContactFromCandidateContactRequest(request)).getId();
         log.info("=== POST-CANDIDATE_CONTACT === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, created.getId()));
+        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, createdId));
     }
 
     @PostMapping("/{id}/update")

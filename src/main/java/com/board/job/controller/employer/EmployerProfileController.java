@@ -33,10 +33,9 @@ public class EmployerProfileController {
             "(#ownerId, #id, authentication.name)")
     public ModelAndView getById(@PathVariable("owner-id") long ownerId,
                                 @PathVariable long id, ModelMap map, Authentication authentication) {
-
-        var employerProfile = mapper.getEmployerProfileResponseFromEmployerProfile(employerProfileService.readById(id));
         map.addAttribute("owner", userService.readById(ownerId));
-        map.addAttribute("employerProfile", employerProfile);
+        map.addAttribute("employerProfile", mapper.getEmployerProfileResponseFromEmployerProfile(
+                employerProfileService.readById(id)));
         log.info("=== GET-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("employers/employer-profile-get", map);

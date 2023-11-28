@@ -7,9 +7,9 @@ public enum JobDomain {
     ADULT("Adult"), ADVERTISING_MARKETING("Advertising Marketing"), AUTOMOTIVE("Automotive"),
     BLOCKCHAIN_CRYPTO("Blockchain/Crypto"), DATING("Dating"), E_COMMERCE_MARKETPLACE("E-commerce/Marketplace"),
     EDUCATION("Education"), FINTECH("Fintech"), GAMBLING("Gambling"), GAMEDEV("GameDEV"),
-    HARDWARE("Hardware"), HEALTHCARE_MEDTECH("Health/Medtech"), MACHINE_LEARNING("Machine Learning"),
-    BIG_DATA("Big Data"), MEDIA("Media"), MILTECH("Miltech"), MOBILE("Mobile"), SAAS("SAAS"),
-    SECURITY("Security"), TELECOM_COMMUNICATIONS("Telecom communications"), TRAVEL("Travel"), OTHER("Other");
+    HARDWARE("Hardware"), HEALTHCARE_MEDTECH("Health/MedTech"), MACHINE_LEARNING("Machine Learning"),
+    BIG_DATA("Big Data"), MEDIA("Media"), MILTECH("MilTech"), MOBILE("Mobile"), SAAS("SAAS"),
+    SECURITY("Security"), TELECOM_COMMUNICATIONS("Telecom Communications"), TRAVEL("Travel"), OTHER("Other");
 
     private final String value;
 

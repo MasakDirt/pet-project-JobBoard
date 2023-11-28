@@ -1,28 +1,29 @@
 package com.board.job.controller;
 
-import com.board.job.model.dto.vacancy.CutVacancyResponse;
-import com.board.job.model.dto.vacancy.FullVacancyResponse;
 import com.board.job.model.dto.vacancy.VacancyRequest;
+import com.board.job.model.entity.sample.Category;
+import com.board.job.model.entity.sample.JobDomain;
+import com.board.job.model.entity.sample.LanguageLevel;
+import com.board.job.model.entity.sample.WorkMode;
 import com.board.job.model.mapper.VacancyMapper;
 import com.board.job.service.MessengerService;
 import com.board.job.service.UserService;
 import com.board.job.service.VacancyService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.List;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 import static com.board.job.controller.HelperForPagesCollections.getSortByValues;
@@ -63,21 +64,6 @@ public class VacancyController {
         return new ModelAndView("candidates/vacancies-list", map);
     }
 
-    @GetMapping("/employer-profiles/{employer-id}/vacancies/candidate/{candidate-id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
-    public ModelAndView getAllForSelect(
-            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable("candidate-id") long candidateId, Authentication authentication, ModelMap map) {
-
-        map.addAttribute("candidateId", candidateId);
-        map.addAttribute("owner", userService.readById(ownerId));
-        map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
-        map.addAttribute("vacancies", vacancyService.getAllByEmployerProfileId(employerId));
-        log.info("=== GET-VACANCIES-FOR-EMPLOYER-SELECTION === {} == {}", getAuthorities(authentication), authentication.getName());
-
-        return new ModelAndView("employers/vacancies-for-select", map);
-    }
-
     @GetMapping("/vacancies/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
     public ModelAndView getById(@PathVariable("owner-id") long ownerId,
@@ -95,67 +81,105 @@ public class VacancyController {
 
     @GetMapping("/employer-profile/{employer-id}/vacancies")
     @PreAuthorize("@userAuthService.isUsersSame(#ownerId, authentication.name)")
-    public List<CutVacancyResponse> getAllEmployerVacancies(@PathVariable("owner-id") long ownerId,
-                                                            @PathVariable("employer-id") long employerId, Authentication authentication) {
+    public ModelAndView getAllEmployerVacancies(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            Authentication authentication, ModelMap map) {
         var responses = vacancyService.getAllByEmployerProfileId(employerId)
                 .stream()
                 .map(mapper::getCutVacancyResponseFromVacancy)
                 .toList();
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("vacancies", responses);
+        map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
         log.info("=== GET-EMPLOYER-VACANCIES === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return responses;
+        return new ModelAndView("employers/company-vacancies-list");
+    }
+
+    @GetMapping("/employer-profiles/{employer-id}/vacancies/candidate/{candidate-id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
+    public ModelAndView getAllForSelect(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            @PathVariable("candidate-id") long candidateId, Authentication authentication, ModelMap map) {
+
+        map.addAttribute("candidateId", candidateId);
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
+        map.addAttribute("vacancies", vacancyService.getAllByEmployerProfileId(employerId));
+        log.info("=== GET-VACANCIES-FOR-EMPLOYER-SELECTION === {} == {}", getAuthorities(authentication), authentication.getName());
+
+        return new ModelAndView("employers/vacancies-for-select", map);
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies/{id}")
     @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #id, authentication.name)")
-    public FullVacancyResponse getEmployerVacancy(
+    public ModelAndView getEmployerVacancy(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable long id, Authentication authentication) {
-
-        var responses = mapper.getFullVacancyResponseFromVacancy(vacancyService.readById(id));
+            @PathVariable long id, Authentication authentication, ModelMap map) {
+        map.addAttribute("vacancy", mapper.getVacancyRequestFromVacancy(vacancyService.readById(id)));
+        addAttributesForGetForms(map, ownerId);
         log.info("=== GET-EMPLOYER-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return responses;
+        return new ModelAndView("employers/vacancy-get", map);
     }
 
+
+    @GetMapping("/employer-profile/{employer-id}/vacancies/create")
+    @PreAuthorize("@authEmployerProfileService.isUsersSameByIdAndUserOwnerEmployerProfile" +
+            "(#ownerId, #employerId, authentication.name)")
+    public ModelAndView getCreateForm(
+            @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
+            ModelMap map) {
+        map.addAttribute("vacancy", new VacancyRequest());
+        addAttributesForGetForms(map, ownerId);
+
+        return new ModelAndView("employers/vacancy-create", map);
+    }
+
+    private void addAttributesForGetForms(ModelMap map, long ownerId) {
+        map.addAttribute("owner", userService.readById(ownerId));
+        map.addAttribute("domains", Arrays.stream(JobDomain.values()).map(JobDomain::getValue));
+        map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
+        map.addAttribute("categories", Arrays.stream(Category.values()).map(Category::getValue));
+        map.addAttribute("workModes", Arrays.stream(WorkMode.values()).map(WorkMode::getValue));
+    }
 
     @PostMapping("/employer-profile/{employer-id}/vacancies")
     @PreAuthorize("@authEmployerProfileService.isUsersSameByIdAndUserOwnerEmployerProfile" +
             "(#ownerId, #employerId, authentication.name)")
-    public ResponseEntity<String> create(
+    public void create(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @RequestBody @Valid VacancyRequest request, Authentication authentication) {
+            @Valid VacancyRequest request, Authentication authentication, HttpServletResponse response) throws IOException {
 
-        var vacancy = vacancyService.create(ownerId, mapper.getVacancyFromVacancyRequest(request));
+        vacancyService.create(ownerId, mapper.getVacancyFromVacancyRequest(request));
         log.info("=== POST-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(String.format("Vacancy for employer %s successfully created.", vacancy.getEmployerProfile().getEmployerName()));
+        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies", ownerId, employerId));
     }
 
-    @PutMapping("/employer-profile/{employer-id}/vacancies/{id}")
+    @PostMapping("/employer-profile/{employer-id}/vacancies/{id}/update")
     @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #id, authentication.name)")
-    public ResponseEntity<String> update(
+    public void update(
             @PathVariable("owner-id") long ownerId, @PathVariable long id, @PathVariable("employer-id") long employerId,
-            @RequestBody @Valid VacancyRequest request, Authentication authentication) {
-        var vacancy = vacancyService.update(id, mapper.getVacancyFromVacancyRequest(request));
+            @Valid VacancyRequest request, Authentication authentication, HttpServletResponse response) throws Exception {
+        vacancyService.update(id, mapper.getVacancyFromVacancyRequest(request));
         log.info("=== PUT-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.ok(String.format(
-                "Vacancy for employer %s successfully updated.", vacancy.getEmployerProfile().getEmployerName()));
+        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s", ownerId, employerId, id));
     }
 
-    @DeleteMapping("/employer-profile/{employer-id}/vacancies/{id}")
+    @GetMapping("/employer-profile/{employer-id}/vacancies/{id}/delete")
     @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #id, authentication.name)")
-    public ResponseEntity<String> delete(@PathVariable("owner-id") long ownerId, @PathVariable long id,
-                                         @PathVariable("employer-id") long employerId, Authentication authentication) {
+    public void delete(@PathVariable("owner-id") long ownerId, @PathVariable long id,
+                       @PathVariable("employer-id") long employerId, Authentication authentication,
+                       HttpServletResponse response) throws Exception {
 
         vacancyService.delete(id);
         log.info("=== DELETE-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        return ResponseEntity.ok("Vacancy successfully deleted");
+       response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies", ownerId, employerId));
     }
 }
