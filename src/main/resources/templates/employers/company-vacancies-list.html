@@ -48,9 +48,22 @@
 <header>
     <div th:replace="~{headers/header-entities-employer.html}"></div>
 </header>
+<br>
+<div class="row text-center">
+    <div class="col-xs-12 col-sm-6 col-md-8">
+        <h2>Vacancies</h2>
+    </div>
+
+    <div class="col-xs-6 col-md-4">
+        <a class="btn btn-purple"
+           th:href="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/create|}">Create
+            Vacancy</a>
+    </div>
+</div>
+<br>
+
 <div class="container main-content">
     <div class="cards-container">
-        <h2>Vacancies</h2>
         <div th:each="vacancy: ${vacancies}">
             <div class="card vacancy-card">
                 <div class="card-body">
