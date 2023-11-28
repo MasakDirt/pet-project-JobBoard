@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import static com.board.job.controller.ControllerHelper.redirectionError;
+
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -49,10 +51,16 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Valid UserCreateRequest createRequest, HttpServletResponse response) throws IOException {
+    public void create(@Valid UserCreateRequest createRequest, HttpServletResponse response) {
         var user = userService.create(mapper.getUserFromUserCreate(createRequest), Set.of(roleService.readByName("USER")));
 
         log.info("=== POST-REGISTER === register - {} === time - {}.", user.getUsername(), LocalDateTime.now());
-        response.sendRedirect("/api/auth/login");
+
+        try {
+            response.sendRedirect("/api/auth/login");
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 }

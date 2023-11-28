@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.getAuthorities;
 import static com.board.job.controller.HelperForPagesCollections.getSortByValues;
 
 @Slf4j

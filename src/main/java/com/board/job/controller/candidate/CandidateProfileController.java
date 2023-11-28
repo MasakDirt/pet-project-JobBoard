@@ -23,7 +23,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.redirectionError;
 import static com.board.job.controller.HelperForPagesCollections.*;
 
 @Slf4j
@@ -107,24 +108,34 @@ public class CandidateProfileController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
     public void create(@PathVariable("owner-id") long ownerId, @Valid CandidateProfileRequest request,
-                       Authentication authentication, HttpServletResponse response) throws IOException {
+                       Authentication authentication, HttpServletResponse response) {
 
         candidateProfileService.create(ownerId, mapper.getCandidateProfileFromCandidateProfileRequest(request));
         log.info("=== POST-CANDIDATE_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/auth/login");
+        try {
+            response.sendRedirect("/api/auth/login");
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @PostMapping("/api/users/{owner-id}/candidate-profiles/{id}/update")
     @PreAuthorize("@authCandidateProfileService.isUsersSameByIdAndUserOwnerCandidateProfile(#ownerId, #id, authentication.name)")
     public void update(@PathVariable("owner-id") long ownerId, @PathVariable long id,
                        @Valid CandidateProfileRequest request, Authentication authentication,
-                       HttpServletResponse response) throws Exception {
+                       HttpServletResponse response) {
 
         candidateProfileService.update(id, mapper.getCandidateProfileFromCandidateProfileRequest(request));
         log.info("=== PUT-CANDIDATE_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/candidate-profiles/%d", ownerId, id));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/candidate-profiles/%d", ownerId, id));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/api/users/{owner-id}/candidate-profiles/{id}/delete")
@@ -132,10 +143,15 @@ public class CandidateProfileController {
     @PreAuthorize("@authCandidateProfileService.isUsersSameByIdAndUserOwnerCandidateProfile(#ownerId, #id, authentication.name)")
     public void delete(
             @PathVariable("owner-id") long ownerId, @PathVariable long id, Authentication authentication,
-            HttpServletResponse response) throws Exception {
+            HttpServletResponse response) {
         candidateProfileService.delete(id);
         log.info("=== DELETE-CANDIDATE_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d", ownerId));
+        try {
+            response.sendRedirect(String.format("/api/users/%d", ownerId));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 }

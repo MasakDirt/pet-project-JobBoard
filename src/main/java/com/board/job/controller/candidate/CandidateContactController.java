@@ -17,7 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
-import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.redirectionError;
 
 @Slf4j
 @RestController
@@ -54,23 +55,32 @@ public class CandidateContactController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#ownerId, authentication.name)")
     public void create(@PathVariable("owner-id") long ownerId, @Valid CandidateContactRequest request,
-                       Authentication authentication, HttpServletResponse response) throws IOException {
+                       Authentication authentication, HttpServletResponse response) {
         long createdId = candidateContactService.create(ownerId, mapper.getCandidateContactFromCandidateContactRequest(request)).getId();
         log.info("=== POST-CANDIDATE_CONTACT === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, createdId));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, createdId));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @PostMapping("/{id}/update")
     @PreAuthorize("@authCandidateContactService." +
             "isUsersSameByIdAndUserOwnerCandidateContacts(#ownerId, #id, authentication.name)")
     public void update(@PathVariable("owner-id") long ownerId, @PathVariable long id, @Valid CandidateContactRequest request,
-                       Authentication authentication, HttpServletResponse response) throws Exception {
-
+                       Authentication authentication, HttpServletResponse response) {
         candidateContactService.update(id, mapper.getCandidateContactFromCandidateContactRequest(request));
         log.info("=== PUT-CANDIDATE_CONTACT === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, id));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, id));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/{id}/delete")
@@ -78,10 +88,15 @@ public class CandidateContactController {
     @PreAuthorize("@authCandidateContactService." +
             "isUsersSameByIdAndUserOwnerCandidateContacts(#ownerId, #id, authentication.name)")
     public void delete(@PathVariable("owner-id") long ownerId, @PathVariable long id,
-                                         Authentication authentication, HttpServletResponse response) throws IOException {
+                       Authentication authentication, HttpServletResponse response) {
         candidateContactService.delete(id);
         log.info("=== DELETE-CANDIDATE_CONTACT === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/users/" + ownerId);
+        try {
+            response.sendRedirect("/api/users/" + ownerId);
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 }

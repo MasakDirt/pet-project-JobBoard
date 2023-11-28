@@ -16,7 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
-import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.redirectionError;
 
 @Slf4j
 @RestController
@@ -54,11 +55,16 @@ public class EmployerCompanyController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@userAuthService.isUsersSame(#ownerId, authentication.name)")
     public void create(@PathVariable("owner-id") long ownerId, String aboutCompany, String webSite,
-                       Authentication authentication, HttpServletResponse response) throws IOException {
+                       Authentication authentication, HttpServletResponse response) {
         long id = employerCompanyService.create(ownerId, aboutCompany, webSite).getId();
         log.info("=== POST-EMPLOYER_COMPANY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/employer-companies/%d", ownerId, id));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/employer-companies/%d", ownerId, id));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @PostMapping("/{id}/update")
@@ -66,12 +72,17 @@ public class EmployerCompanyController {
             "(#ownerId, #id, authentication.name)")
     public void update(@PathVariable("owner-id") long ownerId, @PathVariable long id,
                        String aboutCompany, String webSite, Authentication authentication,
-                       HttpServletResponse response) throws IOException {
+                       HttpServletResponse response) {
 
         employerCompanyService.update(id, new EmployerCompany(aboutCompany, webSite));
         log.info("=== PUT-EMPLOYER_COMPANY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/employer-companies/%d", ownerId, id));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/employer-companies/%d", ownerId, id));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/{id}/delete")
@@ -83,6 +94,11 @@ public class EmployerCompanyController {
         employerCompanyService.delete(id);
         log.info("=== DELETE-EMPLOYER_COMPANY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d", ownerId));
+        try {
+            response.sendRedirect(String.format("/api/users/%d", ownerId));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 }

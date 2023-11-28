@@ -15,7 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
-import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.redirectionError;
 
 @Slf4j
 @RestController
@@ -50,7 +51,12 @@ public class PDFFileController {
         pdfService.create(candidateContactId, file.getBytes());
         log.info("=== POST-PDF_FILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateContactId));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateContactId));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @PostMapping("/{id}/update")
@@ -59,12 +65,17 @@ public class PDFFileController {
     public void update(
             @PathVariable("owner-id") long ownerId,
             @PathVariable("contact-id") long candidateContactId, @PathVariable long id,
-            MultipartFile file, Authentication authentication, HttpServletResponse response) throws Exception {
+            MultipartFile file, Authentication authentication, HttpServletResponse response) throws IOException {
 
         pdfService.update(id, file.getBytes());
         log.info("=== PUT-PDF_FILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateContactId));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateContactId));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/{id}/delete")
@@ -73,10 +84,15 @@ public class PDFFileController {
             "(#ownerId, #candidateContactId, #id, authentication.name)")
     public void delete(@PathVariable("owner-id") long ownerId,
                        @PathVariable("contact-id") long candidateContactId, @PathVariable long id,
-                       Authentication authentication, HttpServletResponse response) throws Exception {
+                       Authentication authentication, HttpServletResponse response) {
         pdfService.delete(id);
         log.info("=== PUT-PDF_FILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateContactId));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateContactId));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 }

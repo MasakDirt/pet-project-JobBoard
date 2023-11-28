@@ -17,7 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
-import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.redirectionError;
 
 @Slf4j
 @RestController
@@ -56,12 +57,18 @@ public class EmployerProfileController {
     @PreAuthorize("@userAuthService.isUsersSame(#ownerId, authentication.name)")
     public void create(@PathVariable("owner-id") long ownerId,
                        @Valid EmployerProfileRequest request, Authentication authentication,
-                       HttpServletResponse response) throws IOException {
+                       HttpServletResponse response) {
 
         employerProfileService.create(ownerId, mapper.getEmployerProfileFromEmployerProfileRequest(request));
         log.info("=== POST-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/auth/login");
+        try {
+            response.sendRedirect("/api/auth/login");
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
+
     }
 
     @PostMapping("/{id}/update")
@@ -69,12 +76,17 @@ public class EmployerProfileController {
             "(#ownerId, #id, authentication.name)")
     public void update(@PathVariable("owner-id") long ownerId, @PathVariable long id,
                        @Valid EmployerProfileRequest request, Authentication authentication,
-                       HttpServletResponse response) throws IOException {
+                       HttpServletResponse response) {
 
         employerProfileService.update(id, mapper.getEmployerProfileFromEmployerProfileRequest(request));
         log.info("=== PUT-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, id));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, id));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/{id}/delete")
@@ -82,11 +94,16 @@ public class EmployerProfileController {
     @PreAuthorize("@authEmployerProfileService.isUsersSameByIdAndUserOwnerEmployerProfile" +
             "(#ownerId, #id, authentication.name)")
     public void delete(@PathVariable("owner-id") long ownerId, @PathVariable long id,
-                       Authentication authentication, HttpServletResponse response) throws IOException {
+                       Authentication authentication, HttpServletResponse response) {
 
         employerProfileService.delete(id);
         log.info("=== DELETE-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, id));
+        try {
+            response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, id));
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 }

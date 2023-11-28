@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.board.job.controller.AuthoritiesHelper.*;
+import static com.board.job.controller.ControllerHelper.*;
 
 @Slf4j
 @RestController
@@ -80,14 +80,19 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public void createAdmin(@Valid UserCreateRequest createRequest, Authentication authentication,
-                            HttpServletResponse response) throws IOException {
+                            HttpServletResponse response) {
 
         var created = userService.create(
                 mapper.getUserFromUserCreate(createRequest),
                 Set.of(roleService.readByName("ADMIN")));
         log.info("=== POST-USER-ADMIN === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/users/" + created.getId());
+        try {
+            response.sendRedirect("/api/users/" + created.getId());
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/{id}/update")
@@ -102,13 +107,18 @@ public class UserController {
     @PostMapping("/{id}/update")
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
     public void update(@PathVariable long id, Authentication authentication,
-                       @Valid UserUpdateRequestWithPassword request, HttpServletResponse response) throws IOException {
+                       @Valid UserUpdateRequestWithPassword request, HttpServletResponse response) {
 
         userService.update(id,
                 mapper.getUserFromUserUpdateRequestPass(request), request.getOldPassword());
         log.info("=== PUT-USER === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/users/" + id);
+        try {
+            response.sendRedirect("/api/users/" + id);
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/names/{id}/update")
@@ -123,20 +133,31 @@ public class UserController {
     @PostMapping("/names/{id}/update")
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
     public void updateNames(@PathVariable long id, Authentication authentication,
-                            @Valid UserUpdateRequest request, HttpServletResponse response) throws IOException {
+                            @Valid UserUpdateRequest request, HttpServletResponse response) {
 
         userService.updateNames(id, mapper.getUserFromUserUpdateRequest(request));
         log.info("=== PUT-USER-NAMES === {} === {}", getAuthorities(authentication), authentication.getName());
-        response.sendRedirect("/api/users/" + id);
+
+        try {
+            response.sendRedirect("/api/users/" + id);
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/{id}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
-    public void delete(@PathVariable long id, Authentication authentication, HttpServletResponse response) throws IOException {
+    public void delete(@PathVariable long id, Authentication authentication, HttpServletResponse response) {
         userService.delete(id);
         log.info("=== DELETE-USER === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/auth/login");
+        try {
+            response.sendRedirect("/api/auth/login");
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 }

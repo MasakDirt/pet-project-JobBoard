@@ -20,7 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.getAuthorities;
+import static com.board.job.controller.ControllerHelper.redirectionError;
 
 @Slf4j
 @RestController
@@ -85,12 +86,17 @@ public class RoleController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@Valid RoleRequest roleRequest, Authentication authentication,
-                       HttpServletResponse response) throws IOException {
+                       HttpServletResponse response) {
 
         roleService.create(roleRequest.getName());
         log.info("=== POST-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/roles");
+        try {
+            response.sendRedirect("/api/roles");
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/user/{user-id}/add-role")
@@ -109,7 +115,12 @@ public class RoleController {
         userService.addUserRole(userId, roleRequest.getName());
         log.info("=== POST-USER-ADD-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/roles/user/" + userId);
+        try {
+            response.sendRedirect("/api/roles/user/" + userId);
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/{id}/update")
@@ -126,7 +137,12 @@ public class RoleController {
         roleService.update(id, roleRequest.getName());
         log.info("=== PUT-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/roles");
+        try {
+            response.sendRedirect("/api/roles");
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/{id}/delete")
@@ -135,7 +151,12 @@ public class RoleController {
         roleService.delete(id);
         log.info("=== DELETE-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/roles");
+        try {
+            response.sendRedirect("/api/roles");
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 
     @GetMapping("/user/{user-id}/delete-role/{role-name}")
@@ -146,6 +167,11 @@ public class RoleController {
         userService.deleteUserRole(userId, roleName);
         log.info("=== DELETE-USER-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect("/api/roles/user/" + userId);
+        try {
+            response.sendRedirect("/api/roles/user/" + userId);
+        } catch (IOException e) {
+            log.error("Error while sending redirect - {}", e.getMessage());
+            redirectionError();
+        }
     }
 }
