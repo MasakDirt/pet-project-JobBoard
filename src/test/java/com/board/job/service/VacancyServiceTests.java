@@ -199,7 +199,7 @@ public class VacancyServiceTests {
                 .sorted(((o1, o2) -> o2.getPostedAt().compareTo(o1.getPostedAt())))
                 .toList();
 
-        List<Vacancy> actual = vacancyService.getSorted(pageable)
+        List<Vacancy> actual = vacancyService.getSortedVacancies(pageable, "")
                 .stream()
                 .toList();
 
