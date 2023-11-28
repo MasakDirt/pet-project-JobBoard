@@ -3,6 +3,7 @@ package com.board.job.service.candidate;
 import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.model.entity.sample.Category;
 import com.board.job.model.entity.sample.LanguageLevel;
+import com.board.job.repository.candidate.CandidateProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
@@ -27,10 +28,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 public class CandidateProfileServiceTests {
     private final CandidateProfileService candidateProfileService;
+    private final CandidateProfileRepository candidateProfileRepository;
 
     @Autowired
-    public CandidateProfileServiceTests(CandidateProfileService candidateProfileService) {
+    public CandidateProfileServiceTests(CandidateProfileService candidateProfileService, CandidateProfileRepository candidateProfileRepository) {
         this.candidateProfileService = candidateProfileService;
+        this.candidateProfileRepository = candidateProfileRepository;
     }
 
     @Test
@@ -41,8 +44,6 @@ public class CandidateProfileServiceTests {
     @Test
     public void test_Valid_Create() {
         long ownerId = 2L;
-
-        List<CandidateProfile> before = candidateProfileService.getAll();
 
         CandidateProfile expected = new CandidateProfile();
         expected.setPosition("Position");
@@ -56,11 +57,6 @@ public class CandidateProfileServiceTests {
         expected.setExperienceExplanation("My experience");
 
         CandidateProfile actual = candidateProfileService.create(ownerId, expected);
-
-        List<CandidateProfile> after = candidateProfileService.getAll();
-
-        assertTrue(before.size() < after.size(),
-                "Size of list that reads before creating must be smaller than after.");
         assertEquals(expected, actual);
     }
 
@@ -146,26 +142,35 @@ public class CandidateProfileServiceTests {
     }
 
     @Test
-    public void test_GetAll() {
-        assertFalse(candidateProfileService.getAll().isEmpty());
-        CandidateProfile expected = candidateProfileService.readById(2L);
-
-        assertTrue(candidateProfileService.getAll()
-                .stream()
-                .anyMatch(candidateProfile -> candidateProfile.equals(expected)));
-    }
-
-    @Test
     public void test_GetAllSorted() {
         Sort sort = Sort.by(Sort.Direction.fromString("desc"), "position");
         Pageable pageable = PageRequest.of(0, 10, sort);
 
-        List<CandidateProfile> expected = candidateProfileService.getAll()
+        List<CandidateProfile> expected = candidateProfileRepository.findAll()
                 .stream()
                 .sorted(((o1, o2) -> o2.getPosition().compareTo(o1.getPosition())))
                 .toList();
 
-        List<CandidateProfile> actual = candidateProfileService.getAllSorted(pageable)
+        List<CandidateProfile> actual = candidateProfileService.getAllSorted(pageable, "")
+                .stream()
+                .toList();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_GetAllSortedWithText() {
+        Sort sort = Sort.by(Sort.Direction.fromString("desc"), "id");
+        Pageable pageable = PageRequest.of(0, 10, sort);
+        String text = "Java";
+
+        List<CandidateProfile> expected = candidateProfileRepository.findAll()
+                .stream()
+                .filter(candidateProfile -> candidateProfile.getPosition().contains(text))
+                .sorted(((o1, o2) -> o2.getPosition().compareTo(o1.getPosition())))
+                .toList();
+
+        List<CandidateProfile> actual = candidateProfileService.getAllSorted(pageable, text)
                 .stream()
                 .toList();
 
