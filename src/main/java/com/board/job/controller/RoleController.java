@@ -111,7 +111,7 @@ public class RoleController {
     @PostMapping("/user/{user-id}/add-role")
     @ResponseStatus(HttpStatus.CREATED)
     public void addUserRole(@PathVariable(value = "user-id") long userId, @Valid RoleRequest roleRequest,
-                            Authentication authentication, HttpServletResponse response) throws IOException {
+                            Authentication authentication, HttpServletResponse response) {
         userService.addUserRole(userId, roleRequest.getName());
         log.info("=== POST-USER-ADD-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 
@@ -163,7 +163,7 @@ public class RoleController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserRole(@PathVariable(name = "user-id") long userId,
                                @PathVariable(name = "role-name") String roleName, Authentication authentication,
-                               HttpServletResponse response) throws IOException {
+                               HttpServletResponse response) {
         userService.deleteUserRole(userId, roleName);
         log.info("=== DELETE-USER-ROLE === {} === {}", getAuthorities(authentication), authentication.getName());
 

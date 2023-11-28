@@ -42,7 +42,7 @@ public class ImageController {
             "(#ownerId, #candidateId, authentication.name)")
     public Resource getByIdCandidateContactsImage(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
-            @PathVariable long id, Authentication authentication) throws IOException {
+            @PathVariable long id, Authentication authentication) {
         var profilePicture = imageService.readById(id).getProfilePicture();
         log.info("=== GET-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
@@ -54,7 +54,7 @@ public class ImageController {
             "(#ownerId, #candidateId, authentication.name)")
     public Resource getByIdCandidateContactsImageForHeader(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
-            @PathVariable long id, Authentication authentication) throws IOException {
+            @PathVariable long id, Authentication authentication) {
         var profilePicture = imageService.readById(id).getProfilePicture();
         log.info("=== GET-CANDIDATE-IMAGE-HEADER === {} == {}", getAuthorities(authentication), authentication.getName());
 
@@ -65,7 +65,7 @@ public class ImageController {
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE', 'EMPLOYER')")
     public Resource getByIdEmployerProfileImage(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable long id, Authentication authentication) throws IOException {
+            @PathVariable long id, Authentication authentication) {
 
         var profilePicture = imageService.readById(id).getProfilePicture();
         log.info("=== GET-EMPLOYER-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
@@ -77,7 +77,7 @@ public class ImageController {
     @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE', 'EMPLOYER')")
     public Resource getByIdEmployerProfileImageForHeader(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable long id, Authentication authentication) throws IOException {
+            @PathVariable long id, Authentication authentication) {
 
         var profilePicture = imageService.readById(id).getProfilePicture();
         log.info("=== GET-EMPLOYER-IMAGE-HEADER === {} == {}", getAuthorities(authentication), authentication.getName());
@@ -110,7 +110,7 @@ public class ImageController {
             "(#ownerId, #employerId, authentication.name)")
     public void addEmployerPhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @RequestParam MultipartFile file, Authentication authentication, HttpServletResponse response) throws IOException{
+            @RequestParam MultipartFile file, Authentication authentication, HttpServletResponse response) throws IOException {
 
         imageService.createWithEmployer(employerId, file.getBytes());
         log.info("=== POST-EMPLOYER-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
@@ -165,7 +165,7 @@ public class ImageController {
             "(#ownerId, #candidateId, #id, authentication.name)")
     public void deleteCandidatePhoto(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
-            @PathVariable long id, Authentication authentication, HttpServletResponse response) throws IOException {
+            @PathVariable long id, Authentication authentication, HttpServletResponse response) {
 
         imageService.delete(id);
         log.info("=== DELETE-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
