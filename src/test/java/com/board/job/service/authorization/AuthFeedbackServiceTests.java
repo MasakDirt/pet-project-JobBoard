@@ -33,7 +33,7 @@ public class AuthFeedbackServiceTests {
     @Test
     public void test_True_isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
         long messengerId = 2L;
-        String feedbackId = feedbackService.getAllMessengerFeedbacks(messengerId)
+        String feedbackId = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()
                 .findFirst()
                 .get()
@@ -49,7 +49,7 @@ public class AuthFeedbackServiceTests {
     @Test
     public void test_False_isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
         long messengerId = 2L;
-        String feedbackId = feedbackService.getAllMessengerFeedbacks(messengerId)
+        String feedbackId = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()
                 .findFirst()
                 .get()
@@ -74,7 +74,7 @@ public class AuthFeedbackServiceTests {
     @Test
     public void test_True_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
         long messengerId = 1L;
-        String feedbackId = feedbackService.getAllMessengerFeedbacks(messengerId)
+        String feedbackId = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()
                 .findFirst()
                 .get()
@@ -90,7 +90,7 @@ public class AuthFeedbackServiceTests {
     @Test
     public void test_False_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
         long messengerId = 1L;
-        String feedbackId = feedbackService.getAllMessengerFeedbacks(messengerId)
+        String feedbackId = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()
                 .findFirst()
                 .get()
