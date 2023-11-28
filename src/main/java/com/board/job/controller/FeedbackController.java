@@ -17,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 
@@ -26,7 +25,6 @@ import static com.board.job.controller.AuthoritiesHelper.getAuthorities;
 @AllArgsConstructor
 @RequestMapping("/api/users/{owner-id}")
 public class FeedbackController {
-    private final FeedbackMapper mapper;
     private final MessengerMapper messengerMapper;
     private final FeedbackService feedbackService;
     private final MessengerService messengerService;
@@ -73,7 +71,7 @@ public class FeedbackController {
     public void createByCandidate(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable("messenger-id") long messengerId, String text, Authentication authentication,
-            Random random, HttpServletResponse response) throws IOException {
+            HttpServletResponse response) throws IOException {
 
         feedbackService.create(ownerId, messengerId, text);
         log.info("=== POST-CANDIDATE-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
