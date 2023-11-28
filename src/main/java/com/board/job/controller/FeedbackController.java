@@ -1,6 +1,5 @@
 package com.board.job.controller;
 
-import com.board.job.model.mapper.FeedbackMapper;
 import com.board.job.model.mapper.MessengerMapper;
 import com.board.job.service.FeedbackService;
 import com.board.job.service.MessengerService;
