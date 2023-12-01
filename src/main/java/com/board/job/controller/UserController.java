@@ -36,12 +36,11 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView getAll(Authentication authentication, ModelMap map) {
-        var users = userService.getAll()
+        map.addAttribute("users", userService.getAll()
                 .stream()
                 .map(mapper::getUserResponseFromUser)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
         log.info("=== GET-USERS === {} === {}", getAuthorities(authentication), authentication.getName());
-        map.addAttribute("users", users);
 
         return new ModelAndView("users-list", map);
     }
@@ -50,9 +49,9 @@ public class UserController {
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
     public ModelAndView getById(@PathVariable long id, Authentication authentication, ModelMap map) {
         var user = mapper.getUserResponseFromUser(userService.readById(id));
-        log.info("=== GET-USER-ID === {} === {}", getAuthorities(authentication), authentication.getName());
         map.addAttribute("isAdmin", userAuthService.isAdmin(user.getEmail()));
         map.addAttribute("user", user);
+        log.info("=== GET-USER-ID === {} === {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("user-get", map);
     }
@@ -61,9 +60,9 @@ public class UserController {
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameByEmail(#email, authentication.name)")
     public ModelAndView getByEmail(@RequestParam String email, Authentication authentication, ModelMap map) {
         var user = mapper.getUserResponseFromUser(userService.readByEmail(email));
-        log.info("=== GET-USER-EMAIL === {} === {}", getAuthorities(authentication), authentication.getName());
         map.addAttribute("isAdmin", userAuthService.isAdmin(user.getEmail()));
         map.addAttribute("user", user);
+        log.info("=== GET-USER-EMAIL === {} === {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("user-get", map);
     }
