@@ -16,7 +16,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 import static com.board.job.controller.ControllerHelper.getAuthorities;
