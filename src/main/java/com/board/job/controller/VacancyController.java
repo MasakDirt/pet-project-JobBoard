@@ -25,8 +25,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import static com.board.job.controller.ControllerHelper.getAuthorities;
-import static com.board.job.controller.HelperForPagesCollections.getSortByValues;
+import static com.board.job.controller.ControllerHelper.*;
 
 @Slf4j
 @RestController
@@ -155,7 +154,7 @@ public class VacancyController {
         vacancyService.create(ownerId, mapper.getVacancyFromVacancyRequest(request));
         log.info("=== POST-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies", ownerId, employerId));
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/employer-profile/%s/vacancies", ownerId, employerId));
     }
 
     @PostMapping("/employer-profile/{employer-id}/vacancies/{id}/update")
@@ -167,7 +166,8 @@ public class VacancyController {
         vacancyService.update(id, mapper.getVacancyFromVacancyRequest(request));
         log.info("=== PUT-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s", ownerId, employerId, id));
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/employer-profile/%s/vacancies/%s",
+                ownerId, employerId, id));
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies/{id}/delete")
@@ -180,6 +180,6 @@ public class VacancyController {
         vacancyService.delete(id);
         log.info("=== DELETE-VACANCY === {} == {}", getAuthorities(authentication), authentication.getName());
 
-       response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies", ownerId, employerId));
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/employer-profile/%s/vacancies", ownerId, employerId));
     }
 }

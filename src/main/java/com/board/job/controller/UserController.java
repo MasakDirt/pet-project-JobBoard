@@ -87,12 +87,7 @@ public class UserController {
                 Set.of(roleService.readByName("ADMIN")));
         log.info("=== POST-USER-ADMIN === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect("/api/users/" + created.getId());
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, "/api/users/" + created.getId());
     }
 
     @GetMapping("/{id}/update")
@@ -113,12 +108,7 @@ public class UserController {
                 mapper.getUserFromUserUpdateRequestPass(request), request.getOldPassword());
         log.info("=== PUT-USER === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect("/api/users/" + id);
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, "/api/users/" + id);
     }
 
     @GetMapping("/names/{id}/update")
@@ -138,12 +128,7 @@ public class UserController {
         userService.updateNames(id, mapper.getUserFromUserUpdateRequest(request));
         log.info("=== PUT-USER-NAMES === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect("/api/users/" + id);
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, "/api/users/" + id);
     }
 
     @GetMapping("/{id}/delete")
@@ -153,11 +138,6 @@ public class UserController {
         userService.delete(id);
         log.info("=== DELETE-USER === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect("/api/auth/login");
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, "/api/auth/login");
     }
 }

@@ -17,8 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
-import static com.board.job.controller.ControllerHelper.getAuthorities;
-import static com.board.job.controller.ControllerHelper.redirectionError;
+import static com.board.job.controller.ControllerHelper.*;
 
 @Slf4j
 @RestController
@@ -62,13 +61,7 @@ public class EmployerProfileController {
         employerProfileService.create(ownerId, mapper.getEmployerProfileFromEmployerProfileRequest(request));
         log.info("=== POST-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect("/api/auth/login");
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
-
+        sendRedirectAndCheckForError(response, "/api/auth/login");
     }
 
     @PostMapping("/{id}/update")
@@ -81,12 +74,7 @@ public class EmployerProfileController {
         employerProfileService.update(id, mapper.getEmployerProfileFromEmployerProfileRequest(request));
         log.info("=== PUT-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, id));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%d/employer-profiles/%d", ownerId, id));
     }
 
     @GetMapping("/{id}/delete")
@@ -99,11 +87,6 @@ public class EmployerProfileController {
         employerProfileService.delete(id);
         log.info("=== DELETE-EMPLOYER_PROFILE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, id));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%d/employer-profiles/%d", ownerId, id));
     }
 }

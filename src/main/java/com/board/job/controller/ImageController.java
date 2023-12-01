@@ -17,8 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
-import static com.board.job.controller.ControllerHelper.getAuthorities;
-import static com.board.job.controller.ControllerHelper.redirectionError;
+import static com.board.job.controller.ControllerHelper.*;
 
 @Slf4j
 @RestController
@@ -96,12 +95,7 @@ public class ImageController {
         imageService.createWithCandidate(candidateId, file.getBytes());
         log.info("=== POST-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
     }
 
     @PostMapping("/employer-profiles/{employer-id}/images")
@@ -115,13 +109,8 @@ public class ImageController {
         imageService.createWithEmployer(employerId, file.getBytes());
         log.info("=== POST-EMPLOYER-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, employerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
-    }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%d/employer-profiles/%d", ownerId, employerId));
+     }
 
     @PostMapping("/candidate-contacts/{candidate-id}/images/{id}/update")
     @PreAuthorize("@authImageService.isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainImage" +
@@ -133,12 +122,7 @@ public class ImageController {
         imageService.update(id, file.getBytes());
         log.info("=== PUT-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
     }
 
     @PostMapping("/employer-profiles/{employer-id}/images/{id}/update")
@@ -151,12 +135,7 @@ public class ImageController {
         imageService.update(id, file.getBytes());
         log.info("=== PUT-EMPLOYER-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, employerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%d/employer-profiles/%d", ownerId, employerId));
     }
 
     @GetMapping("/candidate-contacts/{candidate-id}/images/{id}/delete")
@@ -170,12 +149,7 @@ public class ImageController {
         imageService.delete(id);
         log.info("=== DELETE-CANDIDATE-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%d/candidate-contacts/%d", ownerId, candidateId));
     }
 
     @GetMapping("/employer-profiles/{employer-id}/images/{id}/delete")
@@ -189,11 +163,6 @@ public class ImageController {
         imageService.delete(id);
         log.info("=== DELETE-EMPLOYER-IMAGE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%d/employer-profiles/%d", ownerId, employerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%d/employer-profiles/%d", ownerId, employerId));
     }
 }
