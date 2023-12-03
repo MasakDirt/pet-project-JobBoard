@@ -42,14 +42,21 @@
         .cards-container {
             flex: 1;
         }
+
+        h1 {
+            color: #a80009;
+        }
     </style>
 </head>
 <body>
 <header>
     <div th:replace="~{headers/header-entities-employer.html}"></div>
 </header>
+<div th:if="${vacancies.isEmpty()}" class="container">
+    <h1>First, you must create at least one vacancy!</h1>
+</div>
 <div class="container main-content">
-    <div class="cards-container">
+    <div class="cards-container"  th:unless="${vacancies.isEmpty()}">
         <h2>Vacancies</h2>
         <div th:each="vacancy: ${vacancies}">
             <div class="card vacancy-card">
