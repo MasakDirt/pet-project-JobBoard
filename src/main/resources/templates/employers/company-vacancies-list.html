@@ -80,6 +80,10 @@
                                 <a class="btn btn-purple"
                                    th:href="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/${vacancy.id}|}">Check Full</a>
                             </div>
+                            <div class="form-group">
+                                <a class="btn btn-purple"
+                                   th:href="@{|/api/users/${owner.id}/vacancies/${vacancy.id}/employer-profile/${owner.employerProfile.id}/messengers|}">Check Messengers</a>
+                            </div>
                         </div>
 
                         <div class="col-xs-6 col-md-4">
