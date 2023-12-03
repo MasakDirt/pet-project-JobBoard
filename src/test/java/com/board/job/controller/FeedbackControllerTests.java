@@ -1,20 +1,17 @@
 package com.board.job.controller;
 
-import com.board.job.model.dto.messenger.FullMessengerResponse;
-import com.board.job.model.mapper.FeedbackMapper;
-import com.board.job.model.mapper.MessengerMapper;
 import com.board.job.service.FeedbackService;
-import com.board.job.service.MessengerService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.board.job.helper.HelperForTests.*;
+import static com.board.job.helper.HelperForTests.getErrorAttributes;
+import static com.board.job.helper.HelperForTests.getErrorView;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -25,60 +22,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class FeedbackControllerTests {
     private static final String BASIC_URL = "/api/users/{owner-id}";
-
     private final MockMvc mvc;
-    private final FeedbackMapper mapper;
-    private final MessengerMapper messengerMapper;
     private final FeedbackService feedbackService;
-    private final MessengerService messengerService;
-
-    private String adminToken;
-    private String employerToken;
-    private String candidateToken;
 
     @Autowired
-    public FeedbackControllerTests(MockMvc mvc, FeedbackMapper mapper, MessengerMapper messengerMapper,
-                                   FeedbackService feedbackService, MessengerService messengerService) {
+    public FeedbackControllerTests(MockMvc mvc, FeedbackService feedbackService) {
         this.mvc = mvc;
-        this.mapper = mapper;
-        this.messengerMapper = messengerMapper;
         this.feedbackService = feedbackService;
-        this.messengerService = messengerService;
-    }
-
-    @BeforeEach
-    public void initTokens() throws Exception {
-        adminToken = getAdminToken(mvc);
-        employerToken = getUserToken(mvc, "larry@mail.co", "2222");
-        candidateToken = getUserToken(mvc, "nikole@mail.co", "3333");
     }
 
     @Test
     public void test_Injected_Components() {
-        assertNotNull(mapper);
-        assertNotNull(mapper);
-        assertNotNull(mapper);
-        assertNotNull(mapper);
+        assertNotNull(mvc);
+        assertNotNull(feedbackService);
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
     public void test_GetAllCandidateMessengerFeedbacks_Candidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long messengerId = 2L;
 
-        FullMessengerResponse expected = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(messengerId),
-                feedbackService.getAllMessengerFeedbacks(messengerId));
-
         mvc.perform(get(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks",
                         ownerId, candidateId, messengerId)
-                        .header("Authorization", "Bearer " + candidateToken)
                 )
-                .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(asJsonString(expected), result.getResponse().getContentAsString()));
+                .andExpect(view().name("candidates/feedbacks-list"))
+                .andExpect(model().attributeExists("owner", "dateFormatter", "messenger"));
     }
 
     @Test
+    @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
     public void test_Forbidden_GetAllCandidateMessengerFeedbacks_Candidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
@@ -86,31 +60,28 @@ public class FeedbackControllerTests {
 
         mvc.perform(get(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks",
                         ownerId, candidateId, messengerId)
-                        .header("Authorization", "Bearer " + candidateToken)
                 )
-                .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_GetAllEmployerMessengerFeedbacks_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
         long messengerId = 4L;
 
-        FullMessengerResponse expected = messengerMapper.getFullMessengerResponseFromMessenger(messengerService.readById(messengerId),
-                feedbackService.getAllMessengerFeedbacks(messengerId));
-
         mvc.perform(get(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}/feedbacks",
                         ownerId, employerId, vacancyId, messengerId)
-                        .header("Authorization", "Bearer " + employerToken)
                 )
-                .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(asJsonString(expected), result.getResponse().getContentAsString()));
+                .andExpect(view().name("employers/feedbacks-list"))
+                .andExpect(model().attributeExists("owner", "dateFormatter", "messenger", "candidate"));
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_Forbidden_GetAllEmployerMessengerFeedbacks_Admin() throws Exception {
         long ownerId = 1L;
         long employerId = 1L;
@@ -119,13 +90,13 @@ public class FeedbackControllerTests {
 
         mvc.perform(get(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{id}/feedbacks",
                         ownerId, employerId, vacancyId, messengerId)
-                        .header("Authorization", "Bearer " + adminToken)
                 )
-                .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
     public void test_CreateByCandidate_Admin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
@@ -134,14 +105,14 @@ public class FeedbackControllerTests {
 
         mvc.perform(post(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks",
                         ownerId, candidateId, messengerId)
-                        .header("Authorization", "Bearer " + adminToken)
                         .param("text", text)
                 )
-                .andExpect(status().isCreated())
-                .andExpect(content().string(String.format("Feedback with text %s successfully created", text)));
+                .andExpect(redirectedUrl(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
+                        ownerId, candidateId, messengerId)));
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
     public void test_Forbidden_CreateByCandidate_Admin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
@@ -150,14 +121,14 @@ public class FeedbackControllerTests {
 
         mvc.perform(post(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks",
                         ownerId, candidateId, messengerId)
-                        .header("Authorization", "Bearer " + adminToken)
                         .param("text", text)
                 )
-                .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
     public void test_NotFound_CreateByCandidate_Admin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
@@ -166,15 +137,14 @@ public class FeedbackControllerTests {
 
         mvc.perform(post(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks",
                         ownerId, candidateId, messengerId)
-                        .header("Authorization", "Bearer " + adminToken)
                         .param("text", text)
                 )
-                .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"Messenger not found\"")));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_CreateByEmployer_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
@@ -184,15 +154,14 @@ public class FeedbackControllerTests {
 
         mvc.perform(post(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks",
                         ownerId, employerId, vacancyId, messengerId)
-                        .header("Authorization", "Bearer " + employerToken)
                         .param("text", text)
                 )
-                .andExpect(status().isCreated())
-                .andExpect(result -> assertEquals(String.format("Feedback with text %s successfully created", text),
-                        result.getResponse().getContentAsString()));
+                .andExpect(redirectedUrl(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                        ownerId, employerId, vacancyId, messengerId)));
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_Forbidden_CreateByEmployer_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
@@ -202,14 +171,14 @@ public class FeedbackControllerTests {
 
         mvc.perform(post(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks",
                         ownerId, employerId, vacancyId, messengerId)
-                        .header("Authorization", "Bearer " + employerToken)
                         .param("text", text)
                 )
-                .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_NotFound_CreateByEmployer_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
@@ -219,51 +188,66 @@ public class FeedbackControllerTests {
 
         mvc.perform(post(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks",
                         ownerId, employerId, vacancyId, messengerId)
-                        .header("Authorization", "Bearer " + employerToken)
                         .param("text", text)
                 )
-                .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"Messenger not found\"")));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
+    public void test_GetUpdateFormByCandidate_Admin() throws Exception {
+        long ownerId = 1L;
+        long candidateId = 1L;
+        long messengerId = 1L;
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
+                .stream().findAny().get().getId();
+
+        mvc.perform(get(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}/edit",
+                        ownerId, candidateId, messengerId, id)
+                )
+                .andExpect(view().name("candidates/feedback-update"))
+                .andExpect(model().attributeExists("owner", "feedback"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
     public void test_UpdateByCandidate_Admin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
         long messengerId = 1L;
-        String id = feedbackService.getAllMessengerFeedbacks(messengerId)
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream().findAny().get().getId();
         String text = "Updated";
 
-        mvc.perform(put(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}",
+        mvc.perform(post(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}/edit",
                         ownerId, candidateId, messengerId, id)
-                        .header("Authorization", "Bearer " + adminToken)
                         .param("text", text)
                 )
-                .andExpect(status().isOk())
-                .andExpect(content().string(String.format("Feedback with text %s successfully updated", text)));
+                .andExpect(redirectedUrl(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
+                        ownerId, candidateId, messengerId)));
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
     public void test_Forbidden_UpdateByCandidate_Admin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
         long messengerId = 1L;
-        String id = feedbackService.getAllMessengerFeedbacks(2L)
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(2L)
                 .stream().findAny().get().getId();
         String text = "Updated";
 
-        mvc.perform(put(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}",
+        mvc.perform(post(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}/edit",
                         ownerId, candidateId, messengerId, id)
-                        .header("Authorization", "Bearer " + adminToken)
                         .param("text", text)
                 )
-                .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
     public void test_NotFound_UpdateByCandidate_Admin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
@@ -271,54 +255,71 @@ public class FeedbackControllerTests {
         String id = "";
         String text = "Updated";
 
-        mvc.perform(put(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}",
+        mvc.perform(post(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}/edit",
                         ownerId, candidateId, messengerId, id)
-                        .header("Authorization", "Bearer " + adminToken)
                         .param("text", text)
                 )
-                .andExpect(status().isNotFound());
+                .andExpect(status().is4xxClientError());
+
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
+    public void test_GetUpdateFormByEmployer_Admin() throws Exception {
+        long ownerId = 2L;
+        long employerId = 2L;
+        long vacancyId = 5L;
+        long messengerId = 4L;
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
+                .stream().findAny().get().getId();
+
+        mvc.perform(get(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/edit",
+                        ownerId, employerId, vacancyId, messengerId, id)
+                )
+                .andExpect(view().name("employers/feedback-update"))
+                .andExpect(model().attributeExists("owner", "feedback", "employerId", "vacancyId", "messengerId"));
+    }
+
+    @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_UpdateByEmployer_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
         long messengerId = 4L;
-        String id = feedbackService.getAllMessengerFeedbacks(messengerId)
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream().findAny().get().getId();
         String text = "Updated";
 
-        mvc.perform(put(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}",
+        mvc.perform(post(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/edit",
                         ownerId, employerId, vacancyId, messengerId, id)
-                        .header("Authorization", "Bearer " + employerToken)
                         .param("text", text)
                 )
-                .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(String.format("Feedback with text %s successfully updated", text),
-                        result.getResponse().getContentAsString()));
+                .andExpect(redirectedUrl(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                        ownerId, employerId, vacancyId, messengerId)));
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_Forbidden_UpdateByEmployer_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
         long messengerId = 2L;
-        String id = feedbackService.getAllMessengerFeedbacks(1L)
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(1L)
                 .stream().findAny().get().getId();
         String text = "Updated";
 
-        mvc.perform(put(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}",
+        mvc.perform(post(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/edit",
                         ownerId, employerId, vacancyId, messengerId, id)
-                        .header("Authorization", "Bearer " + employerToken)
                         .param("text", text)
                 )
-                .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_NotFound_UpdateByEmployer_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
@@ -327,98 +328,96 @@ public class FeedbackControllerTests {
         String id = "";
         String text = "Updated";
 
-        mvc.perform(put(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}",
+        mvc.perform(post(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/edit",
                         ownerId, employerId, vacancyId, messengerId, id)
-                        .header("Authorization", "Bearer " + employerToken)
                         .param("text", text)
                 )
-                .andExpect(status().isNotFound());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
+    @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
     public void test_DeleteByCandidate_Candidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long messengerId = 2L;
-        String id = feedbackService.getAllMessengerFeedbacks(messengerId)
-                .stream().findAny().get().getId();
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
+                .stream().filter(feedback -> feedback.getOwnerId() == ownerId).findAny().get().getId();
 
-        mvc.perform(delete(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}",
+        mvc.perform(get(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}/delete",
                         ownerId, candidateId, messengerId, id)
-                        .header("Authorization", "Bearer " + candidateToken)
                 )
-                .andExpect(status().isOk())
-                .andExpect(content().string("Feedback successfully deleted"));
+                .andExpect(redirectedUrl(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
+                        ownerId, candidateId, messengerId)));
     }
 
     @Test
+    @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
     public void test_Forbidden_DeleteByCandidate_Candidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long messengerId = 2L;
-        String id = feedbackService.getAllMessengerFeedbacks(1L)
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(1L)
                 .stream().findAny().get().getId();
 
-        mvc.perform(delete(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}",
+        mvc.perform(get(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}/delete",
                         ownerId, candidateId, messengerId, id)
-                        .header("Authorization", "Bearer " + candidateToken)
                 )
-                .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
     public void test_NotFound_DeleteByCandidate_Candidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long messengerId = 2L;
         String id = "notfound";
 
-        mvc.perform(delete(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}",
+        mvc.perform(get(BASIC_URL + "/candidate/{candidate-id}/messengers/{messengerId}/feedbacks/{id}/delete",
                         ownerId, candidateId, messengerId, id)
-                        .header("Authorization", "Bearer " + candidateToken)
                 )
-                .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"Feedback not found\"")));
-        ;
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_Delete_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
         long messengerId = 4L;
-        String id = feedbackService.getAllMessengerFeedbacks(messengerId)
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream().findAny().get().getId();
 
-        mvc.perform(delete(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}",
+        mvc.perform(get(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/delete",
                         ownerId, employerId, vacancyId, messengerId, id)
-                        .header("Authorization", "Bearer " + employerToken)
                 )
-                .andExpect(status().isOk())
-                .andExpect(content().string("Feedback successfully deleted"));
+                .andExpect(redirectedUrl(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                        ownerId, employerId, vacancyId, messengerId)));
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_Forbidden_DeleteByEmployer_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
         long messengerId = 2L;
-        String id = feedbackService.getAllMessengerFeedbacks(1L)
+        String id = feedbackService.getAllVacancyMessengerFeedbacks(1L)
                 .stream().findAny().get().getId();
 
-        mvc.perform(delete(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}",
+        mvc.perform(get(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/delete",
                         ownerId, employerId, vacancyId, messengerId, id)
-                        .header("Authorization", "Bearer " + employerToken)
                 )
-                .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
     public void test_NotFound_DeleteByEmployer_Employer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
@@ -426,10 +425,9 @@ public class FeedbackControllerTests {
         long messengerId = 4L;
         String id = "";
 
-        mvc.perform(delete(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}",
+        mvc.perform(get(BASIC_URL + "/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/delete",
                         ownerId, employerId, vacancyId, messengerId, id)
-                        .header("Authorization", "Bearer " + employerToken)
                 )
-                .andExpect(status().isNotFound());
+                .andExpect(status().is4xxClientError());
     }
 }

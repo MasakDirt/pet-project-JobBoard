@@ -1,6 +1,5 @@
 package com.board.job.service;
 
-import com.board.job.controller.HelperForPagesCollections;
 import com.board.job.model.entity.Vacancy;
 import com.board.job.repository.VacancyRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.board.job.controller.ControllerHelper.checkSearchText;
 
 @Service
 @AllArgsConstructor
@@ -52,7 +53,7 @@ public class VacancyService {
     }
 
     public Page<Vacancy> getSortedVacancies(Pageable pageable, String searchText) {
-        if (HelperForPagesCollections.checkSearchText(searchText)) {
+        if (checkSearchText(searchText)) {
             return findBySearchText(pageable, searchText);
         }
 

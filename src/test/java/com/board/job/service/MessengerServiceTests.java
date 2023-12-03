@@ -26,7 +26,7 @@ public class MessengerServiceTests {
     private final VacancyService vacancyService;
     private final CandidateProfileService candidateProfileService;
 
-    private List<Messenger> messengers;
+    private List<Messenger> messengerForVacanciesReplies;
 
     @Autowired
     public MessengerServiceTests(MessengerService messengerService, VacancyService vacancyService,
@@ -38,7 +38,7 @@ public class MessengerServiceTests {
 
     @BeforeEach
     public void setMessengers() {
-        messengers = messengerService.getAll();
+        messengerForVacanciesReplies = messengerService.getAll();
     }
 
     @Test
@@ -46,14 +46,14 @@ public class MessengerServiceTests {
         assertThat(messengerService).isNotNull();
         assertThat(vacancyService).isNotNull();
         assertThat(candidateProfileService).isNotNull();
-        assertThat(messengers).isNotNull();
+        assertThat(messengerForVacanciesReplies).isNotNull();
     }
 
     @Test
     public void test_GetAll() {
         assertFalse(messengerService.getAll().isEmpty(),
                 "All messengers list must be not empty.");
-        assertEquals(messengers, messengerService.getAll(),
+        assertEquals(messengerForVacanciesReplies, messengerService.getAll(),
                 "Lists of all messengers must be the same");
     }
 
@@ -70,7 +70,7 @@ public class MessengerServiceTests {
         Messenger actual = messengerService.create(vacancyId, candidateProfileId);
         expected.setId(actual.getId());
 
-        assertTrue(messengers.size() < messengerService.getAll().size(),
+        assertTrue(messengerForVacanciesReplies.size() < messengerService.getAll().size(),
                 "Because of creating new messenger updated vacancy list must be bigger");
         assertEquals(expected, actual,
                 "Created entity and expected must be the same, because they have same components");
@@ -104,7 +104,7 @@ public class MessengerServiceTests {
         long id = 2L;
         messengerService.delete(id);
 
-        assertTrue(messengers.size() > messengerService.getAll().size(),
+        assertTrue(messengerForVacanciesReplies.size() > messengerService.getAll().size(),
                 "After deleting all messengers size that reads before must be bigger");
         assertThrows(EntityNotFoundException.class, () -> messengerService.readById(id),
                 "Entity not found exception will be thrown because we delete messenger with id 2,so now we have no this.");
@@ -143,10 +143,10 @@ public class MessengerServiceTests {
 
         List<Messenger> expected = messengerService.getAll()
                 .stream()
-                .filter(messenger ->  messenger.getCandidate().getId() == candidateId)
+                .filter(messenger ->  messenger.getCandidateProfile().getId() == candidateId)
                 .toList();
 
-        List<Messenger> actual = messengerService.getAllByCandidateId(candidateId);
+        List<Messenger> actual = messengerService.getAllByCandidateProfileId(candidateId);
 
         assertFalse(actual.isEmpty());
         assertEquals(expected, actual);
@@ -154,7 +154,7 @@ public class MessengerServiceTests {
 
     @Test
     public void test_Invalid_GetAllByCandidateId() {
-     assertTrue(messengerService.getAllByCandidateId(0).isEmpty(),
+     assertTrue(messengerService.getAllByCandidateProfileId(0).isEmpty(),
              "We have no candidate with id 0, so here must be empty list");
     }
 }

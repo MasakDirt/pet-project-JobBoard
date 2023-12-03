@@ -1,6 +1,5 @@
 package com.board.job.service.candidate;
 
-import com.board.job.controller.HelperForPagesCollections;
 import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.repository.candidate.CandidateProfileRepository;
 import com.board.job.service.UserService;
@@ -12,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
+
+import static com.board.job.controller.ControllerHelper.checkSearchText;
 
 @Service
 @AllArgsConstructor
@@ -45,7 +46,7 @@ public class CandidateProfileService {
     }
 
     public Page<CandidateProfile> getAllSorted(Pageable pageable, String searchText) {
-        if (HelperForPagesCollections.checkSearchText(searchText)){
+        if (checkSearchText(searchText)){
             return findBySearchText(pageable, searchText);
         }
         return candidateProfileRepository.findAll(pageable);

@@ -1,20 +1,17 @@
 package com.board.job.controller;
 
-import com.board.job.model.dto.login.LoginRequest;
 import com.board.job.model.dto.user.UserCreateRequest;
-import com.board.job.model.entity.User;
 import com.board.job.model.mapper.UserMapper;
+import com.board.job.service.UserService;
 import com.board.job.util.JwtUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.board.job.helper.HelperForTests.asJsonString;
 import static com.board.job.helper.HelperForTests.createUser;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -29,15 +26,17 @@ public class AuthControllerTests {
     private final MockMvc mvc;
     private final UserMapper mapper;
     private final JwtUtils jwtUtils;
+    private final UserService userService;
 
     @Autowired
-    public AuthControllerTests(MockMvc mvc, UserMapper mapper, JwtUtils jwtUtils) {
+    public AuthControllerTests(MockMvc mvc, UserMapper mapper, JwtUtils jwtUtils, UserService userService) {
         this.mvc = mvc;
         this.mapper = mapper;
         this.jwtUtils = jwtUtils;
+        this.userService = userService;
     }
 
-        @Test
+    @Test
     public void test_Injected_Components() {
         assertNotNull(mvc);
         assertNotNull(mapper);
@@ -49,19 +48,12 @@ public class AuthControllerTests {
         String email = "violet@mail.co";
         String password = "6666";
 
+
         mvc.perform(post(BASIC_URL + "/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                asJsonString(LoginRequest.of(email, password))
-                        )
+                        .param("email", email)
+                        .param("password", password)
                 )
-                .andExpect(status().isOk())
-                .andExpectAll(
-                        result -> assertTrue(jwtUtils.isValidToken(result.getResponse().getContentAsString()),
-                                "If valid token created here must be true."),
-                        result -> assertEquals(jwtUtils.getSubject(result.getResponse().getContentAsString()), email,
-                                "From token we must get valid user email.")
-                );
+                .andExpect(redirectedUrl("/api/users/" + userService.readByEmail(email).getId()));
     }
 
     @Test
@@ -70,32 +62,36 @@ public class AuthControllerTests {
         String password = "1234";
 
         mvc.perform(post(BASIC_URL + "/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                asJsonString(LoginRequest.of(email, password))
-                        )
+                        .param("email", email)
+                        .param("password", password)
                 )
-                .andExpect(status().isUnauthorized())
-                .andExpect(
-                        result -> assertEquals("\"status\":\"UNAUTHORIZED\",\"message\":\"Wrong password\",\"path\":\"http://localhost/api/auth/login\"}",
-                                result.getResponse().getContentAsString().substring(35),
-                                "Messages when user write wrong password must be sames")
-                );
+                .andExpect(redirectedUrl("/api/auth/login?error"));
+
+    }
+
+    @Test
+    public void test_Invalid_Email_Login() throws Exception {
+        String email = "invalid@mail.co";
+        String password = "1111";
+
+        mvc.perform(post(BASIC_URL + "/login")
+                        .param("email", email)
+                        .param("password", password)
+                )
+                .andExpect(redirectedUrl("/api/auth/login?error"));
     }
 
     @Test
     public void test_Valid_Register() throws Exception {
         UserCreateRequest userCreate = createUser("Sergo", "Test", "test@mail.co", "pass");
-        User user = mapper.getUserFromUserCreate(userCreate);
 
         mvc.perform(post(BASIC_URL + "/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(userCreate))
+                        .param("firstName", userCreate.getFirstName())
+                        .param("lastName", userCreate.getLastName())
+                        .param("email", userCreate.getEmail())
+                        .param("password", userCreate.getPassword())
                 )
-                .andExpect(status().isCreated())
-                .andExpect(result ->
-                        assertEquals(asJsonString(mapper.getUserResponseFromUser(user)).substring(8),
-                        result.getResponse().getContentAsString().substring(9))
-                );
+                .andExpect(redirectedUrl("/api/auth/login"));
+
     }
 }

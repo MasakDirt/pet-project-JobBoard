@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @SpringBootTest
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-public class AuthMessengerServiceTests {
+public class AuthMessengerServiceTestsForVacanciesReply {
     private final AuthMessengerService authMessengerService;
 
     @Autowired
-    public AuthMessengerServiceTests(AuthMessengerService authMessengerService) {
+    public AuthMessengerServiceTestsForVacanciesReply(AuthMessengerService authMessengerService) {
         this.authMessengerService = authMessengerService;
     }
 

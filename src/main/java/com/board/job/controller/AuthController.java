@@ -14,11 +14,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static com.board.job.controller.ControllerHelper.redirectionError;
+import static com.board.job.controller.ControllerHelper.sendRedirectAndCheckForError;
 
 @Slf4j
 @RestController
@@ -53,14 +52,8 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@Valid UserCreateRequest createRequest, HttpServletResponse response) {
         var user = userService.create(mapper.getUserFromUserCreate(createRequest), Set.of(roleService.readByName("USER")));
-
         log.info("=== POST-REGISTER === register - {} === time - {}.", user.getUsername(), LocalDateTime.now());
 
-        try {
-            response.sendRedirect("/api/auth/login");
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, "/api/auth/login");
     }
 }

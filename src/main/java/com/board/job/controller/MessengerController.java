@@ -5,7 +5,6 @@ import com.board.job.service.FeedbackService;
 import com.board.job.service.MessengerService;
 import com.board.job.service.UserService;
 import com.board.job.service.VacancyService;
-import com.board.job.service.candidate.CandidateProfileService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +15,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 import static com.board.job.controller.ControllerHelper.getAuthorities;
-import static com.board.job.controller.ControllerHelper.redirectionError;
+import static com.board.job.controller.ControllerHelper.sendRedirectAndCheckForError;
 
 @Slf4j
 @RestController
@@ -32,7 +30,6 @@ public class MessengerController {
     private final MessengerService messengerService;
     private final FeedbackService feedbackService;
     private final VacancyService vacancyService;
-    private final CandidateProfileService candidateProfileService;
 
     @GetMapping("/candidate/{candidate-id}/messengers")
     @PreAuthorize("@authCandidateProfileService.isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfile" +
@@ -52,13 +49,12 @@ public class MessengerController {
         return new ModelAndView("messengers-list", map);
     }
 
-    @GetMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/employer-profile/{employer-id}/messengers")
+    @GetMapping("/vacancies/{vacancy-id}/employer-profile/{employer-id}/messengers")
     @PreAuthorize("@authVacancyService.isUsersSameAndEmployerProfileOwnerOfVacancy" +
             "(#ownerId, #employerId, #vacancyId, authentication.name)")
     public ModelAndView getAllVacancyMessengers(
             @PathVariable("owner-id") long ownerId, @PathVariable("vacancy-id") long vacancyId,
-            @PathVariable("candidate-id") long candidateProfileId, @PathVariable("employer-id") long employerId,
-            Authentication authentication, ModelMap map
+            @PathVariable("employer-id") long employerId, Authentication authentication, ModelMap map
     ) {
         var messengers = messengerService.getAllByVacancyId(vacancyId)
                 .stream()
@@ -73,7 +69,6 @@ public class MessengerController {
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
         map.addAttribute("messengers", messengers);
-        map.addAttribute("candidate", candidateProfileService.readById(candidateProfileId));
         log.info("=== GET-VACANCY-MESSENGERS === {} == {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("employers/employer-messengers-list", map);
@@ -92,12 +87,8 @@ public class MessengerController {
         feedbackService.create(userService.readByEmail(authentication.getName()).getId(), messengerId, text);
         log.info("=== POST-MESSENGER-CANDIDATE === {} == {}", getAuthorities(authentication), name);
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks", ownerId, candidateId, messengerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
+                ownerId, candidateId, messengerId));
     }
 
     @PostMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/employer-profile/{employer-id}/messengers")
@@ -110,13 +101,8 @@ public class MessengerController {
         var messenger = messengerService.create(vacancyId, candidateId);
         log.info("=== POST-MESSENGER-EMPLOYER === {} == {}", getAuthorities(authentication), name);
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
-                    ownerId, vacancyService.readById(vacancyId).getEmployerProfile().getId(), vacancyId, messenger.getId()));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                ownerId, vacancyService.readById(vacancyId).getEmployerProfile().getId(), vacancyId, messenger.getId()));
     }
 
     @GetMapping("/candidate/{candidate-id}/messengers/{id}/delete")
@@ -129,32 +115,23 @@ public class MessengerController {
         messengerService.delete(id);
         log.info("=== DELETE-MESSENGER-BY-CANDIDATE === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers",
-                    ownerId, candidateId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/candidate/%s/messengers",
+                ownerId, candidateId));
     }
 
-    @GetMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/employer-profile/{employer-id}/messengers/{id}/delete")
+    @GetMapping("/vacancies/{vacancy-id}/employer-profile/{employer-id}/messengers/{id}/delete")
     @PreAuthorize("@authMessengerService.isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger" +
             "(#ownerId, #employerId, #vacancyId, #id, authentication.name)")
     public void deleteByEmployer(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
-            @PathVariable("candidate-id") long candidateId, @PathVariable("vacancy-id") long vacancyId,
-            @PathVariable long id, Authentication authentication, HttpServletResponse response
+            @PathVariable("vacancy-id") long vacancyId, @PathVariable long id,
+            Authentication authentication, HttpServletResponse response
     ) {
         messengerService.delete(id);
         log.info("=== DELETE-MESSENGER-BY-EMPLOYER === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers",
-                    ownerId, vacancyService.readById(vacancyId).getEmployerProfile().getId(), vacancyId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+
+        sendRedirectAndCheckForError(response,String.format("/api/users/%s/vacancies/%s/employer-profile/%s/messengers",
+                ownerId, vacancyId, employerId));
     }
 }

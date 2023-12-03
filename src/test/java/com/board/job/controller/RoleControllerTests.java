@@ -3,11 +3,11 @@ package com.board.job.controller;
 import com.board.job.model.entity.Role;
 import com.board.job.model.mapper.RoleMapper;
 import com.board.job.service.RoleService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +17,7 @@ import java.util.List;
 import static com.board.job.helper.HelperForTests.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
 @AutoConfigureMockMvc
@@ -28,8 +28,6 @@ public class RoleControllerTests {
     private final MockMvc mvc;
 
     private final RoleService roleService;
-
-    private String token;
     private final RoleMapper mapper;
 
     @Autowired
@@ -39,134 +37,152 @@ public class RoleControllerTests {
         this.mapper = mapper;
     }
 
-    @BeforeEach
-    public void initToken() throws Exception {
-        token = getAdminToken(mvc);
-    }
-
     @Test
     public void test_Injected_Components() {
         assertNotNull(mvc);
         assertNotNull(roleService);
-        assertNotNull(token);
         assertNotNull(mapper);
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
     public void test_GetAll() throws Exception {
-        mvc.perform(get(BASIC_URL)
-                        .header("Authorization", "Bearer " + token))
+        mvc.perform(get(BASIC_URL))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains("{\"id\":1,\"name\":\"ADMIN\"}") &&
-                        result.getResponse().getContentAsString().contains("{\"id\":2,\"name\":\"USER\"}")));
+                .andExpect(model().attributeExists("roles"))
+                .andExpect(view().name("roles-list"));
     }
 
     @Test
+    @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
     public void test_Invalid_UserIsNotAdmin_GetAll() throws Exception {
-        mvc.perform(get(BASIC_URL)
-                        .header("Authorization", "Bearer " + getUserToken(mvc, "helen@mail.co", "5555")))
-                .andExpect(status().isForbidden())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains(ACCESS_DENIED)));
+        mvc.perform(get(BASIC_URL))
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
     public void test_getAllUserRoles() throws Exception {
-        mvc.perform(get(BASIC_URL + "/user/{user-id}", 1L)
-                        .header("Authorization", "Bearer " + token))
+        mvc.perform(get(BASIC_URL + "/user/{user-id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains("{\"id\":1,\"name\":\"ADMIN\"}") &&
-                                result.getResponse().getContentAsString().contains("{\"id\":3,\"name\":\"CANDIDATE\"}") &&
-                                result.getResponse().getContentAsString().contains("{\"id\":4,\"name\":\"EMPLOYER\"}"),
-                        "This user is admin so he has 3 roles."));
+                .andExpect(model().attributeExists("roles", "userId", "userName"))
+                .andExpect(view().name("user-roles-get"));
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
     public void test_GetById() throws Exception {
         long id = 3L;
-        String expected = asJsonString(mapper.getRoleResponseFromRole(roleService.readById(id)));
-        mvc.perform(get(BASIC_URL + "/{id}", id)
-                        .header("Authorization", "Bearer " + token))
+        mvc.perform(get(BASIC_URL + "/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(expected, result.getResponse().getContentAsString()));
+                .andExpect(model().attributeExists("role"))
+                .andExpect(view().name("role-get"));
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
     public void test_Invalid_GetById() throws Exception {
         long id = 7L;
 
-        mvc.perform(get(BASIC_URL + "/{id}", id)
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"Role with id not found\"")));
+        mvc.perform(get(BASIC_URL + "/{id}", id))
+                .andExpect(getErrorView())
+                .andExpect(getErrorAttributes());
     }
 
     @Test
-    public void test_GetByName() throws Exception {
-        String name = "USER";
-        String expected = asJsonString(mapper.getRoleResponseFromRole(roleService.readByName(name)));
-
-        mvc.perform(get(BASIC_URL + "/name")
-                        .header("Authorization", "Bearer " + token)
-                        .param("name", name))
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
+    public void test_CreateRequest() throws Exception {
+        long id = 3L;
+        mvc.perform(get(BASIC_URL + "/create", id))
                 .andExpect(status().isOk())
-                .andExpect(result -> assertEquals(expected, result.getResponse().getContentAsString()));
+                .andExpect(model().attributeExists("roleRequest"))
+                .andExpect(view().name("role-create"));
     }
 
     @Test
-    public void test_Invalid_Name_GetByName() throws Exception {
-        String name = "INVALID";
-
-        mvc.perform(get(BASIC_URL + "/name")
-                        .header("Authorization", "Bearer " + token)
-                        .param("name", name))
-                .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                        .contains("\"status\":\"NOT_FOUND\",\"message\":\"Role with name INVALID not found\"")));
-    }
-
-    @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
     public void test_Create() throws Exception {
         String name = "CREATED";
 
         mvc.perform(post(BASIC_URL)
-                        .header("Authorization", "Bearer " + token)
                         .param("name", name))
-                .andExpect(status().isCreated())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                        .contains("Role with name CREATED created")));
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/roles"));
     }
 
     @Test
-    public void test_Update() throws Exception {
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
+    public void test_AddUserRoleRequest() throws Exception {
+        long userId = 2L;
+        mvc.perform(get(BASIC_URL + "/user/{user-id}/add-role", userId))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("roleRequest", "roles", "userId"))
+                .andExpect(view().name("role-user-add"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
+    public void test_AddUserRole() throws Exception {
+        String name = "USER";
+        long userId = 4L;
+
+        mvc.perform(post(BASIC_URL + "/user/{user-id}/add-role", userId)
+                        .param("name", name))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/roles/user/" + userId));
+    }
+
+    @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
+    public void test_UpdateRequest() throws Exception {
         long id = 2L;
-        String oldName = roleService.readById(id).getName();
         String name = "UPDATED";
 
-        mvc.perform(put(BASIC_URL + "/{id}", id)
-                        .header("Authorization", "Bearer " + token)
+        mvc.perform(get(BASIC_URL + "/{id}/update", id)
                         .param("name", name)
                 )
                 .andExpect(status().isOk())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                        .contains(String.format("Role old name %s updated to %s", oldName, name))));
+                .andExpect(model().attributeExists("roleRequest", "id"))
+                .andExpect(view().name("role-update"));
     }
 
     @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
+    public void test_Update() throws Exception {
+        long id = 2L;
+        String name = "UPDATED";
+
+        mvc.perform(post(BASIC_URL + "/{id}/update", id)
+                        .param("name", name)
+                )
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/roles"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
     public void test_Delete() throws Exception {
         long id = 2L;
-        String roleName = roleService.readById(id).getName();
         List<Role> before = roleService.getAll();
 
-        mvc.perform(delete(BASIC_URL + "/{id}", id)
-                        .header("Authorization", "Bearer " + token)
-                )
-                .andExpect(status().isOk())
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
-                        .contains(String.format("Role with name %s successfully deleted", roleName))));
+        mvc.perform(get(BASIC_URL + "/{id}/delete", id))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/roles"));
 
         List<Role> after = roleService.getAll();
 
         assertTrue(before.size() > after.size());
+    }
+
+    @Test
+    @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
+    public void test_DeleteUserRole() throws Exception {
+        long userId = 4L;
+        String name = "ADMIN";
+
+        mvc.perform(get(BASIC_URL + "/user/{user-id}/delete-role/{role-name}", userId, name))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/roles/user/" + userId));
     }
 }

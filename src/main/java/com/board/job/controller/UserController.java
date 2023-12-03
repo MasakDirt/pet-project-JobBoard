@@ -18,7 +18,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,12 +36,11 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView getAll(Authentication authentication, ModelMap map) {
-        var users = userService.getAll()
+        map.addAttribute("users", userService.getAll()
                 .stream()
                 .map(mapper::getUserResponseFromUser)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
         log.info("=== GET-USERS === {} === {}", getAuthorities(authentication), authentication.getName());
-        map.addAttribute("users", users);
 
         return new ModelAndView("users-list", map);
     }
@@ -51,9 +49,9 @@ public class UserController {
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
     public ModelAndView getById(@PathVariable long id, Authentication authentication, ModelMap map) {
         var user = mapper.getUserResponseFromUser(userService.readById(id));
-        log.info("=== GET-USER-ID === {} === {}", getAuthorities(authentication), authentication.getName());
         map.addAttribute("isAdmin", userAuthService.isAdmin(user.getEmail()));
         map.addAttribute("user", user);
+        log.info("=== GET-USER-ID === {} === {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("user-get", map);
     }
@@ -62,9 +60,9 @@ public class UserController {
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameByEmail(#email, authentication.name)")
     public ModelAndView getByEmail(@RequestParam String email, Authentication authentication, ModelMap map) {
         var user = mapper.getUserResponseFromUser(userService.readByEmail(email));
-        log.info("=== GET-USER-EMAIL === {} === {}", getAuthorities(authentication), authentication.getName());
         map.addAttribute("isAdmin", userAuthService.isAdmin(user.getEmail()));
         map.addAttribute("user", user);
+        log.info("=== GET-USER-EMAIL === {} === {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("user-get", map);
     }
@@ -87,12 +85,7 @@ public class UserController {
                 Set.of(roleService.readByName("ADMIN")));
         log.info("=== POST-USER-ADMIN === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect("/api/users/" + created.getId());
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, "/api/users/" + created.getId());
     }
 
     @GetMapping("/{id}/update")
@@ -113,12 +106,7 @@ public class UserController {
                 mapper.getUserFromUserUpdateRequestPass(request), request.getOldPassword());
         log.info("=== PUT-USER === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect("/api/users/" + id);
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, "/api/users/" + id);
     }
 
     @GetMapping("/names/{id}/update")
@@ -138,12 +126,7 @@ public class UserController {
         userService.updateNames(id, mapper.getUserFromUserUpdateRequest(request));
         log.info("=== PUT-USER-NAMES === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect("/api/users/" + id);
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, "/api/users/" + id);
     }
 
     @GetMapping("/{id}/delete")
@@ -153,11 +136,6 @@ public class UserController {
         userService.delete(id);
         log.info("=== DELETE-USER === {} === {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect("/api/auth/login");
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, "/api/auth/login");
     }
 }

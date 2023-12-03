@@ -82,7 +82,6 @@ public class UserServiceTests {
 
     @Test
     public void test_Invalid_Create() {
-        User user = userService.readById(4L);
         Role role = roleService.readById(2L);
 
         assertAll(
@@ -242,7 +241,7 @@ public class UserServiceTests {
         Set<Role> roles = unexpected.getRoles();
 
         unexpected = userService.create(unexpected, new HashSet<>(roles));
-        User actual = userService.updateUserRolesAndGetUser(unexpected.getId(), roleName);
+        User actual = userService.addUserRole(unexpected.getId(), roleName);
 
         assertNotEquals(roles, actual.getRoles(),
         "We must get list of roles with new role 'USER'");
@@ -253,13 +252,13 @@ public class UserServiceTests {
         User user = userService.readById(2L);
         String role = "USER";
 
-        assertEquals(user, userService.updateUserRolesAndGetUser(user.getId(), role),
+        assertEquals(user, userService.addUserRole(user.getId(), role),
                 "We already have this role in this user, so here must return same user");
 
-        assertThrows(EntityNotFoundException.class, () -> userService.updateUserRolesAndGetUser(user.getId(), ""),
+        assertThrows(EntityNotFoundException.class, () -> userService.addUserRole(user.getId(), ""),
                 "Entity not found exception will be thrown because we have no this role!");
 
-        assertThrows(EntityNotFoundException.class, () -> userService.updateUserRolesAndGetUser(0, role),
+        assertThrows(EntityNotFoundException.class, () -> userService.addUserRole(0, role),
                 "Entity not found exception will be thrown because we have no this user!");
     }
 

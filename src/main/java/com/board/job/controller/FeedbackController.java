@@ -14,11 +14,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 import static com.board.job.controller.ControllerHelper.getAuthorities;
-import static com.board.job.controller.ControllerHelper.redirectionError;
+import static com.board.job.controller.ControllerHelper.sendRedirectAndCheckForError;
 
 @Slf4j
 @RestController
@@ -76,13 +75,8 @@ public class FeedbackController {
         feedbackService.create(ownerId, messengerId, text);
         log.info("=== POST-CANDIDATE-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
-                    ownerId, candidateId, messengerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
+                ownerId, candidateId, messengerId));
     }
 
     @PostMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks")
@@ -96,13 +90,8 @@ public class FeedbackController {
         feedbackService.create(ownerId, messengerId, text);
         log.info("=== POST-EMPLOYER-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
-                    ownerId, employerId, vacancyId, messengerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                ownerId, employerId, vacancyId, messengerId));
     }
 
     @GetMapping("/candidate/{candidate-id}/messengers/{messenger-id}/feedbacks/{id}/edit")
@@ -129,13 +118,8 @@ public class FeedbackController {
         feedbackService.update(id, text);
         log.info("=== PUT-CANDIDATE-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
-                    ownerId, candidateId, messengerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
+                ownerId, candidateId, messengerId));
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/edit")
@@ -165,14 +149,8 @@ public class FeedbackController {
         feedbackService.update(id, text);
         log.info("=== PUT-EMPLOYER-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
-                    ownerId, employerId, vacancyId, messengerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
-
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                ownerId, employerId, vacancyId, messengerId));
     }
 
     @GetMapping("/candidate/{candidate-id}/messengers/{messenger-id}/feedbacks/{id}/delete")
@@ -186,13 +164,8 @@ public class FeedbackController {
         feedbackService.delete(id);
         log.info("=== DELETE-CANDIDATE-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
-                    ownerId, candidateId, messengerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
+                ownerId, candidateId, messengerId));
     }
 
     @GetMapping("/employer-profile/{employer-id}/vacancies/{vacancy-id}/messengers/{messenger-id}/feedbacks/{id}/delete")
@@ -206,12 +179,7 @@ public class FeedbackController {
         feedbackService.delete(id);
         log.info("=== DELETE-EMPLOYER-FEEDBACK === {} == {}", getAuthorities(authentication), authentication.getName());
 
-        try {
-            response.sendRedirect(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
-                    ownerId, employerId, vacancyId, messengerId));
-        } catch (IOException e) {
-            log.error("Error while sending redirect - {}", e.getMessage());
-            redirectionError();
-        }
+        sendRedirectAndCheckForError(response, String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
+                ownerId, employerId, vacancyId, messengerId));
     }
 }

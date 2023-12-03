@@ -42,5 +42,9 @@ public class CutMessengerResponse {
     @NotBlank(message = "The employer name cannot be blank")
     private String employerName;
 
+    @JsonProperty(value = "candidate_name")
+    @NotBlank(message = "The candidate name cannot be blank")
+    private String candidateName;
+
     private String lastMessage;
 }
