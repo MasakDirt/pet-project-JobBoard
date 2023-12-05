@@ -1,15 +1,10 @@
 package com.board.job.controller.candidate;
 
 import com.board.job.model.dto.candidate_contact.CandidateContactRequest;
-import com.board.job.model.mapper.candidate.CandidateContactMapper;
-import com.board.job.service.UserService;
-import com.board.job.service.candidate.CandidateContactService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,7 +30,7 @@ public class CandidateContactControllerTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void test_Injected_Component() {
         assertNotNull(mvc);
     }
 
