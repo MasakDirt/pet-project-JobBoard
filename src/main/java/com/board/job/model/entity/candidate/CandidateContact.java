@@ -101,7 +101,6 @@ public class CandidateContact {
                 ", linkedInProfile='" + linkedInProfile + '\'' +
                 ", gitHubUrl='" + githubUrl + '\'' +
                 ", portfolioUrl='" + portfolioUrl + '\'' +
-                ", pdf=" + pdf +
                 '}';
     }
 
