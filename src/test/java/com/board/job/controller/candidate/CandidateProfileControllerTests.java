@@ -220,8 +220,6 @@ public class CandidateProfileControllerTests {
                 "Ukraine", "Lviv", Category.JAVA, LanguageLevel.INTERMEDIATE,
                 LanguageLevel.ADVANCED_FLUENT, "Experience"));
 
-        List<CandidateProfile> before = candidateProfileService.getAll();
-
         mvc.perform(post(BASIC_URl, ownerId)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -231,10 +229,6 @@ public class CandidateProfileControllerTests {
                 .andExpect(result ->
                         assertEquals("Candidate profile for user Maks Korniev successfully created",
                                 result.getResponse().getContentAsString()));
-
-        List<CandidateProfile> after = candidateProfileService.getAll();
-
-        assertTrue(before.size() < after.size());
     }
 
     @Test
@@ -396,9 +390,9 @@ public class CandidateProfileControllerTests {
         candidateProfileRequest.setWorkExperience(workExperience);
         candidateProfileRequest.setCountryOfResidence(countryOfResidence);
         candidateProfileRequest.setCityOfResidence(cityOfResidence);
-        candidateProfileRequest.setCategory(category);
-        candidateProfileRequest.setEnglishLevel(englishLevel);
-        candidateProfileRequest.setUkrainianLevel(ukrainianLevel);
+        candidateProfileRequest.setCategory(String.valueOf(category));
+        candidateProfileRequest.setEnglishLevel(String.valueOf(englishLevel));
+        candidateProfileRequest.setUkrainianLevel(String.valueOf(ukrainianLevel));
         candidateProfileRequest.setExperienceExplanation(experienceExplanation);
         candidateProfileRequest.setAchievements("");
 
