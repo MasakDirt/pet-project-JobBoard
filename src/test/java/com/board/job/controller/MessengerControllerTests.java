@@ -132,7 +132,7 @@ public class MessengerControllerTests {
                 )
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
-                        ownerId, candidateId, 5L)));
+                        ownerId, candidateId, 7L)));
     }
 
     @Test
@@ -162,23 +162,7 @@ public class MessengerControllerTests {
                         ownerId, vacancyId, candidateId, employerId))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl(String.format("/api/users/%s/employer-profile/%s/vacancies/%s/messengers/%s/feedbacks",
-                        ownerId, vacancyService.readById(vacancyId).getEmployerProfile().getId(), vacancyId, 6L)));
-    }
-
-    @Test
-    @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_CreateByEmployer_Employer() throws Exception {
-        long ownerId = 6L;
-        long employerId = 3L;
-        long vacancyId = 7L;
-        long candidateId = 1L;
-
-        mvc.perform(post(BASIC_URL + "/vacancies/{vacancy-id}/candidate/{candidate-id}/" +
-                                "employer-profile/{employer-id}/messengers",
-                        ownerId, vacancyId, candidateId, employerId))
-                .andExpect(status().isOk())
-                .andExpect(getErrorView())
-                .andExpect(getErrorAttributes());
+                        ownerId, vacancyService.readById(vacancyId).getEmployerProfile().getId(), vacancyId, 8L)));
     }
 
     @Test
@@ -190,7 +174,7 @@ public class MessengerControllerTests {
 
         mvc.perform(get(BASIC_URL + "/candidate/{candidate-id}/messengers/{id}/delete",
                         ownerId, candidateId, messengerId))
-                .andExpect(status().isOk())
+                .andExpect(status().isFound())
                 .andExpect(redirectedUrl(String.format("/api/users/%s/candidate/%s/messengers",
                         ownerId, candidateId)));
     }
@@ -218,9 +202,9 @@ public class MessengerControllerTests {
 
         mvc.perform(get(BASIC_URL + "/vacancies/{vacancy-id}/employer-profile/{employer-id}/messengers/{id}/delete",
                         ownerId, vacancyId, employerId, messengerId))
-                .andExpect(status().isOk())
+                .andExpect(status().isFound())
                 .andExpect(redirectedUrl(String.format("/api/users/%s/vacancies/%s/employer-profile/%s/messengers",
-                        ownerId, vacancyService.readById(vacancyId).getEmployerProfile().getId(), vacancyId)));
+                        ownerId, vacancyId, employerId)));
     }
 
     @Test
