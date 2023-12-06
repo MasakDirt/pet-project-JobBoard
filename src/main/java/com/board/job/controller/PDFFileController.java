@@ -29,7 +29,7 @@ public class PDFFileController {
     @PreAuthorize("@userAuthService.isUsersSame(#ownerId, authentication.name)")
     public ModelAndView getById(
             @PathVariable("owner-id") long ownerId, @PathVariable long id,
-            Authentication authentication, ModelMap map) throws IOException {
+            Authentication authentication, ModelMap map) {
         var pdfBase64 = pdfService.getBase64Pdf(id);
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("pdfBase64", pdfBase64);
