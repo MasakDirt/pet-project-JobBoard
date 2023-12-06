@@ -96,7 +96,7 @@ public class VacancyController {
     }
 
     @GetMapping("/employer-profiles/{employer-id}/vacancies/candidate/{candidate-id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
     public ModelAndView getAllForSelect(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("candidate-id") long candidateId, Authentication authentication, ModelMap map) {
