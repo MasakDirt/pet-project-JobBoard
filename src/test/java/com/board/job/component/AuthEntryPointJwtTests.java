@@ -32,13 +32,7 @@ public class AuthEntryPointJwtTests {
         mvc.perform(MockMvcRequestBuilders
                         .get("/unauthorized")
                 )
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
-                .andExpect(
-                        result -> assertEquals(
-                                "Error: Unauthorized (please authorize before going to this URL).",
-                                result.getResponse().getErrorMessage(),
-                                "Result must return a valid message about 'unauthorized' user."
-                        )
-                );
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("http://localhost/api/auth/login"));
     }
 }
