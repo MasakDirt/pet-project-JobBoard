@@ -32,16 +32,18 @@ public class AuthFeedbackServiceTests {
 
     @Test
     public void test_True_isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
+        long ownerId = 3L;
         long messengerId = 2L;
         String feedbackId = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()
+                .filter(feedback -> feedback.getOwnerId() == ownerId)
                 .findFirst()
                 .get()
                 .getId();
 
         assertTrue(authFeedbackService
                         .isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback
-                                (3L, 2L, messengerId, feedbackId, "nikole@mail.co"),
+                                (ownerId, 2L, messengerId, feedbackId, "nikole@mail.co"),
                 "Here must be true because user is sames and he owner of candidate profile and " +
                         "candidate profile contain messenger and messenger contain feedback.");
     }

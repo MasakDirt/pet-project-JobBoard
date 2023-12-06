@@ -57,7 +57,7 @@ public class AuthImageServiceTests {
     public void test_True_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage() {
         assertTrue(authImageService
                         .isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage
-                                (1L, 1, 1L, "admin@mail.co"),
+                                (2L, 2L, 5L, "larry@mail.co"),
                 "Here must be true because user is sames and he owner of candidate contact and " +
                         "candidate contact contain image.");
     }

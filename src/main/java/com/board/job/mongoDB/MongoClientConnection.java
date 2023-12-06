@@ -16,6 +16,7 @@ public class MongoClientConnection {
     public static void connectToDB(String connection) {
         try(MongoClient mongoClient = MongoClients.create(connection)) {
             MongoDatabase database = mongoClient.getDatabase("messages");
+            database.runCommand(new Document("ping", 1));
             MongoCollection<Feedback> feedbacks = database.getCollection("feedbacks", Feedback.class);
 
 //          it`s for having all-time limited number of objects, and not added already existing objects which have differences only with an id.

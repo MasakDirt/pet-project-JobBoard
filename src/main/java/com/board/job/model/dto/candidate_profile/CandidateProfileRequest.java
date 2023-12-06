@@ -1,10 +1,6 @@
 package com.board.job.model.dto.candidate_profile;
 
-import com.board.job.model.entity.sample.Category;
-import com.board.job.model.entity.sample.LanguageLevel;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,16 +33,13 @@ public class CandidateProfileRequest {
     @NotBlank(message = "The city of residence cannot be 'blank'")
     private String cityOfResidence;
 
-    @Enumerated(EnumType.STRING)
     @NotNull(message = "You must pick one category")
     private String category;
 
-    @Enumerated(EnumType.STRING)
     @JsonProperty(value = "english_level")
     @NotNull(message = "You must select your level of english")
     private String englishLevel;
 
-    @Enumerated(EnumType.STRING)
     @JsonProperty(value = "ukrainian_level")
     @NotNull(message = "You must select your level of ukrainian")
     private String ukrainianLevel;

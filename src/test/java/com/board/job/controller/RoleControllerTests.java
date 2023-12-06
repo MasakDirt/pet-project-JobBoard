@@ -1,7 +1,6 @@
 package com.board.job.controller;
 
 import com.board.job.model.entity.Role;
-import com.board.job.model.mapper.RoleMapper;
 import com.board.job.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,22 +25,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RoleControllerTests {
     private final static String BASIC_URL = "/api/roles";
     private final MockMvc mvc;
-
     private final RoleService roleService;
-    private final RoleMapper mapper;
 
     @Autowired
-    public RoleControllerTests(MockMvc mvc, RoleService roleService, RoleMapper mapper) {
+    public RoleControllerTests(MockMvc mvc, RoleService roleService) {
         this.mvc = mvc;
         this.roleService = roleService;
-        this.mapper = mapper;
     }
 
     @Test
     public void test_Injected_Components() {
         assertNotNull(mvc);
         assertNotNull(roleService);
-        assertNotNull(mapper);
     }
 
     @Test

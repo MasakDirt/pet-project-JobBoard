@@ -1,8 +1,5 @@
 package com.board.job.controller;
 
-import com.board.job.model.mapper.UserMapper;
-import com.board.job.service.RoleService;
-import com.board.job.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,24 +23,15 @@ public class UserControllerTests {
     private final static String BASIC_URl = "/api/users";
 
     private final MockMvc mvc;
-    private final UserService userService;
-    private final RoleService roleService;
-    private final UserMapper mapper;
 
     @Autowired
-    public UserControllerTests(MockMvc mvc, UserService userService, RoleService roleService, UserMapper userMapper) {
+    public UserControllerTests(MockMvc mvc) {
         this.mvc = mvc;
-        this.userService = userService;
-        this.roleService = roleService;
-        this.mapper = userMapper;
     }
 
     @Test
     public void test_Injected_Components() {
         assertNotNull(mvc);
-        assertNotNull(userService);
-        assertNotNull(roleService);
-        assertNotNull(mapper);
     }
 
     @Test
@@ -165,7 +153,7 @@ public class UserControllerTests {
                         .param("password", "1234")
                 )
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/api/users/" + 7));
+                .andExpect(redirectedUrl("/api/users/" + 9));
     }
 
     @Test

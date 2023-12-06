@@ -1,27 +1,17 @@
 package com.board.job.config;
 
-import com.board.job.model.dto.login.LoginRequest;
-import com.board.job.model.dto.user.UserCreateRequest;
-import com.board.job.model.dto.user.UserResponse;
-import com.board.job.model.entity.User;
-import com.board.job.model.mapper.UserMapper;
-import com.board.job.service.RoleService;
+import com.board.job.service.UserService;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
-import static com.board.job.helper.HelperForTests.asJsonString;
-import static com.board.job.helper.HelperForTests.createUser;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
@@ -31,69 +21,53 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SecurityConfigTests {
     private final MockMvc mvc;
 
-    private final UserMapper mapper;
-    private final RoleService roleService;
+    private final UserService userService;
 
     @Autowired
-    public SecurityConfigTests(MockMvc mvc, UserMapper mapper, RoleService roleService) {
+    public SecurityConfigTests(MockMvc mvc, UserService userService) {
         this.mvc = mvc;
-        this.mapper = mapper;
-        this.roleService = roleService;
+        this.userService = userService;
     }
 
     @Test
     public void test_Injected_Components() {
         AssertionsForClassTypes.assertThat(mvc).isNotNull();
-        AssertionsForClassTypes.assertThat(mapper).isNotNull();
-        AssertionsForClassTypes.assertThat(roleService).isNotNull();
+        AssertionsForClassTypes.assertThat(userService).isNotNull();
     }
 
     @Test
     public void test_SecuredUrl_Login() throws Exception {
+        String email = "admin@mail.co";
+
         mvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                asJsonString(LoginRequest.of("admin@mail.co", "1111"))
-                        )
+                        .param("email", email)
+                        .param("password", "1111")
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/users/" + userService.readByEmail(email).getId()));
     }
 
     @Test
     public void test_SecuredUrl_Register() throws Exception {
-        UserCreateRequest userCreateRequest = createUser( "Firstname", "Lastname",
-                "new@mail.co", "1234567890");
-
-        User user = mapper.getUserFromUserCreate(userCreateRequest);
-        user.setRoles(Set.of(roleService.readByName("USER")));
-
-        UserResponse expected = mapper.getUserResponseFromUser(user);
-
         mvc.perform(post("/api/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(
-                                asJsonString(userCreateRequest)
-                        )
+                        .param("firstName", "Firstname")
+                        .param("lastName", "Lastname")
+                        .param("email", "new@mail.co")
+                        .param("password", "1234567890")
                 )
-                .andExpect(status().isCreated())
-                .andExpect(result -> assertEquals(asJsonString(expected).substring(9),
-                        result.getResponse().getContentAsString().substring(9),
-                        "This test must be equal, substring for not same id`s, because we create user in this url, so he has not 0 id.")
-                );
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/auth/login"));
     }
 
     @Test
     public void test_SecuredUrl_WhichCannotBeAccessByUnauthorizedUser() throws Exception {
         mvc.perform(get("/api/users"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(result -> assertEquals(result.getResponse().getErrorMessage(),
-                        "Error: Unauthorized (please authorize before going to this URL).",
-                        "Here must be a message, for better user understanding, why he can not go to this page.")
-                );
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/api/auth/login"));
     }
 
     @Test
     public void test_CorsConfig() throws Exception {
-        mvc.perform(head("/**")).andExpect(status().isUnauthorized());
+        mvc.perform(head("/**")).andExpect(status().isFound());
     }
 }

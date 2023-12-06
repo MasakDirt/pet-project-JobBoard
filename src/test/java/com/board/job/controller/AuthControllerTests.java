@@ -1,9 +1,7 @@
 package com.board.job.controller;
 
 import com.board.job.model.dto.user.UserCreateRequest;
-import com.board.job.model.mapper.UserMapper;
 import com.board.job.service.UserService;
-import com.board.job.util.JwtUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,23 +22,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthControllerTests {
     private static final String BASIC_URL = "/api/auth";
     private final MockMvc mvc;
-    private final UserMapper mapper;
-    private final JwtUtils jwtUtils;
     private final UserService userService;
 
     @Autowired
-    public AuthControllerTests(MockMvc mvc, UserMapper mapper, JwtUtils jwtUtils, UserService userService) {
+    public AuthControllerTests(MockMvc mvc, UserService userService) {
         this.mvc = mvc;
-        this.mapper = mapper;
-        this.jwtUtils = jwtUtils;
         this.userService = userService;
     }
 
     @Test
     public void test_Injected_Components() {
         assertNotNull(mvc);
-        assertNotNull(mapper);
-        assertNotNull(jwtUtils);
+        assertNotNull(userService);
     }
 
     @Test
