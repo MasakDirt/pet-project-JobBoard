@@ -36,10 +36,10 @@ public class MessengerRepositoryTests {
         long candidateId = 2L;
         List<Messenger> expected = messengerRepository.findAll()
                 .stream()
-                .filter(messenger -> messenger.getCandidate().getId() == candidateId)
+                .filter(messenger -> messenger.getCandidateProfile().getId() == candidateId)
                 .toList();
 
-        List<Messenger> actual = messengerRepository.findAllByCandidateId(candidateId);
+        List<Messenger> actual = messengerRepository.findAllByCandidateProfileId(candidateId);
 
         assertFalse(actual.isEmpty());
         assertEquals(expected, actual);
@@ -47,7 +47,7 @@ public class MessengerRepositoryTests {
 
     @Test
     public void test_Invalid_FindAllByCandidateId() {
-        assertTrue(messengerRepository.findAllByCandidateId(0).isEmpty(),
+        assertTrue(messengerRepository.findAllByCandidateProfileId(0).isEmpty(),
                 "we have no candidate with id 0, so here must be empty list.");
     }
 
