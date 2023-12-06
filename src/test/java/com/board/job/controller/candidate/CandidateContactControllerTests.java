@@ -99,7 +99,7 @@ public class CandidateContactControllerTests {
                         .param("linkedInProfile", "www.linkedin.co/OKFOkdld")
         )
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl(String.format("/api/users/%d/candidate-contacts/%d", ownerId, 5L)));
+                .andExpect(redirectedUrl(String.format("/api/users/%d/candidate-contacts/%d", ownerId, 8L)));
     }
 
     @Test
