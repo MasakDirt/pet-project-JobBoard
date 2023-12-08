@@ -4,6 +4,7 @@ import com.board.job.model.entity.candidate.CandidateContact;
 import com.board.job.model.entity.candidate.CandidateProfile;
 import com.board.job.model.entity.employer.EmployerCompany;
 import com.board.job.model.entity.employer.EmployerProfile;
+import com.board.job.model.entity.sample.Provider;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -26,7 +27,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "users")
 public class User implements UserDetails {
-    public static final String NAME_REGEXP = "[A-Z][a-z]+(-[A-Z][a-z]+){0,1}";
+    public static final String NAME_REGEXP = "^(?:[A-Z][a-z]+(?:-[A-Z][a-z]+)?|[А-ЩЬЮЯҐЄІЇІ][а-щьюяґєіїі']+(?:-[А-ЩЬЮЯҐЄІЇІ][а-щьюяґєіїі']+)?$)";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +53,9 @@ public class User implements UserDetails {
     @NotBlank(message = "The password cannot be 'blank'")
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
 
     @JsonBackReference
     @ManyToMany(fetch = FetchType.EAGER)
