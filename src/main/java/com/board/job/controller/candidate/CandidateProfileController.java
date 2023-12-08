@@ -34,7 +34,7 @@ public class CandidateProfileController {
     private final CandidateProfileService candidateProfileService;
 
     @GetMapping("/api/users/{owner-id}/candidate-profiles")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("@authRolesService.hasAnyRole(authentication.name, 'ADMIN', 'EMPLOYER')")
     public ModelAndView getSortedCandidates(
             @RequestParam(name = "sort_by", defaultValue = "id") String[] sortBy,
             @RequestParam(name = "sort_order", defaultValue = "asc") String sortedOrder,
@@ -69,7 +69,7 @@ public class CandidateProfileController {
     }
 
     @GetMapping("/api/users/{owner-id}/employer/{employer-id}/candidate-profiles/{candidate-id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("@authRolesService.hasAnyRole(authentication.name, 'ADMIN', 'EMPLOYER')")
     public ModelAndView getCandidateByEmployer(@PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
                                                @PathVariable("candidate-id") long candidateId, Authentication authentication,
                                                ModelMap map) {
