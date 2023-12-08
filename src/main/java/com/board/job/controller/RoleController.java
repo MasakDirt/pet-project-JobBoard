@@ -25,7 +25,7 @@ import static com.board.job.controller.ControllerHelper.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/roles")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("@authRolesService.hasRole(authentication.name, 'ADMIN')")
 public class RoleController {
     private final RoleService roleService;
     private final RoleMapper mapper;
