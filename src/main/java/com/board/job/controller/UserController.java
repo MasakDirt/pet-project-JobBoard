@@ -3,6 +3,7 @@ package com.board.job.controller;
 import com.board.job.model.dto.user.UserCreateRequest;
 import com.board.job.model.dto.user.UserUpdateRequest;
 import com.board.job.model.dto.user.UserUpdateRequestWithPassword;
+import com.board.job.model.entity.sample.Provider;
 import com.board.job.model.mapper.UserMapper;
 import com.board.job.service.RoleService;
 import com.board.job.service.UserService;
@@ -34,7 +35,7 @@ public class UserController {
     private final UserAuthService userAuthService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@authRolesService.hasRole(authentication.name, 'ADMIN')")
     public ModelAndView getAll(Authentication authentication, ModelMap map) {
         map.addAttribute("users", userService.getAll()
                 .stream()
@@ -48,9 +49,11 @@ public class UserController {
     @GetMapping("/{id}")
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
     public ModelAndView getById(@PathVariable long id, Authentication authentication, ModelMap map) {
-        var user = mapper.getUserResponseFromUser(userService.readById(id));
-        map.addAttribute("isAdmin", userAuthService.isAdmin(user.getEmail()));
-        map.addAttribute("user", user);
+        var user = userService.readById(id);
+        var userResponse = mapper.getUserResponseFromUser(user);
+        map.addAttribute("isAdmin", userAuthService.isAdmin(userResponse.getEmail()));
+        map.addAttribute("user", userResponse);
+        map.addAttribute("isGoogleUser", user.getProvider().equals(Provider.GOOGLE));
         log.info("=== GET-USER-ID === {} === {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("user-get", map);
@@ -68,7 +71,7 @@ public class UserController {
     }
 
     @GetMapping("/create-admin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@authRolesService.hasRole(authentication.name, 'ADMIN')")
     public ModelAndView getCreateRequest(ModelMap map) {
         map.addAttribute("createRequest", new UserCreateRequest());
 
@@ -76,7 +79,7 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@authRolesService.hasRole(authentication.name, 'ADMIN')")
     public void createAdmin(@Valid UserCreateRequest createRequest, Authentication authentication,
                             HttpServletResponse response) {
 
