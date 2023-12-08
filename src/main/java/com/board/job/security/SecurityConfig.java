@@ -1,5 +1,7 @@
 package com.board.job.security;
 
+import com.board.job.model.entity.CustomOAuth2User;
+import com.board.job.service.CustomOAuth2UserService;
 import com.board.job.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +23,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @AllArgsConstructor
 public class SecurityConfig {
     private final UserService userService;
+    private final CustomOAuth2UserService oAuthUserService;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,7 +33,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(antMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(antMatcher("/api/auth/**"), antMatcher("/oauth2/**")).permitAll()
                         .anyRequest()
                         .authenticated()
                 );
@@ -47,6 +50,17 @@ public class SecurityConfig {
                 })
                 .failureUrl("/api/auth/login?error")
                 .permitAll()
+        );
+
+        http.oauth2Login(oauth2 -> oauth2
+                .loginPage("/api/auth/login")
+                .userInfoEndpoint(oAuthUserService)
+                .successHandler((request, response, authentication) -> {
+                            CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
+                            var user = userService.processOAuthPostLogin(oauthUser);
+                            response.sendRedirect("/api/users/" + user.getId());
+                        }
+                )
         );
 
         http.logout(logout -> logout.logoutUrl("/logout")
