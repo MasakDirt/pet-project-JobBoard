@@ -50,7 +50,7 @@
 </header>
 <div class="container main-content">
     <div class="cards-container">
-        <h2>Messengers</h2>
+        <h2>Messengers for <a th:text="${vacancy.lookingFor}"></a></h2>
 
         <div th:each="messenger: ${messengers}">
             <div class="card vacancy-card">
@@ -90,9 +90,9 @@
 
                             <div class="form-group">
                                 <a class="btn btn-purple"
-                                   th:href="@{|/api/users/${owner.id}/employer-profile/${employerId}/vacancies/${vacancyId}/messengers/${messenger.id}/feedbacks|}">Select</a>
+                                   th:href="@{|/api/users/${owner.id}/employer-profile/${employerId}/vacancies/${vacancy.id}/messengers/${messenger.id}/feedbacks|}">Select</a>
                                 <a class="btn btn-purple"
-                                   th:href="@{|/api/users/${owner.id}/vacancies/${vacancyId}/employer-profile/${employerId}/messengers/${messenger.id}/delete|}">Delete</a>
+                                   th:href="@{|/api/users/${owner.id}/vacancies/${vacancy.id}/employer-profile/${employerId}/messengers/${messenger.id}/delete|}">Delete</a>
                             </div>
                         </div>
                     </div>
