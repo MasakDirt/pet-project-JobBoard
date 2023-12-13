@@ -32,14 +32,14 @@ public class FeedbackControllerTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertNotNull(mvc);
         assertNotNull(feedbackService);
     }
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
-    public void test_GetAllCandidateMessengerFeedbacks_Candidate() throws Exception {
+    public void testGetAllCandidateMessengerFeedbacksCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long messengerId = 2L;
@@ -53,7 +53,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_GetAllCandidateMessengerFeedbacks_Candidate() throws Exception {
+    public void testForbiddenGetAllCandidateMessengerFeedbacksCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long messengerId = 1L;
@@ -67,7 +67,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_GetAllEmployerMessengerFeedbacks_Employer() throws Exception {
+    public void testGetAllEmployerMessengerFeedbacksEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -82,7 +82,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_GetAllEmployerMessengerFeedbacks_Admin() throws Exception {
+    public void testForbiddenGetAllEmployerMessengerFeedbacksAdmin() throws Exception {
         long ownerId = 1L;
         long employerId = 1L;
         long vacancyId = 1L;
@@ -97,7 +97,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
-    public void test_CreateByCandidate_Admin() throws Exception {
+    public void testCreateByCandidateAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
         long messengerId = 1L;
@@ -113,7 +113,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
-    public void test_Forbidden_CreateByCandidate_Admin() throws Exception {
+    public void testForbiddenCreateByCandidateAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
         long messengerId = 4L;
@@ -129,7 +129,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
-    public void test_NotFound_CreateByCandidate_Admin() throws Exception {
+    public void testNotFoundCreateByCandidateAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
         long messengerId = 0L;
@@ -145,7 +145,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_CreateByEmployer_Employer() throws Exception {
+    public void testCreateByEmployerEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -162,7 +162,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_CreateByEmployer_Employer() throws Exception {
+    public void testForbiddenCreateByEmployerEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -179,7 +179,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_NotFound_CreateByEmployer_Employer() throws Exception {
+    public void testNotFoundCreateByEmployerEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -196,7 +196,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
-    public void test_GetUpdateFormByCandidate_Admin() throws Exception {
+    public void testGetUpdateFormByCandidateAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
         long messengerId = 1L;
@@ -212,7 +212,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
-    public void test_UpdateByCandidate_Admin() throws Exception {
+    public void testUpdateByCandidateAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
         long messengerId = 1L;
@@ -230,7 +230,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
-    public void test_Forbidden_UpdateByCandidate_Admin() throws Exception {
+    public void testForbiddenUpdateByCandidateAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
         long messengerId = 1L;
@@ -248,7 +248,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "EMPLOYER", "CANDIDATE"})
-    public void test_NotFound_UpdateByCandidate_Admin() throws Exception {
+    public void testNotFoundUpdateByCandidateAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
         long messengerId = 1L;
@@ -265,7 +265,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_GetUpdateFormByEmployer_Admin() throws Exception {
+    public void testGetUpdateFormByEmployerAdmin() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -282,7 +282,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_UpdateByEmployer_Employer() throws Exception {
+    public void testUpdateByEmployerEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -301,7 +301,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_UpdateByEmployer_Employer() throws Exception {
+    public void testForbiddenUpdateByEmployerEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -320,7 +320,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_NotFound_UpdateByEmployer_Employer() throws Exception {
+    public void testNotFoundUpdateByEmployerEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -337,7 +337,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_DeleteByCandidate_Candidate() throws Exception {
+    public void testDeleteByCandidateCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long messengerId = 2L;
@@ -353,7 +353,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_DeleteByCandidate_Candidate() throws Exception {
+    public void testForbiddenDeleteByCandidateCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long messengerId = 2L;
@@ -369,7 +369,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_NotFound_DeleteByCandidate_Candidate() throws Exception {
+    public void testNotFoundDeleteByCandidateCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long messengerId = 2L;
@@ -384,7 +384,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Delete_Employer() throws Exception {
+    public void testDeleteEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -401,7 +401,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_DeleteByEmployer_Employer() throws Exception {
+    public void testForbiddenDeleteByEmployerEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;
@@ -418,7 +418,7 @@ public class FeedbackControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_NotFound_DeleteByEmployer_Employer() throws Exception {
+    public void testNotFoundDeleteByEmployerEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long vacancyId = 5L;

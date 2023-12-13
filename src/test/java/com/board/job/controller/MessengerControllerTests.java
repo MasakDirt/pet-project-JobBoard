@@ -32,14 +32,14 @@ public class MessengerControllerTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         Assertions.assertNotNull(mvc);
         Assertions.assertNotNull(vacancyService);
     }
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_GetAllCandidateMessengers_Candidate() throws Exception {
+    public void testGetAllCandidateMessengersCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
 
@@ -51,7 +51,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_NotFound_GetAllCandidateMessengers_Candidate() throws Exception {
+    public void testNotFoundGetAllCandidateMessengersCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 0L;
 
@@ -62,7 +62,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_GetAllCandidateMessengers_Candidate() throws Exception {
+    public void testForbiddenGetAllCandidateMessengersCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 1L;
 
@@ -74,7 +74,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_GetAllVacancyMessengers_Employer() throws Exception {
+    public void testGetAllVacancyMessengersEmployer() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
         long vacancyId = 7L;
@@ -89,7 +89,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_NotFound_GetAllVacancyMessengers_Admin() throws Exception {
+    public void testNotFoundGetAllVacancyMessengersAdmin() throws Exception {
         long ownerId = 1L;
         long employerId = 0L;
         long vacancyId = 0L;
@@ -105,7 +105,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_GetAllVacancyMessengers_Employer() throws Exception {
+    public void testForbiddenGetAllVacancyMessengersEmployer() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
         long vacancyId = 2L;
@@ -121,7 +121,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_CreateByCandidate_Admin() throws Exception {
+    public void testCreateByCandidateAdmin() throws Exception {
         long ownerId = 1L;
         long vacancyId = 5L;
         long candidateId = 1L;
@@ -137,7 +137,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_CreateByEmployer_Admin() throws Exception {
+    public void testCreateByEmployerAdmin() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
         long vacancyId = 7L;
@@ -153,7 +153,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "helen@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_DeleteByCandidate_Candidate() throws Exception {
+    public void testDeleteByCandidateCandidate() throws Exception {
         long ownerId = 5L;
         long candidateId = 4L;
         long messengerId = 4L;
@@ -167,7 +167,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "helen@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_DeleteByCandidate_Candidate() throws Exception {
+    public void testForbiddenDeleteByCandidateCandidate() throws Exception {
         long ownerId = 5L;
         long candidateId = 4L;
         long messengerId = 3L;
@@ -180,7 +180,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_DeleteByEmployer_Employer() throws Exception {
+    public void testDeleteByEmployerEmployer() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
         long vacancyId = 7L;
@@ -195,7 +195,7 @@ public class MessengerControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_DeleteByEmployer_Employer() throws Exception {
+    public void testForbiddenDeleteByEmployerEmployer() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
         long vacancyId = 6L;

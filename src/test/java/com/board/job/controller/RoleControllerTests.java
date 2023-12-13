@@ -34,14 +34,14 @@ public class RoleControllerTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertNotNull(mvc);
         assertNotNull(roleService);
     }
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetAll() throws Exception {
+    public void testGetAll() throws Exception {
         mvc.perform(get(BASIC_URL))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("roles"))
@@ -50,7 +50,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Invalid_UserIsNotAdmin_GetAll() throws Exception {
+    public void testInvalidUserIsNotAdminGetAll() throws Exception {
         mvc.perform(get(BASIC_URL))
                 .andExpect(getErrorView())
                 .andExpect(getErrorAttributes());
@@ -58,7 +58,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_getAllUserRoles() throws Exception {
+    public void testgetAllUserRoles() throws Exception {
         mvc.perform(get(BASIC_URL + "/user/{user-id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("roles", "userId", "userName"))
@@ -67,7 +67,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetById() throws Exception {
+    public void testGetById() throws Exception {
         long id = 3L;
         mvc.perform(get(BASIC_URL + "/{id}", id))
                 .andExpect(status().isOk())
@@ -77,7 +77,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Invalid_GetById() throws Exception {
+    public void testInvalid_GetById() throws Exception {
         long id = 7L;
 
         mvc.perform(get(BASIC_URL + "/{id}", id))
@@ -87,7 +87,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_CreateRequest() throws Exception {
+    public void testCreateRequest() throws Exception {
         long id = 3L;
         mvc.perform(get(BASIC_URL + "/create", id))
                 .andExpect(status().isOk())
@@ -97,7 +97,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Create() throws Exception {
+    public void testCreate() throws Exception {
         String name = "CREATED";
 
         mvc.perform(post(BASIC_URL)
@@ -108,7 +108,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_AddUserRoleRequest() throws Exception {
+    public void testAddUserRoleRequest() throws Exception {
         long userId = 2L;
         mvc.perform(get(BASIC_URL + "/user/{user-id}/add-role", userId))
                 .andExpect(status().isOk())
@@ -118,7 +118,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_AddUserRole() throws Exception {
+    public void testAddUserRole() throws Exception {
         String name = "USER";
         long userId = 4L;
 
@@ -130,7 +130,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_UpdateRequest() throws Exception {
+    public void testUpdateRequest() throws Exception {
         long id = 2L;
         String name = "UPDATED";
 
@@ -144,7 +144,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Update() throws Exception {
+    public void testUpdate() throws Exception {
         long id = 2L;
         String name = "UPDATED";
 
@@ -157,7 +157,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Delete() throws Exception {
+    public void testDelete() throws Exception {
         long id = 2L;
         List<Role> before = roleService.getAll();
 
@@ -172,7 +172,7 @@ public class RoleControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_DeleteUserRole() throws Exception {
+    public void testDeleteUserRole() throws Exception {
         long userId = 4L;
         String name = "ADMIN";
 

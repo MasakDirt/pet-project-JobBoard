@@ -29,13 +29,13 @@ public class CandidateProfileControllerTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertNotNull(mvc);
     }
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetAll_Admin() throws Exception {
+    public void testGetAllAdmin() throws Exception {
         long ownerId = 1L;
 
         mvc.perform(get(BASIC_URl, ownerId)
@@ -51,7 +51,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_GetAll_Employer() throws Exception {
+    public void testGetAllEmployer() throws Exception {
         long ownerId = 2L;
 
         mvc.perform(get(BASIC_URl, ownerId)
@@ -68,7 +68,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_GetAll_Candidate() throws Exception {
+    public void testForbiddenGetAllCandidate() throws Exception {
         long ownerId = 3L;
 
         mvc.perform(get(BASIC_URl, ownerId))
@@ -78,43 +78,43 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetById_Admin() throws Exception {
+    public void testGetByIdAdmin() throws Exception {
         long ownerId = 1L;
         long id = 2L;
 
         mvc.perform(get(BASIC_URl + "/{id}", ownerId, id))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("categories", "eng_levels", "ukr_levels", "owner", "candidateProfileRequest"))
+                .andExpect(model().attributeExists("categories", "eng_levels", "ukr_levels", "owner", "candidateProfileResponse"))
                 .andExpect(view().name("candidates/candidate-profile-get"));
     }
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_GetById_Employer() throws Exception {
+    public void testGetByIdEmployer() throws Exception {
         long ownerId = 2L;
         long id = 4L;
 
         mvc.perform(get(BASIC_URl + "/{id}", ownerId, id))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("categories", "eng_levels", "ukr_levels", "owner", "candidateProfileRequest"))
+                .andExpect(model().attributeExists("categories", "eng_levels", "ukr_levels", "owner", "candidateProfileResponse"))
                 .andExpect(view().name("candidates/candidate-profile-get"));
     }
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_GetById_Candidate() throws Exception {
+    public void testGetByIdCandidate() throws Exception {
         long ownerId = 3L;
         long id = 2L;
 
         mvc.perform(get(BASIC_URl + "/{id}", ownerId, id))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("categories", "eng_levels", "ukr_levels", "owner", "candidateProfileRequest"))
+                .andExpect(model().attributeExists("categories", "eng_levels", "ukr_levels", "owner", "candidateProfileResponse"))
                 .andExpect(view().name("candidates/candidate-profile-get"));
     }
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_GetById_Candidate() throws Exception {
+    public void testForbiddenGetByIdCandidate() throws Exception {
         long ownerId = 3L;
         long id = 3L;
 
@@ -125,20 +125,20 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_GetCandidateByEmployer_Employer() throws Exception {
+    public void testGetCandidateByEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long candidateId = 4L;
 
         mvc.perform(get("/api/users/{owner-id}/employer/{employer-id}/candidate-profiles/{candidate-id}", ownerId, employerId, candidateId))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("categories", "eng_levels", "ukr_levels", "owner", "candidateProfileRequest"))
+                .andExpect(model().attributeExists("categories", "eng_levels", "ukr_levels", "owner", "candidateProfileResponse"))
                 .andExpect(view().name("employers/candidate-get"));
     }
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_GetCandidateByEmployer_Candidate() throws Exception {
+    public void testForbiddenGetCandidateByEmployerCandidate() throws Exception {
         long ownerId = 3L;
         long employerId = 2L;
         long candidateId = 2L;
@@ -150,7 +150,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_getCreateRequest_Admin() throws Exception {
+    public void testGetCreateRequestAdmin() throws Exception {
         long ownerId = 1L;
 
         mvc.perform(get(BASIC_URl + "/create", ownerId))
@@ -160,7 +160,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Create() throws Exception {
+    public void testCreate() throws Exception {
         long ownerId = 2L;
 
         mvc.perform(post(BASIC_URl, ownerId)
@@ -180,7 +180,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_InternalServerError_Create_Admin() throws Exception {
+    public void testInternalServerErrorCreateAdmin() throws Exception {
         long ownerId = 1L;
 
         mvc.perform(post(BASIC_URl, ownerId)
@@ -200,7 +200,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_Create_Candidate() throws Exception {
+    public void testForbiddenCreateCandidate() throws Exception {
         long ownerId = 1L;
 
         mvc.perform(post(BASIC_URl, ownerId)
@@ -220,7 +220,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_BadRequest_Create_Employer() throws Exception {
+    public void testBadRequestCreateEmployer() throws Exception {
         long ownerId = 2L;
 
         mvc.perform(post(BASIC_URl, ownerId)
@@ -239,7 +239,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Update_Candidate() throws Exception {
+    public void testUpdateCandidate() throws Exception {
         long ownerId = 3L;
         long id = 2L;
 
@@ -260,7 +260,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_Update_Candidate() throws Exception {
+    public void testForbiddenUpdateCandidate() throws Exception {
         long ownerId = 3L;
         long id = 1L;
 
@@ -281,7 +281,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Delete_Candidate() throws Exception {
+    public void testDeleteCandidate() throws Exception {
         long ownerId = 3L;
         long id = 2L;
 
@@ -292,7 +292,7 @@ public class CandidateProfileControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_Delete_Admin() throws Exception {
+    public void testForbiddenDeleteAdmin() throws Exception {
         long ownerId = 3L;
         long id = 1L;
 
