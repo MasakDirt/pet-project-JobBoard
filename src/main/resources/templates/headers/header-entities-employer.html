@@ -9,8 +9,8 @@
             font-size: 18px;
             padding: 5px 30px;
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 30px;
+            left: 112px;
         }
 
         .btn-logout {
@@ -20,7 +20,7 @@
             font-weight: bold;
             font-size: 14px;
             position: fixed;
-            top: 16.5%;
+            top: 19%;
             right: 0.8%;
             padding: 6px;
         }
@@ -32,7 +32,7 @@
             font-weight: bold;
             font-size: 14px;
             position: fixed;
-            top: 12.5%;
+            top: 15%;
             right: 0.8%;
             padding: 6px;
         }
@@ -44,7 +44,7 @@
             font-weight: bold;
             font-size: 14px;
             position: fixed;
-            top: 8.5%;
+            top: 11%;
             right: 0.8%;
             padding: 6px;
         }
@@ -64,8 +64,8 @@
         }
 
         .header-rounded-image {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             overflow: hidden;
             position: fixed;
@@ -81,9 +81,17 @@
         hr {
             border: 1px solid #b2ac98;
         }
+        .logo {
+              width: 110px;
+              height: 100px;
+              position: fixed;
+              top: 0;
+              left: 0;
+          }
     </style>
 </head>
 <body>
+<a th:href="@{|/api/users/${owner.id}|}"><img class="logo" th:src="@{|/api/users/0/images/logo|}" alt="Logo"></a>
 <button class="btn btn-header-back" th:onclick="window.history.back()">⬅️Back</button>
 
 <div id="peeking-slot" style="position: relative;">
@@ -114,7 +122,7 @@
     </div>
 </div>
 
-<div class="container-buttons">
+<div class="container-buttons" th:if="${owner.employerProfile != null && owner.employerCompany != null}">
     <a class="btn btn-purple" th:if="${owner.employerProfile != null}"
        th:href="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies|}">Company-Vacancies</a>
     <a class="btn btn-purple" th:if="${owner.employerProfile != null}"

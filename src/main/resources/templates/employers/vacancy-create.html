@@ -82,10 +82,23 @@
             min-height: 100vh;
             font-size: 17px;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .col-sm-8 {
+            margin-top: 100px;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:replace="~{headers/header-entities-employer.html}"></div>
 </header>
 <div class="col-md-offset-2 col-sm-8">

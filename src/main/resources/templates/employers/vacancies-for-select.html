@@ -46,10 +46,23 @@
         h1 {
             color: #a80009;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .main-content {
+            margin-top: 100px;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:replace="~{headers/header-entities-employer.html}"></div>
 </header>
 <div th:if="${vacancies.isEmpty()}" class="container">
@@ -57,7 +70,7 @@
 </div>
 <div class="container main-content">
     <div class="cards-container"  th:unless="${vacancies.isEmpty()}">
-        <h2>Vacancies</h2>
+        <h2>Select Vacancy</h2>
         <div th:each="vacancy: ${vacancies}">
             <div class="card vacancy-card">
                 <div class="card-body">
