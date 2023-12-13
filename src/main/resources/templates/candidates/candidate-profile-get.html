@@ -89,10 +89,29 @@
             min-height: 100vh;
             font-size: 17px;
         }
+
+
+        .form-horizontal {
+            margin-top: 50px;
+        }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            margin-bottom: 100px;
+        }
+
+        .col-md-offset-2 {
+            margin-top: 110px;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:replace="~{headers/header-candidate.html}"></div>
 </header>
 <div class="col-md-offset-2 col-sm-8">

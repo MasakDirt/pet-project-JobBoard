@@ -115,13 +115,30 @@
             cursor: pointer;
             font-weight: bold;
         }
+
+        #row-images {
+            margin-top: 115px;
+        }
+
+        #form-row {
+            margin-top: 10px;
+        }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:replace="~{headers/header-candidate.html}"></div>
 </header>
-<div class="row">
+<div class="row" id="row-images">
     <div class="col-xs-6 col-md-4">
     </div>
 
@@ -194,7 +211,7 @@
     </div>
 </div>
 <div style="height: 20px"></div>
-<div class="row">
+<div class="row" id="form-row">
 <form class="form-horizontal"
       th:action="@{|/api/users/${owner.id}/candidate-contacts/${candidateContactRequest.id}/update|}"
       method="post">
