@@ -9,8 +9,8 @@
             font-size: 18px;
             padding: 5px 30px;
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 30px;
+            left: 103px;
         }
 
         .btn-logout {
@@ -88,9 +88,18 @@
         hr {
             border: 1px solid #b2ac98;
         }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
     </style>
 </head>
 <body>
+<a th:href="@{|/api/users/${owner.id}|}"><img class="logo" th:src="@{|/api/users/0/images/logo|}" alt="Logo"></a>
 <button class="btn btn-header-back" th:onclick="window.history.back()">⬅️Back</button>
 
 <div id="peeking-slot" style="position: relative;">

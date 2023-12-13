@@ -27,10 +27,23 @@
             color: #fff;
             font-weight: bold;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .container {
+            margin-top: 120px;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:if="${owner.candidateContact != null}" th:replace="~{headers/header-entities.html}"></div>
 </header>
 <div class="container">
