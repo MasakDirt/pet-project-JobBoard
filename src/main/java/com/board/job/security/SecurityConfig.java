@@ -33,7 +33,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(antMatcher("/api/auth/**"), antMatcher("/oauth2/**")).permitAll()
+                        .requestMatchers(antMatcher("/api/auth/**"), antMatcher("/oauth2/**"),
+                                antMatcher("/api/users/{owner-id}/images/logo")).permitAll()
                         .anyRequest()
                         .authenticated()
                 );
