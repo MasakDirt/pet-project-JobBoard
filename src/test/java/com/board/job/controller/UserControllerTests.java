@@ -58,7 +58,7 @@ public class UserControllerTests {
 
         mvc.perform(get(BASIC_URl + "/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("user", "isAdmin"))
+                .andExpect(model().attributeExists("user", "isAdmin", "isGoogleUser"))
                 .andExpect(view().name("user-get"));
     }
 
