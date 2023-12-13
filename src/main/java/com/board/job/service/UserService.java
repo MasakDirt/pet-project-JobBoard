@@ -1,6 +1,8 @@
 package com.board.job.service;
 
 import com.board.job.exception.UserIsNotEmployer;
+import com.board.job.model.entity.CustomOAuth2User;
+import com.board.job.model.entity.sample.Provider;
 import com.board.job.model.entity.Role;
 import com.board.job.model.entity.User;
 import com.board.job.model.entity.employer.EmployerCompany;
@@ -14,10 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -29,7 +28,31 @@ public class UserService {
     public User create(User user, Set<Role> roles) {
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        if (!hasProvider(user)) {
+            user.setProvider(Provider.LOCAL);
+        }
         return userRepository.save(user);
+    }
+
+    private boolean hasProvider(User user) {
+        return Objects.nonNull(user.getProvider());
+    }
+
+    public User processOAuthPostLogin(CustomOAuth2User oAuth2User) {
+        Optional<User> existUser = userRepository.findByEmail(oAuth2User.getName());
+
+        if (existUser.isEmpty()) {
+            User newUser = new User();
+            newUser.setEmail(oAuth2User.getName());
+            newUser.setFirstName(oAuth2User.getAttributes().get("given_name").toString());
+            newUser.setLastName(oAuth2User.getAttributes().get("family_name").toString());
+            newUser.setPassword(oAuth2User.getAttributes().get("sub").toString());
+            newUser.setProvider(Provider.GOOGLE);
+
+           return create(newUser, Set.of(roleService.readByName("USER")));
+        }
+        return existUser.get();
     }
 
     public User readById(long id) {
