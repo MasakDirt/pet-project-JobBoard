@@ -27,12 +27,12 @@ public class MessengerRepositoryTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         AssertionsForClassTypes.assertThat(messengerRepository).isNotNull();
     }
 
     @Test
-    public void test_Valid_FindAllByCandidateId() {
+    public void testValidFindAllByCandidateId() {
         long candidateId = 2L;
         List<Messenger> expected = messengerRepository.findAll()
                 .stream()
@@ -46,13 +46,13 @@ public class MessengerRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_FindAllByCandidateId() {
+    public void testInvalidFindAllByCandidateId() {
         assertTrue(messengerRepository.findAllByCandidateProfileId(0).isEmpty(),
                 "we have no candidate with id 0, so here must be empty list.");
     }
 
     @Test
-    public void test_Valid_FindAllByVacancyId() {
+    public void testValidFindAllByVacancyId() {
         long vacancyId = 8L;
         List<Messenger> expected = messengerRepository.findAll()
                 .stream()
@@ -65,7 +65,7 @@ public class MessengerRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_FindAllByVacancyId() {
+    public void testInvalidFindAllByVacancyId() {
         assertTrue(messengerRepository.findAllByVacancyId(0).isEmpty(),
                 "We have no vacancy with id 0, so here must be empty list.");
     }

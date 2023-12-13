@@ -28,12 +28,12 @@ public class RoleRepositoryTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         AssertionsForClassTypes.assertThat(roleRepository).isNotNull();
     }
 
     @Test
-    public void test_Valid_FindByName() {
+    public void testValidFindByName() {
         String name = "ADMIN";
 
         Optional<Role> expected = roleRepository.findAll()
@@ -52,13 +52,13 @@ public class RoleRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_FindByName() {
+    public void testInvalidFindByName() {
         assertTrue(roleRepository.findByName("").isEmpty(),
                 "Optional must be empty because we have no role with empty name.");
     }
 
     @Test
-    public void test_Valid_FindAllByUsersId() {
+    public void testValidFindAllByUsersId() {
         long userId = 4L;
 
         List<Role> expected = roleRepository.findAll()
@@ -75,7 +75,7 @@ public class RoleRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_FindAllByUsersId() {
+    public void testInvalidFindAllByUsersId() {
         assertTrue(roleRepository.findAllByUsersId(0).isEmpty(),
                 "List must be empty because we have no user with 0 id.");
     }

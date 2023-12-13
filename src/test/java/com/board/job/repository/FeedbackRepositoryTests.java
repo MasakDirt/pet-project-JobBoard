@@ -28,12 +28,12 @@ public class FeedbackRepositoryTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         AssertionsForClassTypes.assertThat(feedbackRepository).isNotNull();
     }
 
     @Test
-    public void test_Valid_FindAllByMessengerId() {
+    public void testValidFindAllByMessengerId() {
         long messengerId = 3L;
 
         List<Feedback> expected = feedbackRepository.findAll()
@@ -52,7 +52,7 @@ public class FeedbackRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_FindAllByMessengerId() {
+    public void testInvalidFindAllByMessengerId() {
         assertTrue(feedbackRepository.findAllByMessengerId(0).isEmpty(),
                 "We have no feedback with messenger id 0, so here must be empty list!");
     }

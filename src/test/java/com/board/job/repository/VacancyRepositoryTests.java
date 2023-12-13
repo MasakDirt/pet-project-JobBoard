@@ -27,12 +27,12 @@ public class VacancyRepositoryTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         AssertionsForClassTypes.assertThat(vacancyRepository).isNotNull();
     }
 
     @Test
-    public void test_Valid_GetVacanciesByEmployerProfileId() {
+    public void testValidGetVacanciesByEmployerProfileId() {
         long employerCompanyId = 3L;
         List<Vacancy> expected = vacancyRepository.findAll()
                 .stream()
@@ -50,7 +50,7 @@ public class VacancyRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_GetVacanciesByEmployerProfileId() {
+    public void testInvalidGetVacanciesByEmployerProfileId() {
         assertTrue(vacancyRepository.getVacanciesByEmployerProfileId(0).isEmpty(),
                 "We have no employer company with id 0, so here must be empty list!");
     }
