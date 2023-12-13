@@ -18,12 +18,12 @@ public class JwtUtilsTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertThat(jwtUtils).isNotNull();
     }
 
     @Test
-    public void test_Valid_GenerateTokenFromEmail() {
+    public void testValidGenerateTokenFromEmail() {
         String expected = "username";
         String token = jwtUtils.generateTokenFromEmail(expected);
 
@@ -35,7 +35,7 @@ public class JwtUtilsTests {
     }
 
     @Test
-    public void test_Valid_isValidToken() {
+    public void testValidIsValidToken() {
         String token = jwtUtils.generateTokenFromEmail("token");
 
         assertTrue(jwtUtils.isValidToken(token),
@@ -43,13 +43,13 @@ public class JwtUtilsTests {
     }
 
     @Test
-    public void test_Invalid_isValidToken() {
+    public void testInvalidIsValidToken() {
         assertFalse(jwtUtils.isValidToken("lkfrgkkSKFLKfefkfl;"),
                 "In this method should be false because we pass invalid token.");
     }
 
     @Test
-    public void test_Valid_GetSubject() {
+    public void testValidGetSubject() {
         String expected = "sub";
 
         String token = jwtUtils.generateTokenFromEmail(expected);
