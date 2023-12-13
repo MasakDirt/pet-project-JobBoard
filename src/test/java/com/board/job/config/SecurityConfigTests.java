@@ -30,13 +30,13 @@ public class SecurityConfigTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         AssertionsForClassTypes.assertThat(mvc).isNotNull();
         AssertionsForClassTypes.assertThat(userService).isNotNull();
     }
 
     @Test
-    public void test_SecuredUrl_Login() throws Exception {
+    public void testSecuredUrlLogin() throws Exception {
         String email = "admin@mail.co";
 
         mvc.perform(post("/api/auth/login")
@@ -48,7 +48,7 @@ public class SecurityConfigTests {
     }
 
     @Test
-    public void test_SecuredUrl_Register() throws Exception {
+    public void testSecuredUrlRegister() throws Exception {
         mvc.perform(post("/api/auth/register")
                         .param("firstName", "Firstname")
                         .param("lastName", "Lastname")
@@ -60,14 +60,14 @@ public class SecurityConfigTests {
     }
 
     @Test
-    public void test_SecuredUrl_WhichCannotBeAccessByUnauthorizedUser() throws Exception {
+    public void testSecuredUrlWhichCannotBeAccessByUnauthorizedUser() throws Exception {
         mvc.perform(get("/api/users"))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("http://localhost/api/auth/login"));
     }
 
     @Test
-    public void test_CorsConfig() throws Exception {
+    public void testCorsConfig() throws Exception {
         mvc.perform(head("/**")).andExpect(status().isFound());
     }
 }
