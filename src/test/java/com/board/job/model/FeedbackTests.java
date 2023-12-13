@@ -25,13 +25,13 @@ public class FeedbackTests {
     }
 
     @Test
-    public void test_Valid_Feedback() {
+    public void testValidFeedback() {
         assertEquals(0, getViolation(feedback).size());
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForText")
-    public void test_Invalid_FeedBack_Text(String text, String error) {
+    public void testInvalidFeedBackText(String text, String error) {
         feedback.setText(text);
 
         assertEquals(1, getViolation(feedback).size());

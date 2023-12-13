@@ -64,7 +64,7 @@ public class MessengerController {
                 )
                 .toList();
 
-        map.addAttribute("vacancyId", vacancyId);
+        map.addAttribute("vacancy", vacancyService.readById(vacancyId));
         map.addAttribute("employerId", employerId);
         map.addAttribute("owner", userService.readById(ownerId));
         map.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd MMM"));
@@ -75,7 +75,7 @@ public class MessengerController {
     }
 
     @PostMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/messengers")
-    @PreAuthorize("hasRole('CANDIDATE')")
+    @PreAuthorize("@authRolesService.hasRole(authentication.name, 'CANDIDATE')")
     public void createByCandidate(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable("vacancy-id") long vacancyId, String text, HttpServletResponse response,
@@ -92,7 +92,7 @@ public class MessengerController {
     }
 
     @PostMapping("/vacancies/{vacancy-id}/candidate/{candidate-id}/employer-profile/{employer-id}/messengers")
-    @PreAuthorize("hasRole('EMPLOYER')")
+    @PreAuthorize("@authRolesService.hasRole(authentication.name, 'EMPLOYER')")
     public void createByEmployer(
             @PathVariable("owner-id") long ownerId, @PathVariable("candidate-id") long candidateId,
             @PathVariable("vacancy-id") long vacancyId, Authentication authentication,

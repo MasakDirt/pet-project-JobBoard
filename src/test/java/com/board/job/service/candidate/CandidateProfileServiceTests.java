@@ -37,12 +37,12 @@ public class CandidateProfileServiceTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertThat(candidateProfileService).isNotNull();
     }
 
     @Test
-    public void test_Valid_Create() {
+    public void testValidCreate() {
         long ownerId = 2L;
 
         CandidateProfile expected = new CandidateProfile();
@@ -61,7 +61,7 @@ public class CandidateProfileServiceTests {
     }
 
     @Test
-    public void test_Invalid_Create() {
+    public void testInvalidCreate() {
         long ownerId = 2L;
         assertThrows(NullPointerException.class, () -> candidateProfileService.create(ownerId, null),
                 "Null pointer exception will be thrown, because we pass null user to method create.");
@@ -71,7 +71,7 @@ public class CandidateProfileServiceTests {
     }
 
     @Test
-    public void test_Valid_ReadById() {
+    public void testValidReadById() {
         long ownerId = 6L;
 
         CandidateProfile expected = new CandidateProfile();
@@ -93,13 +93,13 @@ public class CandidateProfileServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadById() {
+    public void testInvalidReadById() {
         assertThrows(EntityNotFoundException.class, () -> candidateProfileService.readById(0),
                 "Entity not found exception will be thrown because we have no candidate with id 0.");
     }
 
     @Test
-    public void test_Valid_Update() {
+    public void testValidUpdate() {
         CandidateProfile unexpected = candidateProfileService.readById(1L);
 
         Category oldCategory = unexpected.getCategory();
@@ -121,13 +121,13 @@ public class CandidateProfileServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update() {
+    public void testInvalidUpdate() {
         assertThrows(NullPointerException.class, () -> candidateProfileService.update(1, null),
                 "Null pointer exception will be thrown, because we pass null user to method update.");
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         long id = 3L;
         candidateProfileService.delete(id);
 
@@ -136,13 +136,13 @@ public class CandidateProfileServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> candidateProfileService.delete(0),
                 "Entity not found exception will be thrown because we have no candidate with id 0.");
     }
 
     @Test
-    public void test_GetAllSorted() {
+    public void testGetAllSorted() {
         Sort sort = Sort.by(Sort.Direction.fromString("desc"), "position");
         Pageable pageable = PageRequest.of(0, 10, sort);
 
@@ -159,7 +159,7 @@ public class CandidateProfileServiceTests {
     }
 
     @Test
-    public void test_GetAllSortedWithText() {
+    public void testGetAllSortedWithText() {
         Sort sort = Sort.by(Sort.Direction.fromString("desc"), "id");
         Pageable pageable = PageRequest.of(0, 10, sort);
         String text = "Java";

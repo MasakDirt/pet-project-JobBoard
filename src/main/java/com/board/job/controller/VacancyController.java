@@ -38,7 +38,7 @@ public class VacancyController {
     private final MessengerService messengerService;
 
     @GetMapping("/vacancies")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
+    @PreAuthorize("@authRolesService.hasAnyRole(authentication.name, 'ADMIN', 'CANDIDATE')")
     public ModelAndView getVacancies(
             @PathVariable("owner-id") long ownerId,
             @RequestParam(name = "sort_by", defaultValue = "postedAt") String[] sortBy,
@@ -64,7 +64,7 @@ public class VacancyController {
     }
 
     @GetMapping("/vacancies/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE')")
+    @PreAuthorize("@authRolesService.hasAnyRole(authentication.name, 'ADMIN', 'CANDIDATE')")
     public ModelAndView getById(@PathVariable("owner-id") long ownerId,
                                 @PathVariable long id, Authentication authentication, ModelMap map) {
         var user = userService.readByEmail(authentication.getName());
@@ -96,7 +96,7 @@ public class VacancyController {
     }
 
     @GetMapping("/employer-profiles/{employer-id}/vacancies/candidate/{candidate-id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("@authRolesService.hasAnyRole(authentication.name, 'ADMIN', 'EMPLOYER')")
     public ModelAndView getAllForSelect(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable("candidate-id") long candidateId, Authentication authentication, ModelMap map) {

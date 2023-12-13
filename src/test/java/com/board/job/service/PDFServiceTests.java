@@ -49,12 +49,12 @@ public class PDFServiceTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         AssertionsForClassTypes.assertThat(pdfService).isNotNull();
     }
 
     @Test
-    public void test_Valid_Create() throws Exception {
+    public void testValidCreate() throws Exception {
         File file = new File("files/pdf/CV_Maksym_Korniev.pdf");
         long candidateId = candidateContactService.create(2L, candidateContact).getId();
 
@@ -70,13 +70,13 @@ public class PDFServiceTests {
     }
 
     @Test
-    public void test_Invalid_Create() {
+    public void testInvalidCreate() {
         assertThrows(DataIntegrityViolationException.class, () -> pdfService.create(2L, null),
                 "Data integrity validation exception will be thrown, because we pass null in method.");
     }
 
     @Test
-    public void test_Valid_ReadById() throws Exception {
+    public void testValidReadById() throws Exception {
         String fileName = "files/pdf/Certificate_Maksym_Korniev.pdf";
         long candidateId = candidateContactService.create(2L, candidateContact).getId();
         PDF_File expected = pdfService.create(candidateId, Files.toByteArray(new File(fileName)));
@@ -90,13 +90,13 @@ public class PDFServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadById() {
+    public void testInvalidReadById() {
         assertThrows(EntityNotFoundException.class, () -> pdfService.readById(0),
                 "Entity not found exception will be thrown because we have no pdf file with id 0.");
     }
 
     @Test
-    public void test_Valid_Update() throws Exception {
+    public void testValidUpdate() throws Exception {
         String newFileName = "files/pdf/CV_Maksym_Korniev.pdf";
         String oldFileName = "files/pdf/Certificate_Maksym_Korniev.pdf";
         long candidateId = candidateContactService.create(2L, candidateContact).getId();
@@ -121,13 +121,13 @@ public class PDFServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update() {
+    public void testInvalidUpdate() {
         assertThrows(EntityNotFoundException.class, () -> pdfService.update(0, new byte[0]),
                 "Entity not found exception will be thrown because we have no pdf file with id 0.");
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         long id = 1L;
 
         pdfService.delete(id);
@@ -137,7 +137,7 @@ public class PDFServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> pdfService.delete(0),
                 "Entity not found exception will be thrown because we have no file with id 0.");
     }

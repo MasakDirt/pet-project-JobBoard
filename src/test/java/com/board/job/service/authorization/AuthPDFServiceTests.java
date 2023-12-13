@@ -21,12 +21,12 @@ public class AuthPDFServiceTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         assertNotNull(authPDFService);
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainPDF() {
+    public void testTrueIsUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainPDF() {
         assertTrue(authPDFService
                         .isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainPDF
                                 (4L, 3L, 3L, "donald@mail.co"),
@@ -35,7 +35,7 @@ public class AuthPDFServiceTests {
     }
 
     @Test
-    public void test_False_isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainPDF() {
+    public void testFalseIsUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainPDF() {
         assertFalse(authPDFService
                         .isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainPDF
                                 (6L, 1L, 1, "admin@mail.co"),

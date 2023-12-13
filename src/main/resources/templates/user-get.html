@@ -65,10 +65,10 @@
         }
 
         .center {
-            margin: 0;
+            margin: 20px;
             position: absolute;
             top: 0;
-            left: 50%;
+            left: 47.5%;
             -ms-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
         }
@@ -115,7 +115,7 @@
             margin-top: 50px;
         }
 
-        .div-top{
+        .div-top {
             margin-top: 14px;
         }
 
@@ -123,10 +123,28 @@
             height: 0;
             position: relative;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        #footer-id {
+            text-align: center;
+            padding: 3px;
+            background-color: #333333;
+            position: absolute;
+            bottom: 0;
+            width: 1875px;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:replace="~{headers/header.html}"></div>
 
     <div th:if="${isAdmin}" class="container-buttons">
@@ -164,22 +182,26 @@
     </div>
 
     <div class="col-sm-offset-2 col-sm-10">
-        <a class="btn btn-purple" th:href="@{|/api/users/${user.id}/update|}">Edit</a>
+        <a th:unless="${isGoogleUser}" class="btn btn-purple" th:href="@{|/api/users/${user.id}/update|}">Edit</a>
         <a class="btn btn-purple" th:href="@{|/api/users/names/${user.id}/update|}">Edit names</a>
         <a class="btn btn-delete" th:href="@{|/api/users/${user.id}/delete|}">Remove</a>
     </div>
 
-    <div class="div-top">
-            <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile == null}"
-               th:href="@{|/api/users/${user.id}/candidate-profiles/create|}">Create candidate profile</a>
-            <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile != null}"
-               th:href="@{|/api/users/${user.id}/candidate-profiles/${user.candidateProfile.id}|}">Continue as Candidate</a>
+    <div class="div-top" th:if="${user.id == ownerId}">
+        <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile == null}"
+           th:href="@{|/api/users/${user.id}/candidate-profiles/create|}">Create candidate profile</a>
+        <a class="btn btn-purple-bigger-left" th:if="${user.candidateProfile != null}"
+           th:href="@{|/api/users/${user.id}/candidate-profiles/${user.candidateProfile.id}|}">Continue as Candidate</a>
 
-            <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile == null}"
-               th:href="@{|/api/users/${user.id}/employer-profiles/create|}">Create employer profile</a>
-            <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile != null}"
-               th:href="@{|/api/users/${user.id}/employer-profiles/${user.employerProfile.id}|}">Continue as Employer</a>
+        <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile == null}"
+           th:href="@{|/api/users/${user.id}/employer-profiles/create|}">Create employer profile</a>
+        <a class="btn btn-purple-bigger-right" th:if="${user.employerProfile != null}"
+           th:href="@{|/api/users/${user.id}/employer-profiles/${user.employerProfile.id}|}">Continue as Employer</a>
     </div>
 </div>
+
+<footer id="footer-id">
+    <div th:replace="~{footer/footer.html}"></div>
+</footer>
 </body>
 </html>

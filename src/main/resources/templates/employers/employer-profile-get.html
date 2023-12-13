@@ -115,10 +115,32 @@
         #file-input, #file-create {
             display: none;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .row {
+            margin-top: 100px;
+        }
+
+        #footer-id {
+            text-align: center;
+            padding: 3px;
+            background-color: #333333;
+            position: relative;
+            bottom: 0;
+            width: 1875px;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:replace="~{headers/header-employer.html}"></div>
 </header>
 <br>
@@ -143,8 +165,8 @@
             <label for="file-input" class="custom-file-upload-label">Edit image</label>
             <br>
             <button type="submit" class="btn btn-upload">Upload</button>
-            <a th:href="|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}
-        /images/${owner.employerProfile.image.id}/delete|" class="btn btn-upload">Remove</a>
+            <a th:href="@{|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}
+        /images/${owner.employerProfile.image.id}/delete|}" class="btn btn-upload">Remove</a>
         </form>
 
 
@@ -226,5 +248,9 @@
         </div>
     </div>
 </form>
+
+<footer id="footer-id">
+    <div th:replace="~{footer/footer.html}"></div>
+</footer>
 </body>
 </html>

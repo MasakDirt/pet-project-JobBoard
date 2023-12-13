@@ -22,12 +22,12 @@ public class AuthImageServiceTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         assertNotNull(authImageService);
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainImage() {
+    public void testTrueIsUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainImage() {
         assertTrue(authImageService
                         .isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainImage
                                 (3L, 2L, 2, "nikole@mail.co"),
@@ -36,7 +36,7 @@ public class AuthImageServiceTests {
     }
 
     @Test
-    public void test_False_isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainImage() {
+    public void testFalseIsUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainImage() {
         assertFalse(authImageService
                         .isUsersSameByIdAndUserOwnerCandidateContactsAndCandidateContactsContainImage
                                 (6L, 1L, 1, "admin@mail.co"),
@@ -54,7 +54,7 @@ public class AuthImageServiceTests {
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage() {
+    public void testTrueIsUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage() {
         assertTrue(authImageService
                         .isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage
                                 (2L, 2L, 5L, "larry@mail.co"),
@@ -63,7 +63,7 @@ public class AuthImageServiceTests {
     }
 
     @Test
-    public void test_False_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage() {
+    public void testFalseIsUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage() {
         assertFalse(authImageService
                         .isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileContainImage
                                 (3L, 3L, 6L, "violet@mail.co"),

@@ -30,13 +30,13 @@ public class CandidateContactControllerTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         assertNotNull(mvc);
     }
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_getCandidateById_ADMIN() throws Exception {
+    public void testGetCandidateByIdADMIN() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
 
@@ -47,7 +47,7 @@ public class CandidateContactControllerTests {
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Valid_getCandidateById_USER() throws Exception {
+    public void testValidGetCandidateByIdUSER() throws Exception {
         long ownerId = 4L;
         long candidateId = 3L;
 
@@ -58,7 +58,7 @@ public class CandidateContactControllerTests {
 
     @Test
     @WithMockUser(username = "helen@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_getCandidateById_USER() throws Exception {
+    public void testForbiddenGetCandidateByIdUSER() throws Exception {
         long ownerId = 1L;
         long candidateId = 1L;
 
@@ -68,14 +68,14 @@ public class CandidateContactControllerTests {
     }
 
     @Test
-    public void test_NotFound_getCandidateById_ADMIN() throws Exception {
+    public void testNotFoundGetCandidateByIdADMIN() throws Exception {
         mvc.perform(get(BASIC_URl + "/{id}", 100L, 10L))
                 .andExpect(status().isFound());
     }
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_getCreateRequest() throws Exception {
+    public void testGetCreateRequest() throws Exception {
         long ownerId = 4L;
         long candidateId = 3L;
 
@@ -86,7 +86,7 @@ public class CandidateContactControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Create() throws Exception {
+    public void testCreate() throws Exception {
         long ownerId = 6L;
 
         mvc.perform(post(BASIC_URl, ownerId)
@@ -104,7 +104,7 @@ public class CandidateContactControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_BadRequest_Create_USER() throws Exception {
+    public void testBadRequestCreateUSER() throws Exception {
         long ownerID = 3L;
         CandidateContactRequest candidateContactRequest = CandidateContactRequest.builder().build();
         candidateContactRequest.setCandidateName("New");
@@ -120,7 +120,7 @@ public class CandidateContactControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_Create_USER() throws Exception {
+    public void testForbiddenCreateUSER() throws Exception {
         long ownerID = 2L;
 
         mvc.perform(post(BASIC_URl, ownerID)
@@ -138,7 +138,7 @@ public class CandidateContactControllerTests {
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Update_USER() throws Exception {
+    public void testUpdateUSER() throws Exception {
         long ownerID = 4L;
         long candidateID = 3L;
 
@@ -157,7 +157,7 @@ public class CandidateContactControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_Update_ADMIN() throws Exception {
+    public void testForbiddenUpdateADMIN() throws Exception {
         long ownerID = 1L;
         long candidateID = 3L;
 
@@ -168,7 +168,7 @@ public class CandidateContactControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Delete_USER() throws Exception {
+    public void testDeleteUSER() throws Exception {
         long ownerID = 3L;
         long candidateID = 2L;
 
@@ -179,7 +179,7 @@ public class CandidateContactControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_Delete_USER() throws Exception {
+    public void testForbiddenDeleteUSER() throws Exception {
         long ownerID = 1L;
         long candidateID = 3L;
 

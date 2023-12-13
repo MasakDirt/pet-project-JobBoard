@@ -39,13 +39,13 @@ public class VacancyTests {
     }
 
     @Test
-    public void test_Valid_Vacancy() {
+    public void testValidVacancy() {
         assertEquals(0, getViolation(vacancy).size());
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_Vacancy_LookingFor(String lookingFor, String error) {
+    public void testInvalidVacancyLookingFor(String lookingFor, String error) {
         vacancy.setLookingFor(lookingFor);
 
         assertEquals(1, getViolation(vacancy).size());
@@ -57,7 +57,7 @@ public class VacancyTests {
     }
 
     @Test
-    public void test_Invalid_Vacancy_Domain() {
+    public void testInvalidVacancyDomain() {
         vacancy.setDomain(null);
 
         assertEquals(1, getViolation(vacancy).size());
@@ -67,7 +67,7 @@ public class VacancyTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_Vacancy_Description(String description, String error) {
+    public void testInvalidVacancyDescription(String description, String error) {
         vacancy.setDetailDescription(description);
 
         assertEquals(1, getViolation(vacancy).size());
@@ -79,7 +79,7 @@ public class VacancyTests {
     }
 
     @Test
-    public void test_Invalid_Vacancy_Category() {
+    public void testInvalidVacancyCategory() {
         vacancy.setCategory(null);
 
         assertEquals(1, getViolation(vacancy).size());
@@ -88,7 +88,7 @@ public class VacancyTests {
     }
 
     @Test
-    public void test_Invalid_Vacancy_WorkMode() {
+    public void testInvalidVacancyWorkMode() {
         vacancy.setWorkMode(null);
 
         assertEquals(1, getViolation(vacancy).size());
@@ -98,7 +98,7 @@ public class VacancyTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_Vacancy_Country(String country, String error) {
+    public void testInvalidVacancyCountry(String country, String error) {
         vacancy.setCountry(country);
 
         assertEquals(1, getViolation(vacancy).size());
@@ -110,7 +110,7 @@ public class VacancyTests {
     }
 
     @Test
-    public void test_Invalid_Vacancy_WorkExperience() {
+    public void testInvalidVacancyWorkExperience() {
         vacancy.setWorkExperience(-0.2);
 
         assertEquals(1, getViolation(vacancy).size());
@@ -121,7 +121,7 @@ public class VacancyTests {
     }
 
     @Test
-    public void test_Invalid_Vacancy_EnglishLevel() {
+    public void testInvalidVacancyEnglishLevel() {
         vacancy.setEnglishLevel(null);
 
         assertEquals(1, getViolation(vacancy).size());

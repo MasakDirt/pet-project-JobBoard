@@ -21,19 +21,19 @@ public class AuthCandidateContactServiceTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         assertNotNull(authCandidateContactService);
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerCandidateContacts() {
+    public void testTrueIsUsersSameByIdAndUserOwnerCandidateContacts() {
         assertTrue(authCandidateContactService
                         .isUsersSameByIdAndUserOwnerCandidateContacts(3L, 2L, "nikole@mail.co"),
                 "Here must be true because user is sames and she owner of candidate contacts.");
     }
 
     @Test
-    public void test_False_isUsersSameByIdAndUserOwnerCandidateContacts() {
+    public void testFalseIsUsersSameByIdAndUserOwnerCandidateContacts() {
         assertFalse(authCandidateContactService
                         .isUsersSameByIdAndUserOwnerCandidateContacts(1L, 3L, "donald@mail.co"),
                 "Here must be false because user is not sames.");
@@ -44,7 +44,7 @@ public class AuthCandidateContactServiceTests {
     }
 
     @Test
-    public void test_True_isUserAdminOrUsersSameByIdAndUserOwnerCandidateContacts() {
+    public void testTrueIsUserAdminOrUsersSameByIdAndUserOwnerCandidateContacts() {
         assertTrue(authCandidateContactService
                         .isUserAdminOrUsersSameByIdAndUserOwnerCandidateContacts(0, 0, "admin@mail.co"),
                 "Here must be true because user is admin.");
@@ -55,7 +55,7 @@ public class AuthCandidateContactServiceTests {
     }
 
     @Test
-    public void test_False_isUserAdminOrUsersSameByIdAndUserOwnerCandidateContacts() {
+    public void testFalseIsUserAdminOrUsersSameByIdAndUserOwnerCandidateContacts() {
         assertFalse(authCandidateContactService
                         .isUserAdminOrUsersSameByIdAndUserOwnerCandidateContacts(1L, 4L, "helen@mail.co"),
                 "Here must be false because user is not sames.");

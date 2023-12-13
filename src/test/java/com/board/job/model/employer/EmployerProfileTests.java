@@ -32,13 +32,13 @@ public class EmployerProfileTests {
     }
 
     @Test
-    public void test_Valid_EmployerProfile() {
+    public void testValidEmployerProfile() {
         assertEquals(0, getViolation(employerProfile).size());
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_EmployerProfile_EmployerName(String name, String error) {
+    public void testInvalidEmployerProfileEmployerName(String name, String error) {
         employerProfile.setEmployerName(name);
 
         assertEquals(1, getViolation(employerProfile).size());
@@ -51,7 +51,7 @@ public class EmployerProfileTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_EmployerProfile_PositionInCompany(String position, String error) {
+    public void testInvalidEmployerProfilePositionInCompany(String position, String error) {
         employerProfile.setPositionInCompany(position);
 
         assertEquals(1, getViolation(employerProfile).size());
@@ -64,7 +64,7 @@ public class EmployerProfileTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_EmployerProfile_CompanyName(String company, String error) {
+    public void testInvalidEmployerProfileCompanyName(String company, String error) {
         employerProfile.setCompanyName(company);
 
         assertEquals(1, getViolation(employerProfile).size());
@@ -77,7 +77,7 @@ public class EmployerProfileTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForTelegram")
-    public void test_Invalid_EmployerProfile_Telegram(String telegram, String error) {
+    public void testInvalidEmployerProfileTelegram(String telegram, String error) {
         employerProfile.setTelegram(telegram);
 
         assertEquals(1, getViolation(employerProfile).size());
@@ -90,7 +90,7 @@ public class EmployerProfileTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_EmployerProfile_Phone(String phone, String error) {
+    public void testInvalidEmployerProfilePhone(String phone, String error) {
         employerProfile.setPhone(phone);
 
         assertEquals(1, getViolation(employerProfile).size());
@@ -103,7 +103,7 @@ public class EmployerProfileTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForLinkedIn")
-    public void test_Invalid_EmployerProfile_LinkedIn(String linkedIn, String error) {
+    public void testInvalidEmployerProfileLinkedIn(String linkedIn, String error) {
         employerProfile.setLinkedInProfile(linkedIn);
 
         assertEquals(1, getViolation(employerProfile).size());

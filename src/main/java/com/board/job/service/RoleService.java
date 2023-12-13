@@ -53,4 +53,8 @@ public class RoleService {
     public List<Role> getAllByUserId(long id) {
         return roleRepository.findAllByUsersId(id);
     }
+
+    public List<Role> getAllByEmail(String email) {
+        return roleRepository.findAllByUsersEmail(email);
+    }
 }

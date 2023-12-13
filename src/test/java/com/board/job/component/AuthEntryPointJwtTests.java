@@ -23,12 +23,12 @@ public class AuthEntryPointJwtTests {
     }
 
     @Test
-    public void test_Injected_MockMvc() {
+    public void testInjectedMockMvc() {
         assertNotNull(mvc);
     }
 
     @Test
-    public void test_UnauthorizedError_Commence() throws Exception {
+    public void testUnauthorizedErrorCommence() throws Exception {
         mvc.perform(MockMvcRequestBuilders
                         .get("/unauthorized")
                 )

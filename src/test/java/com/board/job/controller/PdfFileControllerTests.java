@@ -33,13 +33,13 @@ public class PdfFileControllerTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertNotNull(mvc);
     }
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetById_Admin() throws Exception {
+    public void testGetByIdAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 3L;
         long id = 3L;
@@ -52,7 +52,7 @@ public class PdfFileControllerTests {
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_GetById_Candidate() throws Exception {
+    public void testGetByIdCandidate() throws Exception {
         long ownerId = 4L;
         long candidateId = 1L;
         long id = 1L;
@@ -65,7 +65,7 @@ public class PdfFileControllerTests {
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_NotFound_GetById_Candidate() throws Exception {
+    public void testNotFoundGetByIdCandidate() throws Exception {
         long ownerId = 4L;
         long candidateId = 1L;
         long id = 1000L;
@@ -77,7 +77,7 @@ public class PdfFileControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_Create_Admin() throws Exception {
+    public void testForbiddenCreateAdmin() throws Exception {
         long userId = 1L;
         long candidateId = 3L;
 
@@ -99,7 +99,7 @@ public class PdfFileControllerTests {
 
     @Test
     @WithMockUser(username = "helen@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Update_User() throws Exception {
+    public void testUpdateUser() throws Exception {
         long userId = 5L;
         long candidateId = 4L;
         long pdfId = 4L;
@@ -122,7 +122,7 @@ public class PdfFileControllerTests {
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_Update_Candidate() throws Exception {
+    public void testForbiddenUpdateCandidate() throws Exception {
         long userId = 4L;
         long candidateId = 3L;
         long id = 2L;
@@ -146,7 +146,7 @@ public class PdfFileControllerTests {
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Delete_Candidate() throws Exception {
+    public void testDeleteCandidate() throws Exception {
         long userId = 4L;
         long candidateId = 3L;
         long id = 3L;
@@ -158,7 +158,7 @@ public class PdfFileControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_Delete_Admin() throws Exception {
+    public void testForbiddenDeleteAdmin() throws Exception {
         long userId = 1L;
         long candidateId = 1L;
         long id = 2L;

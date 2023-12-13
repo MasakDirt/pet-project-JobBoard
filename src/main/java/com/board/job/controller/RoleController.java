@@ -25,7 +25,7 @@ import static com.board.job.controller.ControllerHelper.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/roles")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("@authRolesService.hasRole(authentication.name, 'ADMIN')")
 public class RoleController {
     private final RoleService roleService;
     private final RoleMapper mapper;
@@ -38,6 +38,7 @@ public class RoleController {
                 .map(mapper::getRoleResponseFromRole)
                 .collect(Collectors.toSet());
         log.info("=== GET-ROLES === {} === {}", getAuthorities(authentication), authentication.getName());
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
         map.addAttribute("roles", roles);
 
         return new ModelAndView("roles-list", map);
@@ -53,6 +54,7 @@ public class RoleController {
         log.info("=== GET-USER-ROLES === {} === {}", getAuthorities(authentication), authentication.getName());
         map.addAttribute("roles", roles);
         map.addAttribute("userId", userId);
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
         map.addAttribute("userName", userService.readById(userId).getName());
 
         return new ModelAndView("user-roles-get", map);
@@ -61,13 +63,15 @@ public class RoleController {
     @GetMapping("/{id}")
     public ModelAndView getRole(@PathVariable long id, Authentication authentication, ModelMap map) {
         map.addAttribute("role", mapper.getRoleResponseFromRole(roleService.readById(id)));
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
         log.info("=== GET-ROLE-ID === {} === {}", getAuthorities(authentication), authentication.getName());
         return new ModelAndView("role-get", map);
     }
 
     @GetMapping("/create")
-    public ModelAndView createRequest(ModelMap map) {
+    public ModelAndView createRequest(ModelMap map, Authentication authentication) {
         map.addAttribute("roleRequest", new RoleRequest());
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
 
         return new ModelAndView("role-create", map);
     }
@@ -84,10 +88,11 @@ public class RoleController {
     }
 
     @GetMapping("/user/{user-id}/add-role")
-    public ModelAndView addUserRoleRequest(@PathVariable(value = "user-id") long userId, ModelMap map) {
+    public ModelAndView addUserRoleRequest(@PathVariable(value = "user-id") long userId, ModelMap map, Authentication authentication) {
         map.addAttribute("userId", userId);
         map.addAttribute("roleRequest", new RoleRequest());
         map.addAttribute("roles", roleService.getAll().stream().map(Role::getName));
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
 
         return new ModelAndView("role-user-add", map);
     }
@@ -103,9 +108,10 @@ public class RoleController {
     }
 
     @GetMapping("/{id}/update")
-    public ModelAndView updateRequest(@PathVariable long id, ModelMap map) {
+    public ModelAndView updateRequest(@PathVariable long id, ModelMap map, Authentication authentication) {
         map.addAttribute("id", id);
         map.addAttribute("roleRequest", new RoleRequest());
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
 
         return new ModelAndView("role-update", map);
     }

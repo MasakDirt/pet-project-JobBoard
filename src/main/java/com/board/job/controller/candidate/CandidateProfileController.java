@@ -34,10 +34,10 @@ public class CandidateProfileController {
     private final CandidateProfileService candidateProfileService;
 
     @GetMapping("/api/users/{owner-id}/candidate-profiles")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("@authRolesService.hasAnyRole(authentication.name, 'ADMIN', 'EMPLOYER')")
     public ModelAndView getSortedCandidates(
             @RequestParam(name = "sort_by", defaultValue = "id") String[] sortBy,
-            @RequestParam(name = "sort_order", defaultValue = "asc") String sortedOrder,
+            @RequestParam(name = "sort_order", defaultValue = "desc") String sortedOrder,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "searchText", required = false, defaultValue = "") String searchText,
             Authentication authentication, ModelMap map) {
@@ -69,7 +69,7 @@ public class CandidateProfileController {
     }
 
     @GetMapping("/api/users/{owner-id}/employer/{employer-id}/candidate-profiles/{candidate-id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("@authRolesService.hasAnyRole(authentication.name, 'ADMIN', 'EMPLOYER')")
     public ModelAndView getCandidateByEmployer(@PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
                                                @PathVariable("candidate-id") long candidateId, Authentication authentication,
                                                ModelMap map) {
@@ -82,8 +82,8 @@ public class CandidateProfileController {
 
     private void addingMapAttributesToGetForm(long ownerId, long candidateId, ModelMap map) {
         map.addAttribute("owner", userService.readById(ownerId));
-        map.addAttribute("candidateProfileRequest", mapper.
-                getCandidateProfileRequestFromCandidateProfile(candidateProfileService.readById(candidateId)));
+        map.addAttribute("candidateProfileResponse", mapper.
+                getCandidateProfileResponseFromCandidateProfile(candidateProfileService.readById(candidateId)));
         map.addAttribute("categories", Arrays.stream(Category.values()).map(Category::getValue));
         map.addAttribute("eng_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));
         map.addAttribute("ukr_levels", Arrays.stream(LanguageLevel.values()).map(LanguageLevel::getValue));

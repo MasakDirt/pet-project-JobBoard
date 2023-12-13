@@ -31,8 +31,6 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 
-import static java.lang.Integer.*;
-
 @Slf4j
 @AllArgsConstructor
 @SpringBootApplication

@@ -31,13 +31,13 @@ public class FeedbackServiceTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         AssertionsForClassTypes.assertThat(feedbackService).isNotNull();
         AssertionsForClassTypes.assertThat(feedbackRepository).isNotNull();
     }
 
     @Test
-    public void test_Valid_Create() {
+    public void testValidCreate() {
         long ownerId = 1L;
         long messengerId = 2L;
         String text = "text";
@@ -60,7 +60,7 @@ public class FeedbackServiceTests {
     }
 
     @Test
-    public void test_Valid_ReadById() {
+    public void testValidReadById() {
         Feedback expected = feedbackService.create(2L, 3L, "Feedback");
 
         Feedback actual = feedbackService.readById(expected.getId());
@@ -69,13 +69,13 @@ public class FeedbackServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadById() {
+    public void testInvalidReadById() {
         assertThrows(EntityNotFoundException.class, () -> feedbackService.readById(""),
                 "Entity not found exception will be thrown, because we have not feedback with empty id");
     }
 
     @Test
-    public void test_Valid_Update() {
+    public void testValidUpdate() {
         String oldText = "Old text";
         String newText = "New text";
 
@@ -94,13 +94,13 @@ public class FeedbackServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update() {
+    public void testInvalidUpdate() {
         assertThrows(EntityNotFoundException.class, () -> feedbackService.update("", "text"),
                 "Entity not found exception will be thrown, because we have not feedback with empty id");
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         Feedback delete = feedbackService.create(3L, 1L, "Text");
 
         feedbackService.delete(delete.getId());
@@ -110,13 +110,13 @@ public class FeedbackServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> feedbackService.delete(""),
                 "Entity not found exception will be thrown, because we have not feedback with empty id");
     }
 
     @Test
-    public void test_Valid_getAllMessengerFeedbacks() {
+    public void testValidGetAllMessengerFeedbacks() {
         long messengerId = 3L;
         List<Feedback> expected = feedbackRepository.findAll()
                 .stream()

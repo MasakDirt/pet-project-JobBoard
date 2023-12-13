@@ -28,13 +28,13 @@ public class UserTests {
     }
 
     @Test
-    public void test_Valid_User() {
+    public void testValidUser() {
         assertEquals(0, getViolation(user).size());
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForNames")
-    public void test_Invalid_FirstName(String firstName, String error) {
+    public void testInvalidFirstName(String firstName, String error) {
         user.setFirstName(firstName);
 
         assertEquals(1, getViolation(user).size());
@@ -47,7 +47,7 @@ public class UserTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForNames")
-    public void test_Invalid_LastName(String lastName, String error) {
+    public void testInvalidLastName(String lastName, String error) {
         user.setLastName(lastName);
 
         assertEquals(1, getViolation(user).size());
@@ -59,7 +59,7 @@ public class UserTests {
     }
 
     @Test
-    public void test_Invalid_FirstName_Null() {
+    public void testInvalidFirstNameNull() {
         user.setFirstName(null);
 
         assertEquals(1, getViolation(user).size());
@@ -70,7 +70,7 @@ public class UserTests {
     }
 
     @Test
-    public void test_Invalid_LastName_Null() {
+    public void testInvalidLastNameNull() {
         user.setLastName(null);
 
         assertEquals(1, getViolation(user).size());
@@ -82,7 +82,7 @@ public class UserTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForEmail")
-    public void test_Invalid_Email(String email, String error) {
+    public void testInvalidEmail(String email, String error) {
         user.setEmail(email);
 
         assertEquals(1, getViolation(user).size());
@@ -95,7 +95,7 @@ public class UserTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForPassword")
-    public void test_Invalid_Password(String password, String error) {
+    public void testInvalidPassword(String password, String error) {
         user.setPassword(password);
 
         assertEquals(1, getViolation(user).size());

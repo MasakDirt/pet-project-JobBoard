@@ -31,13 +31,13 @@ public class VacancyControllerTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertNotNull(mvc);
     }
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetVacancies_Admin() throws Exception {
+    public void testGetVacanciesAdmin() throws Exception {
         long ownerId = 4L;
 
         mvc.perform(get(BASIC_URL + "/vacancies", ownerId)
@@ -54,7 +54,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_GetVacancies_Candidate() throws Exception {
+    public void testGetVacanciesCandidate() throws Exception {
         long ownerId = 3L;
 
         mvc.perform(get(BASIC_URL + "/vacancies", ownerId)
@@ -71,7 +71,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_GetAll_Employer() throws Exception {
+    public void testForbiddenGetAllEmployer() throws Exception {
         long ownerId = 2L;
         mvc.perform(get(BASIC_URL + "/vacancies", ownerId)
                         .param("sort_by", "postedAt")
@@ -85,7 +85,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_getById_Admin() throws Exception {
+    public void testGetByIdAdmin() throws Exception {
         long ownerId = 1L;
         long id = 1L;
 
@@ -98,7 +98,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "helen@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_getById_Candidate() throws Exception {
+    public void testGetByIdCandidate() throws Exception {
         long ownerId = 5L;
         long id = 3L;
 
@@ -111,7 +111,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_NotFound_getById_Admin() throws Exception {
+    public void testNotFoundGetByIdAdmin() throws Exception {
         long ownerId = 1L;
         long id = 10000000L;
 
@@ -123,7 +123,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_getAllEmployerVacancies_Admin() throws Exception {
+    public void testGetAllEmployerVacanciesAdmin() throws Exception {
         long ownerId = 1L;
         long employerId = 2L;
 
@@ -135,7 +135,7 @@ public class VacancyControllerTests {
     }
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_getAllForSelect_Employer() throws Exception {
+    public void testGetAllForSelectEmployer() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
         long candidateId = 2L;
@@ -149,7 +149,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_getEmployerVacancy_Admin() throws Exception {
+    public void testGetEmployerVacancyAdmin() throws Exception {
         long ownerId = 1L;
         long employerId = 2L;
         long id = 3L;
@@ -163,7 +163,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_getEmployerVacancy_Employer() throws Exception {
+    public void testForbiddenGetEmployerVacancyEmployer() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
         long id = 1L;
@@ -177,7 +177,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_NotFound_getByEmployerVacancy_Employer() throws Exception {
+    public void testNotFoundGetByEmployerVacancyEmployer() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
         long id = 10000000L;
@@ -191,7 +191,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_getCreateForm() throws Exception {
+    public void testGetCreateForm() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
 
@@ -204,7 +204,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Create_Admin() throws Exception {
+    public void testCreateAdmin() throws Exception {
         long ownerId = 1L;
         long employerId = 1L;
 
@@ -227,7 +227,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_BadRequest_Create_Employer() throws Exception {
+    public void testBadRequestCreateEmployer() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
 
@@ -244,7 +244,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "helen@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_Create_Candidate() throws Exception {
+    public void testForbiddenCreateCandidate() throws Exception {
         long ownerId = 5L;
         long employerId = 3L;
 
@@ -267,7 +267,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Update_Employer() throws Exception {
+    public void testUpdateEmployer() throws Exception {
         long ownerID = 6L;
         long employerId = 3L;
         long id = 6L;
@@ -292,7 +292,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_Update_ADMIN() throws Exception {
+    public void testForbiddenUpdateADMIN() throws Exception {
         long ownerID = 1L;
         long employerId = 1L;
         long id = 4L;
@@ -316,7 +316,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_BadRequest_Update_Employer() throws Exception {
+    public void testBadRequestUpdateEmployer() throws Exception {
         long ownerId = 6L;
         long employerId = 3L;
         long id = 8L;
@@ -337,7 +337,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Delete_Employer() throws Exception {
+    public void testDeleteEmployer() throws Exception {
         long ownerID = 6L;
         long employerId = 3L;
         long id = 7L;
@@ -349,7 +349,7 @@ public class VacancyControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_Delete_Admin() throws Exception {
+    public void testForbiddenDeleteAdmin() throws Exception {
         long ownerID = 1L;
         long candidateID = 1L;
         long id = 5L;

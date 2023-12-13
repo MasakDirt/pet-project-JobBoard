@@ -9,8 +9,8 @@
             font-size: 18px;
             padding: 5px 30px;
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 30px;
+            left: 112px;
         }
 
         .btn-header-logout{
@@ -33,9 +33,18 @@
             background-color: #1b2526;
             color: #6a1e9b;
         }
+
+        .logo {
+            width: 110px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
     </style>
 </head>
 <body>
+<a th:href="@{|/api/users/${ownerId}|}"><img class="logo" th:src="@{|/api/users/0/images/logo|}" alt="Logo"></a>
 <button class="btn btn-header-back" th:onclick="window.history.back()">⬅️Back</button>
 <a class="btn btn-header-logout" th:href="@{/logout}">Logout</a>
 </body>

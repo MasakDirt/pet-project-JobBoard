@@ -50,7 +50,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_getNoImage() throws Exception {
+    public void testGetNoImage() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long imageId = 2L;
@@ -62,7 +62,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_getNoImageHeader() throws Exception {
+    public void testGetNoImageHeader() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long imageId = 2L;
@@ -74,7 +74,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_getByIdCandidateContactsImage_Candidate() throws Exception {
+    public void testGetByIdCandidateContactsImageCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long imageId = 2L;
@@ -87,7 +87,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_getByIdCandidateContactsImage_Admin() throws Exception {
+    public void testForbiddenGetByIdCandidateContactsImageAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 2L;
         long imageId = 1L;
@@ -99,7 +99,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_NotFound_getByIdCandidateContactsImage_Candidate() throws Exception {
+    public void testNotFoundGetByIdCandidateContactsImageCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long imageId = 0L;
@@ -112,7 +112,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_getByIdCandidateContactsImageHeader_Candidate() throws Exception {
+    public void testGetByIdCandidateContactsImageHeaderCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long imageId = 2L;
@@ -125,7 +125,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_getByIdCandidateContactsImageHeader_Admin() throws Exception {
+    public void testForbiddenGetByIdCandidateContactsImageHeaderAdmin() throws Exception {
         long ownerId = 1L;
         long candidateId = 2L;
         long imageId = 1L;
@@ -137,7 +137,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_NotFound_getByIdCandidateContactsImageHeader_Candidate() throws Exception {
+    public void testNotFoundGetByIdCandidateContactsImageHeaderCandidate() throws Exception {
         long ownerId = 3L;
         long candidateId = 2L;
         long imageId = 0L;
@@ -150,7 +150,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_getByIdEmployerProfileImage_Admin() throws Exception {
+    public void testGetByIdEmployerProfileImageAdmin() throws Exception {
         long ownerId = 1L;
         long employerId = 1L;
         long imageId = 1L;
@@ -162,7 +162,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_NotFound_getByIdEmployerProfileImage_Employer() throws Exception {
+    public void testNotFoundGetByIdEmployerProfileImageEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long imageId = 0L;
@@ -174,7 +174,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_getByIdEmployerProfileImageHeader_Admin() throws Exception {
+    public void testGetByIdEmployerProfileImageHeaderAdmin() throws Exception {
         long ownerId = 1L;
         long employerId = 1L;
         long imageId = 1L;
@@ -186,7 +186,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_NotFound_getByIdEmployerProfileImageHeader_Employer() throws Exception {
+    public void testNotFoundGetByIdEmployerProfileImageHeaderEmployer() throws Exception {
         long ownerId = 2L;
         long employerId = 2L;
         long imageId = 0L;
@@ -198,7 +198,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_AddCandidatePhoto_Admin() throws Exception {
+    public void testForbiddenAddCandidatePhotoAdmin() throws Exception {
         long userId = 1L;
         long candidateId = 3L;
 
@@ -220,7 +220,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_AddEmployerPhoto_Admin() throws Exception {
+    public void testAddEmployerPhotoAdmin() throws Exception {
         User user = userService.readByEmail("admin@mail.co");
         long employerId = user.getCandidateContact().getId();
 
@@ -241,7 +241,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_AddEmployerPhoto_Admin() throws Exception {
+    public void testForbiddenAddEmployerPhotoAdmin() throws Exception {
         long userId = 1L;
         long employerId = 3L;
 
@@ -263,7 +263,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_UpdateCandidatePhoto_Candidate() throws Exception {
+    public void testForbiddenUpdateCandidatePhotoCandidate() throws Exception {
         long userId = 3L;
         long candidateId = 2L;
         long id = 3L;
@@ -286,7 +286,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_UpdateEmployerPhoto_Employer() throws Exception {
+    public void testForbiddenUpdateEmployerPhotoEmployer() throws Exception {
         long userId = 2L;
         long employerID = 2L;
         long id = 3L;
@@ -309,7 +309,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_DeleteCandidatePhoto_Candidate() throws Exception {
+    public void testDeleteCandidatePhotoCandidate() throws Exception {
         long userId = 3L;
         long candidateId = 2L;
         long id = 2L;
@@ -322,7 +322,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"USER", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_DeleteCandidatePhoto_Admin() throws Exception {
+    public void testForbiddenDeleteCandidatePhotoAdmin() throws Exception {
         long userId = 1L;
         long candidateId = 1L;
         long id = 2L;
@@ -334,7 +334,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_DeleteEmployerPhoto_Employer() throws Exception {
+    public void testDeleteEmployerPhotoEmployer() throws Exception {
         long userId = 2L;
         long employerId = 2L;
         long id = 5L;
@@ -347,7 +347,7 @@ public class ImageControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_DeleteEmployerPhoto_Employer() throws Exception {
+    public void testForbiddenDeleteEmployerPhotoEmployer() throws Exception {
         long userId = 2L;
         long candidateId = 2L;
         long id = 1L;

@@ -20,7 +20,7 @@ public class EmployerCompanyTests {
     }
 
     @Test
-    public void test_Valid_EmployerCompany() {
+    public void testValidEmployerCompany() {
         Assertions.assertEquals(0, HelperForTests.getViolation(employerCompany).size());
     }
 }

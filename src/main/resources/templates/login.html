@@ -13,6 +13,13 @@
             font-weight: bold;
         }
 
+        .btn-google {
+            background-color: #fff;
+            border-color: #fff;
+            color: #007bff;
+            font-weight: bold;
+        }
+
         .btn-clear {
             background-color: #fff;
             border-color: #fff;
@@ -23,6 +30,11 @@
         .btn-purple:hover {
             background-color: #6a1e9b;
             border-color: #6a1e9b;
+        }
+
+        .btn-google:hover {
+            background-color: #394650;
+            border-color: #394650;
         }
 
         body {
@@ -42,12 +54,38 @@
             font-size: 3rem;
             margin-bottom: 20px;
         }
+
+        .logo {
+            width: 110px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
     </style>
 </head>
 <body>
+<header id="header-id">
+    <img class="logo" th:src="@{|/api/users/0/images/logo|}" alt="Logo">
+</header>
+
 <div class="col-md-offset-2 col-sm-8">
-    <h1>LogIn</h1>
+    <h1>Please Login</h1>
 </div>
+
+<div>
+    <button class="btn btn-google"><a th:href="@{/oauth2/authorization/google}">Login with Google</a></button>
+</div>
+<div><p>OR</p></div>
 <form class="form-horizontal" th:action="@{/api/auth/login}" th:method="post">
     <div class="container">
         <div class="form-group">
@@ -62,7 +100,7 @@
             <label class="col-sm-2 control-label" for="password">Password:</label>
             <div class="col-sm-10">
                 <input type="password" name="password" class="form-control" th:field="${loginRequest.password}"
-                       th:required id="password"  placeholder="Maks Korniev"/>
+                       th:required id="password"  placeholder="yourPASSWith12345"/>
             </div>
         </div>
 

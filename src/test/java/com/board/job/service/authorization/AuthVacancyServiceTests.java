@@ -22,12 +22,12 @@ public class AuthVacancyServiceTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         assertNotNull(authVacancyService);
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy() {
+    public void testTrueIsUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy() {
         assertTrue(authVacancyService
                         .isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy
                                 (2L, 2L, 4L),
@@ -36,7 +36,7 @@ public class AuthVacancyServiceTests {
     }
 
     @Test
-    public void test_False_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy() {
+    public void testFalseIsUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy() {
         assertFalse(authVacancyService
                         .isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerProfileOwnerOfVacancy
                                 (6L, 1L, 1),
@@ -54,7 +54,7 @@ public class AuthVacancyServiceTests {
     }
 
     @Test
-    public void test_True_isUsersSameAndEmployerProfileOwnerOfVacancy() {
+    public void testTrueIsUsersSameAndEmployerProfileOwnerOfVacancy() {
         assertTrue(authVacancyService
                         .isUsersSameAndEmployerProfileOwnerOfVacancy
                                 (1L, 1L, 1L, "admin@mail.co"),
@@ -63,7 +63,7 @@ public class AuthVacancyServiceTests {
     }
 
     @Test
-    public void test_False_isUsersSameAndEmployerProfileOwnerOfVacancy() {
+    public void testFalseIsUsersSameAndEmployerProfileOwnerOfVacancy() {
         assertFalse(authVacancyService
                         .isUsersSameAndEmployerProfileOwnerOfVacancy
                                 (6L, 1L, 1, "admin@mail.co"),

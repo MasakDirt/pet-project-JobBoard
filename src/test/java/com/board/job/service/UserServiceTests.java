@@ -18,9 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,13 +44,13 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         AssertionsForClassTypes.assertThat(userService).isNotNull();
         AssertionsForClassTypes.assertThat(users).isNotNull();
     }
 
     @Test
-    public void test_GetAll() {
+    public void testGetAll() {
         assertFalse(userService.getAll().isEmpty(),
                 "All users list must be not empty.");
         assertEquals(users, userService.getAll(),
@@ -60,7 +58,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Valid_Create() {
+    public void testValidCreate() {
         User expected = new User();
         Role role = roleService.readById(3L);
 
@@ -81,7 +79,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_Create() {
+    public void testInvalidCreate() {
         Role role = roleService.readById(2L);
 
         assertAll(
@@ -94,7 +92,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Valid_ReadById() {
+    public void testValidReadById() {
         User expected = new User();
         expected.setFirstName("First");
         expected.setLastName("Last");
@@ -110,13 +108,13 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadById() {
+    public void testInvalidReadById() {
         assertThrows(EntityNotFoundException.class, () -> userService.readById(0),
                 "We have no user with id 0, so entity not found exception will be thrown.");
     }
 
     @Test
-    public void test_Valid_ReadByEmail() {
+    public void testValidReadByEmail() {
         String email = "readed@mail.co";
 
         User expected = new User();
@@ -134,13 +132,13 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadByName() {
+    public void testInvalidReadByName() {
         assertThrows(EntityNotFoundException.class, () -> userService.readByEmail(""),
                 "Entity not found exception will be thrown because we have no user with empty email.");
     }
 
     @Test
-    public void test_Valid_Update_User() {
+    public void testValidUpdateUser() {
         String firstName = "New";
         User unexpected = userService.readById(1L);
         String oldFirstName = unexpected.getFirstName();
@@ -163,7 +161,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update_User() {
+    public void testInvalidUpdateUser() {
         assertThrows(NullPointerException.class, () -> userService.update(null),
                 "Null pointer exception will be thrown because we pass null user value to method.");
 
@@ -172,7 +170,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Valid_Update() {
+    public void testValidUpdate() {
         String lastName = "New";
         User unexpected = userService.readById(2L);
         String oldFirstName = unexpected.getFirstName();
@@ -195,7 +193,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update() {
+    public void testInvalidUpdate() {
         long id = 5L;
         User user = userService.readById(id);
         assertThrows(ResponseStatusException.class, () -> userService.update(id, null, ""),
@@ -209,7 +207,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         long id = 4L;
 
         userService.delete(id);
@@ -222,13 +220,13 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> userService.delete(0),
                 "Entity not found exception will be thrown because we have no this user.");
     }
 
     @Test
-    public void test_Valid_UpdateUserRolesAndGetUser() {
+    public void testValidUpdateUserRolesAndGetUser() {
         String roleName = "USER";
 
         User unexpected = new User();
@@ -248,7 +246,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_UpdateUserRolesAndGetUser() {
+    public void testInvalidUpdateUserRolesAndGetUser() {
         User user = userService.readById(2L);
         String role = "USER";
 
@@ -263,7 +261,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Valid_GetEmployerData() {
+    public void testValidGetEmployerData() {
         long id = 1L;
         User user = userService.readById(id);
         Pair<EmployerCompany, EmployerProfile> expected = Pair.create(user.getEmployerCompany(), user.getEmployerProfile());
@@ -275,7 +273,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_GetEmployerData() {
+    public void testInvalidGetEmployerData() {
         assertThrows(UserIsNotEmployer.class, () -> userService.getEmployerData(5L),
                 "User have no employer profile or company so here must be exception.");
         assertThrows(EntityNotFoundException.class, () -> userService.getEmployerData(0),
@@ -283,7 +281,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Valid_GetAllByRoleName() {
+    public void testValidGetAllByRoleName() {
         String name = "USER";
 
         List<User> expected = userService.getAll()
@@ -305,13 +303,13 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_GetAllByRolesName() {
+    public void testInvalidGetAllByRolesName() {
         assertTrue(userService.getAllByRoleName("").isEmpty(),
                 "We have no user with role name '', so here must be empty list!");
     }
 
     @Test
-    public void test_Valid_GetAllByFirstName() {
+    public void testValidGetAllByFirstName() {
         String firstname = "Nikole";
 
         List<User> expected = userService.getAll()
@@ -330,13 +328,13 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_GetAllByFirstName() {
+    public void testInvalidGetAllByFirstName() {
         assertTrue(userService.getAllByFirstName("").isEmpty(),
                 "We have no user with first name '', so here must be empty list!");
     }
 
     @Test
-    public void test_Valid_GetAllByLastName() {
+    public void testValidGetAllByLastName() {
         String lastname = "Jackson";
 
         List<User> expected = userService.getAll()
@@ -355,13 +353,13 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_GetAllByLastName() {
+    public void testInvalidGetAllByLastName() {
         assertTrue(userService.getAllByLastName("").isEmpty(),
                 "We have no user with last name '', so here must be empty list!");
     }
 
     @Test
-    public void test_Valid_GetAllByFirstNameAndLastName() {
+    public void testValidGetAllByFirstNameAndLastName() {
         String firstname = "Nikole";
         String lastname = "Jackson";
 
@@ -382,7 +380,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void test_Invalid_GetAllByFirstNameAndLastName() {
+    public void testInvalidGetAllByFirstNameAndLastName() {
         assertTrue(userService.getAllByFirstNameAndLastName("", "").isEmpty(),
                 "We have no user with first and last blank names, so here must be empty list!");
 

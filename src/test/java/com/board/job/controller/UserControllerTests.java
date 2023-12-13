@@ -36,7 +36,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetAll_ADMIN() throws Exception {
+    public void testGetAllADMIN() throws Exception {
         mvc.perform(get(BASIC_URl))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("users"))
@@ -45,7 +45,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_GetAll_USER() throws Exception {
+    public void testForbiddenGetAllUSER() throws Exception {
         mvc.perform(get(BASIC_URl))
                 .andExpect(getErrorView())
                 .andExpect(getErrorAttributes());
@@ -53,18 +53,18 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetById_ADMIN() throws Exception {
+    public void testGetByIdADMIN() throws Exception {
         long id = 4L;
 
         mvc.perform(get(BASIC_URl + "/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("user", "isAdmin"))
+                .andExpect(model().attributeExists("user", "isAdmin", "isGoogleUser"))
                 .andExpect(view().name("user-get"));
     }
 
     @Test
     @WithMockUser(username = "helen@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_GetById_USER() throws Exception {
+    public void testGetByIdUSER() throws Exception {
         long id = 5L;
 
         mvc.perform(get(BASIC_URl + "/{id}", id))
@@ -75,7 +75,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_GetById_USER() throws Exception {
+    public void testForbiddenGetByIdUSER() throws Exception {
         mvc.perform(get(BASIC_URl + "/{id}", 1L))
                 .andExpect(getErrorView())
                 .andExpect(getErrorAttributes());
@@ -83,7 +83,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_NotFound_GetById_ADMIN() throws Exception {
+    public void testNotFoundGetByIdADMIN() throws Exception {
         mvc.perform(get(BASIC_URl + "/{id}", 10L))
                 .andExpect(getErrorView())
                 .andExpect(getErrorAttributes());
@@ -91,7 +91,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetByEmail_ADMIN() throws Exception {
+    public void testGetByEmailADMIN() throws Exception {
         String email = "helen@mail.co";
 
         mvc.perform(get(BASIC_URl + "/email")
@@ -103,7 +103,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_GetByEmail_USER() throws Exception {
+    public void testGetByEmailUSER() throws Exception {
         String email = "larry@mail.co";
 
         mvc.perform(get(BASIC_URl + "/email")
@@ -114,7 +114,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_GetByEmail_USER() throws Exception {
+    public void testForbiddenGetByEmailUSER() throws Exception {
         mvc.perform(get(BASIC_URl + "/email")
                         .param("email", "admin@mail.co")
                 )
@@ -124,7 +124,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_NotFound_GetByEmail_ADMIN() throws Exception {
+    public void testNotFoundGetByEmailADMIN() throws Exception {
         mvc.perform(get(BASIC_URl + "/email")
                         .param("email", "notfound@mail.co")
                 )
@@ -134,7 +134,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetCreateRequest_Admin() throws Exception {
+    public void testGetCreateRequestAdmin() throws Exception {
         String email = "larry@mail.co";
 
         mvc.perform(get(BASIC_URl + "/create-admin")
@@ -145,7 +145,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Create_ADMIN() throws Exception {
+    public void testCreateADMIN() throws Exception {
         mvc.perform(post(BASIC_URl)
                         .param("firstName", "Created")
                         .param("lastName", "Last")
@@ -158,7 +158,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "donald@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_Create_USER() throws Exception {
+    public void testForbiddenCreateUSER() throws Exception {
         mvc.perform(post(BASIC_URl)
                         .param("firstName", "Forbidden")
                         .param("lastName", "Last")
@@ -172,7 +172,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetUpdateRequest_Admin() throws Exception {
+    public void testGetUpdateRequestAdmin() throws Exception {
         mvc.perform(get(BASIC_URl + "/{id}/update", 1L))
                 .andExpect(model().attributeExists("id", "updateRequest"))
                 .andExpect(view().name("user-update"));
@@ -180,7 +180,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "helen@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Update_USER() throws Exception {
+    public void testUpdateUSER() throws Exception {
         long id = 5L;
 
         mvc.perform(post(BASIC_URl + "/{id}/update", id)
@@ -195,7 +195,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_Update_ADMIN() throws Exception {
+    public void testForbiddenUpdateADMIN() throws Exception {
         long id = 6L;
 
         mvc.perform(post(BASIC_URl + "/{id}/update", id)
@@ -210,7 +210,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetUpdateNamesRequest_Admin() throws Exception {
+    public void testGetUpdateNamesRequestAdmin() throws Exception {
         mvc.perform(get(BASIC_URl + "/names/{id}/update", 1L))
                 .andExpect(model().attributeExists("id", "updateRequest"))
                 .andExpect(view().name("user-update-names"));
@@ -218,7 +218,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_UpdateNames_USER() throws Exception {
+    public void testUpdateNamesUSER() throws Exception {
         long id = 2L;
 
         mvc.perform(post(BASIC_URl + "/names/{id}/update", id)
@@ -231,7 +231,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_UpdateNames_USER() throws Exception {
+    public void testForbiddenUpdateNamesUSER() throws Exception {
         long id = 6L;
 
         mvc.perform(get(BASIC_URl + "/names/{id}/update", id)
@@ -244,7 +244,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "helen@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Delete_USER() throws Exception {
+    public void testDeleteUSER() throws Exception {
         long id = 5L;
 
         mvc.perform(get(BASIC_URl + "/{id}/delete", id))
@@ -254,7 +254,7 @@ public class UserControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_Forbidden_Delete_USER() throws Exception {
+    public void testForbiddenDeleteUSER() throws Exception {
         long id = 4L;
 
         mvc.perform(get(BASIC_URl + "/{id}/delete", id))

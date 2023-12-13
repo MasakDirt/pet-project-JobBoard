@@ -27,38 +27,60 @@
             color: #fff;
             font-weight: bold;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        #footer-id {
+            text-align: center;
+            padding: 3px;
+            background-color: #333333;
+            position: relative;
+            bottom: 0;
+            width: 1875px;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:replace="~{headers/header-entities-employer.html}"></div>
 </header>
 <div class="container">
     <h2>Candidate</h2>
-    <h3 style="font-weight: bold; color: #6a1e9b" th:text="'For Category: ' + ${candidateProfileRequest.category}"></h3>
+    <h3 style="font-weight: bold; color: #6a1e9b" th:text="'For Category: ' + ${candidateProfileResponse.category}"></h3>
     <div class="card vacancy-card">
         <div class="card-body">
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-8">
                     <div class="form-group">
-                        <h2 class="mb-2" th:text="${candidateProfileRequest.position}"></h2>
+                        <h2 class="mb-2" th:text="${candidateProfileResponse.position}"></h2>
                     </div>
 
                     <div class="form-group">
-                        <h4 th:text="'Country: ' + ${candidateProfileRequest.countryOfResidence}"></h4>
+                        <h4 th:text="'Country: ' + ${candidateProfileResponse.countryOfResidence}"></h4>
                     </div>
 
-                    <div class="form-group" th:if="${candidateProfileRequest.cityOfResidence != null}">
-                        <h4 th:text="'City: ' + ${candidateProfileRequest.cityOfResidence}"></h4>
+                    <div class="form-group" th:if="${candidateProfileResponse.cityOfResidence != null}">
+                        <h4 th:text="'City: ' + ${candidateProfileResponse.cityOfResidence}"></h4>
                     </div>
 
                     <div class="form-group">
-                        <h5 th:text="'English Level: ' + ${candidateProfileRequest.englishLevel}"></h5>
+                        <h5 th:text="'English Level: ' + ${candidateProfileResponse.englishLevel}"></h5>
                     </div>
 
                     <div class="form-group" th:if="${messenger.isEmpty()}">
                         <a type="button"
-                           th:href="@{|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}/vacancies/candidate/${candidateProfileRequest.id}|}"
+                           th:href="@{|/api/users/${owner.id}/employer-profiles/${owner.employerProfile.id}/vacancies/candidate/${candidateProfileResponse.id}|}"
                            class="btn btn-purple">Select Vacancy For Messenger</a>
                     </div>
 
@@ -71,19 +93,19 @@
 
                 <div class="col-xs-6 col-md-4">
                     <div class="form-group">
-                        <h4 th:text="'Salary: ' + ${candidateProfileRequest.salaryExpectations} + '$'"></h4>
+                        <h4 th:text="'Salary: ' + ${candidateProfileResponse.salaryExpectations} + '$'"></h4>
                     </div>
 
                     <div class="form-group">
-                        <h5 th:text="'Category: ' + ${candidateProfileRequest.category}"></h5>
+                        <h5 th:text="'Category: ' + ${candidateProfileResponse.category}"></h5>
                     </div>
 
                     <div class="form-group">
-                        <h5 th:text="'Work Experience: ' + ${candidateProfileRequest.workExperience + ' years'}"></h5>
+                        <h5 th:text="'Work Experience: ' + ${candidateProfileResponse.workExperience + ' years'}"></h5>
                     </div>
 
                     <div class="form-group">
-                        <h5 th:text="'Ukrainian Level: ' + ${candidateProfileRequest.ukrainianLevel}"></h5>
+                        <h5 th:text="'Ukrainian Level: ' + ${candidateProfileResponse.ukrainianLevel}"></h5>
                     </div>
                 </div>
             </div>
@@ -91,53 +113,26 @@
             <hr>
             <div class="form-group">
                 <h5 th:text="'Experience:'"></h5>
-                <p th:utext="${candidateProfileRequest.experienceExplanation}"></p>
+                <p th:utext="${candidateProfileResponse.experienceExplanation}"></p>
             </div>
 
-            <div class="form-group" th:if="${candidateProfileRequest.achievements != null}">
+            <div class="form-group" th:if="${candidateProfileResponse.achievements != null || !candidateProfileResponse.achievements.isEmpty()}">
                 <h6 th:text="'Achievements:'"></h6>
-                <p th:utext="${candidateProfileRequest.achievements}"></p>
+                <p th:utext="${candidateProfileResponse.achievements}"></p>
             </div>
 
-
-<!--            <div class="row">-->
-<!--                <div class="col-xs-12 col-md-8">-->
-<!--                    <form th:if="${messenger.isEmpty()}"-->
-<!--                          th:action="@{|/api/users/${owner.id}/vacancies/${vacancy.id}/candidate/${owner.candidateProfile.id}/messengers|}"-->
-<!--                          th:method="post">-->
-<!--                        <div class="form-group">-->
-<!--                            <input type="button" class="btn btn-purple" id="myButton"-->
-<!--                                   onclick="replaceButtonWithTextarea()" value="Feedback"/>-->
-<!--                            <label for="myTextarea">-->
-<!--                                <textarea id="myTextarea" name="text" rows="4"-->
-<!--                                          style="display: none; width: 650px"></textarea>-->
-<!--                            </label>-->
-<!--                            <input id="sendButton" type="submit" class="btn btn-purple" style="display: none"-->
-<!--                                   value="Send"/>-->
-<!--                        </div>-->
-<!--                    </form>-->
-
-<!--                    <div class="form-group" th:if="${messenger.isPresent()}">-->
-<!--                        <a type="button"-->
-<!--                           th:href="@{|/api/users/${owner.id}/candidate/${owner.candidateProfile.id}/messengers/${messenger.get().id}/feedbacks|}"-->
-<!--                           class="btn btn-purple">Check Feedbacks</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
+            <div class="form-group" th:if="${candidateProfileResponse.owner.candidateContact.pdf != null}">
+                <a type="button"
+                   th:target="_blank"
+                   th:href="@{|/api/users/${owner.id}/candidate-contacts/${candidateProfileResponse.owner.candidateContact.id}/pdfs/${candidateProfileResponse.owner.candidateContact.pdf.id}|}"
+                   class="btn btn-purple">Check Candidate`s Resume</a>
+            </div>
         </div>
     </div>
 </div>
 
-<script>
-    function replaceButtonWithTextarea() {
-        const button = document.getElementById('myButton');
-        const textarea = document.getElementById('myTextarea');
-        const sendButton = document.getElementById('sendButton');
-        button.style.display = 'none';
-        textarea.style.display = 'block';
-        sendButton.style.display = 'block';
-    }
-</script>
+<footer id="footer-id">
+    <div th:replace="~{footer/footer.html}"></div>
+</footer>
 </body>
 </html>

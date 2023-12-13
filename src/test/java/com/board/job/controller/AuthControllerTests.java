@@ -31,13 +31,13 @@ public class AuthControllerTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertNotNull(mvc);
         assertNotNull(userService);
     }
 
     @Test
-    public void test_Valid_Login() throws Exception {
+    public void testValidLogin() throws Exception {
         String email = "violet@mail.co";
         String password = "6666";
 
@@ -50,7 +50,7 @@ public class AuthControllerTests {
     }
 
     @Test
-    public void test_Invalid_Password_Login() throws Exception {
+    public void testInvalidPasswordLogin() throws Exception {
         String email = "donald@mail.co";
         String password = "1234";
 
@@ -63,7 +63,7 @@ public class AuthControllerTests {
     }
 
     @Test
-    public void test_Invalid_Email_Login() throws Exception {
+    public void testInvalidEmailLogin() throws Exception {
         String email = "invalid@mail.co";
         String password = "1111";
 
@@ -75,7 +75,7 @@ public class AuthControllerTests {
     }
 
     @Test
-    public void test_Valid_Register() throws Exception {
+    public void testValidRegister() throws Exception {
         UserCreateRequest userCreate = createUser("Sergo", "Test", "test@mail.co", "pass");
 
         mvc.perform(post(BASIC_URL + "/register")

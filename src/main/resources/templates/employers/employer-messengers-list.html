@@ -42,15 +42,37 @@
         .cards-container {
             flex: 1;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        #footer-id {
+            text-align: center;
+            padding: 3px;
+            background-color: #333333;
+            position: relative;
+            bottom: 0;
+            width: 1875px;
+        }
+
+        .main-content {
+            margin-top: 110px;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:replace="~{headers/header-entities-employer.html}"></div>
 </header>
 <div class="container main-content">
     <div class="cards-container">
-        <h2>Messengers</h2>
+        <h2>Messengers for <a th:text="${vacancy.lookingFor}"></a></h2>
 
         <div th:each="messenger: ${messengers}">
             <div class="card vacancy-card">
@@ -90,9 +112,9 @@
 
                             <div class="form-group">
                                 <a class="btn btn-purple"
-                                   th:href="@{|/api/users/${owner.id}/employer-profile/${employerId}/vacancies/${vacancyId}/messengers/${messenger.id}/feedbacks|}">Select</a>
+                                   th:href="@{|/api/users/${owner.id}/employer-profile/${employerId}/vacancies/${vacancy.id}/messengers/${messenger.id}/feedbacks|}">Select</a>
                                 <a class="btn btn-purple"
-                                   th:href="@{|/api/users/${owner.id}/vacancies/${vacancyId}/employer-profile/${employerId}/messengers/${messenger.id}/delete|}">Delete</a>
+                                   th:href="@{|/api/users/${owner.id}/vacancies/${vacancy.id}/employer-profile/${employerId}/messengers/${messenger.id}/delete|}">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -101,5 +123,9 @@
         </div>
     </div>
 </div>
+
+<footer id="footer-id">
+    <div th:replace="~{footer/footer.html}"></div>
+</footer>
 </body>
 </html>

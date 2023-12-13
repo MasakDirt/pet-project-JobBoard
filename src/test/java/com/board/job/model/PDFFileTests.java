@@ -20,7 +20,7 @@ public class PDFFileTests {
     }
 
     @Test
-    public void test_Valid_PDF_File() {
+    public void testValidPDFFile() {
         assertEquals(0, getViolation(pdfFile).size());
     }
 }

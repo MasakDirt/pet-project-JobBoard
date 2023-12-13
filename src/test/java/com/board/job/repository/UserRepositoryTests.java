@@ -28,12 +28,12 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         AssertionsForClassTypes.assertThat(userRepository).isNotNull();
     }
 
     @Test
-    public void test_Valid_FindByEmail() {
+    public void testValidFindByEmail() {
         String email = "admin@mail.co";
 
         Optional<User> expected = userRepository.findAll()
@@ -50,7 +50,7 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void test_Valid_FindAllByRolesName() {
+    public void testValidFindAllByRolesName() {
         String name = "USER";
 
         List<User> expected = userRepository.findAll()
@@ -72,13 +72,13 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_FindAllByRolesName() {
+    public void testInvalidFindAllByRolesName() {
         assertTrue(userRepository.findAllByRolesName("").isEmpty(),
                 "We have no user with role name '', so here must be empty list!");
     }
 
     @Test
-    public void test_Valid_FindAllByFirstName() {
+    public void testValidFindAllByFirstName() {
         String firstname = "Nikole";
 
         List<User> expected = userRepository.findAll()
@@ -97,13 +97,13 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_FindAllByFirstName() {
+    public void testInvalidFindAllByFirstName() {
         assertTrue(userRepository.findAllByFirstName("").isEmpty(),
                 "We have no user with first name '', so here must be empty list!");
     }
 
     @Test
-    public void test_Valid_FindAllByLastName() {
+    public void testValidFindAllByLastName() {
         String lastname = "Jackson";
 
         List<User> expected = userRepository.findAll()
@@ -122,13 +122,13 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_FindAllByLastName() {
+    public void testInvalidFindAllByLastName() {
         assertTrue(userRepository.findAllByLastName("").isEmpty(),
                 "We have no user with last name '', so here must be empty list!");
     }
 
     @Test
-    public void test_Valid_findAllByFirstNameAndLastName() {
+    public void testValidFindAllByFirstNameAndLastName() {
         String firstname = "Nikole";
         String lastname = "Jackson";
 
@@ -149,7 +149,7 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void test_Invalid_findAllByFirstNameAndLastName() {
+    public void testInvalidFindAllByFirstNameAndLastName() {
         assertTrue(userRepository.findAllByFirstNameAndLastName("", "").isEmpty(),
                 "We have no user with first and last blank names, so here must be empty list!");
 

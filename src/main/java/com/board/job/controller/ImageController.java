@@ -26,6 +26,11 @@ import static com.board.job.controller.ControllerHelper.*;
 public class ImageController {
     private final ImageService imageService;
 
+    @GetMapping("/images/logo")
+    public Resource getLogo() throws IOException {
+        return new ByteArrayResource(Files.toByteArray(new File("files/photos/logo/logo.png")));
+    }
+
     @GetMapping("/images/no-image")
     public Resource getNoImage() throws IOException {
         return new ByteArrayResource(Files.toByteArray(new File("files/photos/noUserPhoto.jpg")));
@@ -61,7 +66,7 @@ public class ImageController {
     }
 
     @GetMapping(value = "/employer-profiles/{employer-id}/images/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE', 'EMPLOYER')")
+    @PreAuthorize("@authRolesService.hasAnyRole(authentication.name, 'ADMIN', 'CANDIDATE', 'EMPLOYER')")
     public Resource getByIdEmployerProfileImage(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable long id, Authentication authentication) {
@@ -73,7 +78,7 @@ public class ImageController {
     }
 
     @GetMapping(value = "/employer-profiles/{employer-id}/images/{id}/header", produces = MediaType.IMAGE_JPEG_VALUE)
-    @PreAuthorize("hasAnyRole('ADMIN', 'CANDIDATE', 'EMPLOYER')")
+    @PreAuthorize("@authRolesService.hasAnyRole(authentication.name, 'ADMIN', 'CANDIDATE', 'EMPLOYER')")
     public Resource getByIdEmployerProfileImageForHeader(
             @PathVariable("owner-id") long ownerId, @PathVariable("employer-id") long employerId,
             @PathVariable long id, Authentication authentication) {

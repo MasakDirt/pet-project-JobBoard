@@ -60,16 +60,35 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            margin-top: 120px;
         }
 
         .cards-container {
             flex: 1;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        #footer-id {
+            text-align: center;
+            padding: 3px;
+            background-color: #333333;
+            position: relative;
+            bottom: 0;
+            width: 1875px;
+        }
     </style>
 </head>
 <body>
-<header>
-    <div th:if="${owner.candidateContact != null}" th:replace="~{headers/header-entities.html}"></div>
+<header id="header-id">
+    <div th:if="${owner.candidateContact != null}" th:replace="~{headers/header-entities-candidate.html}"></div>
 </header>
 <div class="container main-content">
     <div class="cards-container">
@@ -172,5 +191,9 @@
         </form>
     </div>
 </div>
+
+<footer id="footer-id">
+    <div th:replace="~{footer/footer.html}"></div>
+</footer>
 </body>
 </html>

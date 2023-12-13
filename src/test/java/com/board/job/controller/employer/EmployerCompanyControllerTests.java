@@ -29,13 +29,13 @@ public class EmployerCompanyControllerTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertNotNull(mvc);
     }
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_GetById_User() throws Exception {
+    public void testGetByIdUser() throws Exception {
         long ownerId = 2L;
         long id = 2L;
 
@@ -47,7 +47,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_GetById_Admin() throws Exception {
+    public void testGetByIdAdmin() throws Exception {
         long ownerId = 6L;
         long id = 3L;
 
@@ -59,7 +59,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_GetById_User() throws Exception {
+    public void testForbiddenGetByIdUser() throws Exception {
         long ownerId = 6L;
         long id = 1L;
 
@@ -70,7 +70,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_NotFound_GetById_User() throws Exception {
+    public void testNotFoundGetByIdUser() throws Exception {
         long ownerId = 6L;
         long id = 10L;
 
@@ -81,7 +81,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "admin@mail.co", roles = {"ADMIN", "CANDIDATE", "EMPLOYER"})
-    public void test_getCreateRequest_Admin() throws Exception {
+    public void testGetCreateRequestAdmin() throws Exception {
         long ownerId = 1L;
         mvc.perform(get(BASIC_URL + "/create", ownerId))
                 .andExpect(model().attributeExists("owner", "webSite", "aboutCompany"))
@@ -90,7 +90,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Create() throws Exception {
+    public void testCreate() throws Exception {
         long ownerID = 3L;
 
         mvc.perform(post(BASIC_URL, ownerID)
@@ -103,7 +103,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "nikole@mail.co", roles = {"USER", "CANDIDATE"})
-    public void test_Forbidden_Create_USER() throws Exception {
+    public void testForbiddenCreateUSER() throws Exception {
         long ownerID = 1L;
 
         mvc.perform(post(BASIC_URL, ownerID)
@@ -116,7 +116,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Update_USER() throws Exception {
+    public void testUpdateUSER() throws Exception {
         long ownerID = 6L;
         long id = 3L;
 
@@ -130,7 +130,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_Update_ADMIN() throws Exception {
+    public void testForbiddenUpdateADMIN() throws Exception {
         long ownerID = 1L;
         long candidateID = 3L;
 
@@ -144,7 +144,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "violet@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Delete_USER() throws Exception {
+    public void testDeleteUSER() throws Exception {
         long ownerID = 6L;
         long id = 3L;
 
@@ -155,7 +155,7 @@ public class EmployerCompanyControllerTests {
 
     @Test
     @WithMockUser(username = "larry@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_Delete_USER() throws Exception {
+    public void testForbiddenDeleteUSER() throws Exception {
         long ownerID = 2L;
         long candidateID = 3L;
 
