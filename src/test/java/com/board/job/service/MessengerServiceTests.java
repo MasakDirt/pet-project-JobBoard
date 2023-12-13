@@ -42,7 +42,7 @@ public class MessengerServiceTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertThat(messengerService).isNotNull();
         assertThat(vacancyService).isNotNull();
         assertThat(candidateProfileService).isNotNull();
@@ -50,7 +50,7 @@ public class MessengerServiceTests {
     }
 
     @Test
-    public void test_GetAll() {
+    public void testGetAll() {
         assertFalse(messengerService.getAll().isEmpty(),
                 "All messengers list must be not empty.");
         assertEquals(messengerForVacanciesReplies, messengerService.getAll(),
@@ -58,7 +58,7 @@ public class MessengerServiceTests {
     }
 
     @Test
-    public void test_Valid_Create() {
+    public void testValidCreate() {
         long vacancyId = 2L;
         long candidateProfileId = 1L;
 
@@ -77,7 +77,7 @@ public class MessengerServiceTests {
     }
 
     @Test
-    public void test_Invalid_Create() {
+    public void testInvalidCreate() {
         assertThrows(EntityNotFoundException.class, () -> messengerService.create(0, 3L),
                 "Entity not found exception will be thrown because we have no vacancy with id 0.");
         assertThrows(EntityNotFoundException.class, () -> messengerService.create(2L,0),
@@ -85,7 +85,7 @@ public class MessengerServiceTests {
     }
 
     @Test
-    public void test_Valid_ReadById() {
+    public void testValidReadById() {
         Messenger expected = messengerService.create(5L, 1L);
 
         Messenger actual = messengerService.readById(expected.getId());
@@ -94,13 +94,13 @@ public class MessengerServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadById() {
+    public void testInvalidReadById() {
         assertThrows(EntityNotFoundException.class, () -> messengerService.readById(0),
                 "Entity not found exception will be thrown because we have no messenger with id 0.");
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         long id = 2L;
         messengerService.delete(id);
 
@@ -111,13 +111,13 @@ public class MessengerServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> messengerService.delete(0),
                 "Entity not found exception will be thrown because we have no messenger with id 0.");
     }
 
     @Test
-    public void test_Valid_GetAllByVacancyId() {
+    public void testValidGetAllByVacancyId() {
         long vacancyId = 7L;
 
         List<Messenger> expected = messengerService.getAll()
@@ -132,13 +132,13 @@ public class MessengerServiceTests {
     }
 
     @Test
-    public void test_Invalid_GetAllByVacancyId() {
+    public void testInvalidGetAllByVacancyId() {
      assertTrue(messengerService.getAllByVacancyId(0).isEmpty(),
              "We have no vacancy with id 0, so here must be empty list");
     }
 
     @Test
-    public void test_Valid_GetAllByCandidateId() {
+    public void testValidGetAllByCandidateId() {
         long candidateId = 1L;
 
         List<Messenger> expected = messengerService.getAll()
@@ -153,7 +153,7 @@ public class MessengerServiceTests {
     }
 
     @Test
-    public void test_Invalid_GetAllByCandidateId() {
+    public void testInvalidGetAllByCandidateId() {
      assertTrue(messengerService.getAllByCandidateProfileId(0).isEmpty(),
              "We have no candidate with id 0, so here must be empty list");
     }

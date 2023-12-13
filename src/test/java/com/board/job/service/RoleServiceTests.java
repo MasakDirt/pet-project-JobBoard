@@ -37,13 +37,13 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         AssertionsForClassTypes.assertThat(roleService).isNotNull();
         AssertionsForClassTypes.assertThat(roles).isNotNull();
     }
 
     @Test
-    public void test_GetAll() {
+    public void testGetAll() {
         assertFalse(roleService.getAll().isEmpty(),
                 "All roles list must be not empty.");
         assertEquals(roles, roleService.getAll(),
@@ -51,7 +51,7 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Valid_Create() {
+    public void testValidCreate() {
         String name = "NEWROLE";
 
         Role expected = new Role(name);
@@ -70,7 +70,7 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Invalid_Create() {
+    public void testInvalidCreate() {
         assertAll(
                 () -> assertThrows(NullPointerException.class, () -> roleService.create(null),
                         "Null pointer exception will be thrown because we cannot pass null name!"),
@@ -84,7 +84,7 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Valid_ReadById() {
+    public void testValidReadById() {
         Role expected = roleService.create("READ");
         Role actual = roleService.readById(expected.getId());
 
@@ -93,13 +93,13 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadByID() {
+    public void testInvalidReadByID() {
         assertThrows(EntityNotFoundException.class, () -> roleService.readById(0),
                 "Entity not found exception will be thrown because we have no role with id 0.");
     }
 
     @Test
-    public void test_Valid_ReadByName() {
+    public void testValidReadByName() {
         String name = "WELL";
 
         Role expected = roleService.create(name);
@@ -110,13 +110,13 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadByName() {
+    public void testInvalidReadByName() {
         assertThrows(EntityNotFoundException.class, () -> roleService.readByName(""),
                 "Entity not found exception will be thrown because we have no role with empty name.");
     }
 
     @Test
-    public void test_Valid_Update() {
+    public void testValidUpdate() {
         String oldName = "OLD";
         String newName = "NEW";
 
@@ -135,7 +135,7 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update() {
+    public void testInvalidUpdate() {
         long id = 2L;
         assertAll(
                 () -> assertThrows(EntityNotFoundException.class, () -> roleService.update(0, "ROLE"),
@@ -150,7 +150,7 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         long id = 1L;
 
         roleService.delete(id);
@@ -163,13 +163,13 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> roleService.delete(0),
                 "Entity not found exception will be thrown because we have no role with id 0.");
     }
 
     @Test
-    public void test_Valid_GetAllByUserId() {
+    public void testValidGetAllByUserId() {
         long userId = 4L;
 
         List<Role> expected = roleService.getAll()
@@ -186,7 +186,7 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void test_Invalid_GetAllByUserId() {
+    public void testInvalidGetAllByUserId() {
         assertTrue(roleService.getAllByUserId(0).isEmpty(),
                 "List must be empty because we have no user with 0 id.");
     }

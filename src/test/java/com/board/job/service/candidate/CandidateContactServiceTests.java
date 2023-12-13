@@ -40,7 +40,7 @@ public class CandidateContactServiceTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         AssertionsForClassTypes.assertThat(userService).isNotNull();
         AssertionsForClassTypes.assertThat(pdfService).isNotNull();
         AssertionsForClassTypes.assertThat(candidateContactService).isNotNull();
@@ -48,7 +48,7 @@ public class CandidateContactServiceTests {
     }
 
     @Test
-    public void test_Valid_Create() throws Exception {
+    public void testValidCreate() throws Exception {
         List<CandidateContact> before = candidateContactRepository.findAll();
         long ownerId = 2L;
 
@@ -71,7 +71,7 @@ public class CandidateContactServiceTests {
     }
 
     @Test
-    public void test_Invalid_Create() {
+    public void testInvalidCreate() {
         long ownerId = 2L;
         CandidateContact candidateContact = candidateContactService.readById(2L);
 
@@ -86,7 +86,7 @@ public class CandidateContactServiceTests {
     }
 
     @Test
-    public void test_Valid_ReadById() {
+    public void testValidReadById() {
         CandidateContact expected = new CandidateContact();
         expected.setPhone("new phone");
         expected.setTelegram("@telegram");
@@ -102,13 +102,13 @@ public class CandidateContactServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadById() {
+    public void testInvalidReadById() {
         assertThrows(EntityNotFoundException.class, () -> candidateContactService.readById(0),
                 "Entity not found exception will be thrown because we have no candidate with id 0.");
     }
 
     @Test
-    public void test_Valid_Update() {
+    public void testValidUpdate() {
         String newTelegram = "@new";
         String newName = "Charly Puer";
 
@@ -129,7 +129,7 @@ public class CandidateContactServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update() {
+    public void testInvalidUpdate() {
         long id = 2L;
         assertThrows(NullPointerException.class, () -> candidateContactService.update(id, null),
                 "Null pointer exception will be thrown, because we pass null user to method update.");
@@ -139,7 +139,7 @@ public class CandidateContactServiceTests {
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         long id = 3L;
         candidateContactService.delete(id);
 
@@ -148,7 +148,7 @@ public class CandidateContactServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> candidateContactService.delete(0),
                 "Entity not found exception will be thrown because we have no candidate with id 0.");
     }

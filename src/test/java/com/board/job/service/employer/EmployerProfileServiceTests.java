@@ -40,14 +40,14 @@ public class EmployerProfileServiceTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         AssertionsForClassTypes.assertThat(employerProfileService).isNotNull();
         AssertionsForClassTypes.assertThat(employerProfileRepository).isNotNull();
         AssertionsForClassTypes.assertThat(employerProfiles).isNotNull();
     }
 
     @Test
-    public void test_Valid_Create() {
+    public void testValidCreate() {
         long ownerId = 4L;
 
         EmployerProfile expected = new EmployerProfile();
@@ -66,13 +66,13 @@ public class EmployerProfileServiceTests {
     }
 
     @Test
-    public void test_Invalid_Create() {
+    public void testInvalidCreate() {
         assertThrows(ConstraintViolationException.class, () -> employerProfileService.create(5, new EmployerProfile()),
                 "Constraint violation exception will be thrown because we pass invalid employer company in method");
     }
 
     @Test
-    public void test_Valid_ReadById() {
+    public void testValidReadById() {
         EmployerProfile expected = new EmployerProfile();
         expected.setLinkedInProfile("www.linkedin.co/orjkgoirt");
         expected.setPositionInCompany("User");
@@ -88,13 +88,13 @@ public class EmployerProfileServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadById() {
+    public void testInvalidReadById() {
         assertThrows(EntityNotFoundException.class, () -> employerProfileService.readById(0),
                 "Entity not found exception will be thrown because we have no this employer profile!");
     }
 
     @Test
-    public void test_Valid_Update() {
+    public void testValidUpdate() {
         EmployerProfile unexpected = employerProfileService.readById(2L);
         String oldCompanyName = unexpected.getCompanyName();
         String telegram = unexpected.getTelegram();
@@ -119,13 +119,13 @@ public class EmployerProfileServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update() {
+    public void testInvalidUpdate() {
         assertThrows(EntityNotFoundException.class, () -> employerProfileService.update(0, new EmployerProfile()),
                 "Entity not found exception will be thrown because we have no this in db.");
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         long id = 2L;
         employerProfileService.delete(id);
 
@@ -134,7 +134,7 @@ public class EmployerProfileServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> employerProfileService.delete(0),
                 "Entity not found exception will be thrown because we have no employer profile with id 0.");
     }

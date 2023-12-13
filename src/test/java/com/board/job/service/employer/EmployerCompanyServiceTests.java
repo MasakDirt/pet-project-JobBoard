@@ -42,7 +42,7 @@ public class EmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjected_Components() {
         AssertionsForClassTypes.assertThat(userService).isNotNull();
         AssertionsForClassTypes.assertThat(employerCompanyService).isNotNull();
         AssertionsForClassTypes.assertThat(employerCompanyRepository).isNotNull();
@@ -50,7 +50,7 @@ public class EmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_Valid_Create() {
+    public void testValidCreate() {
         long ownerId = 3L;
         String aboutCompany = "About";
         String webSite = "website";
@@ -71,7 +71,7 @@ public class EmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_Invalid_Create() {
+    public void testInvalidCreate() {
         String webSite = "website";
 
         assertThrows(EntityNotFoundException.class,() -> employerCompanyService.create(0, "", webSite),
@@ -79,7 +79,7 @@ public class EmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_Valid_ReadById() {
+    public void testValidReadById() {
         String aboutCompany = "About";
         String webSite = "website";
 
@@ -96,13 +96,13 @@ public class EmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadById() {
+    public void testInvalidReadById() {
         assertThrows(EntityNotFoundException.class,() -> employerCompanyService.readById(0),
                 "Entity not found exception will be thrown because we have no this employer company!");
     }
 
     @Test
-    public void test_Valid_Update() {
+    public void testValidUpdate() {
         String newWeb = "newWEb.co";
 
         EmployerCompany unexpected = employerCompanyService.readById(3);
@@ -118,13 +118,13 @@ public class EmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update() {
+    public void testInvalidUpdate() {
         assertThrows(NullPointerException.class,() -> employerCompanyService.update(2, null),
                 "Null pointer exception will be thrown because we pass null employer company value!");
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         long id = 2L;
         employerCompanyService.delete(id);
 
@@ -133,7 +133,7 @@ public class EmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> employerCompanyService.delete(0),
                 "Entity not found exception will be thrown because we have no this employer company!");
     }

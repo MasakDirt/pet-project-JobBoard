@@ -47,13 +47,13 @@ public class VacancyServiceTests {
     }
 
     @Test
-    public void test_Injected_Components() {
+    public void testInjectedComponents() {
         assertThat(userService).isNotNull();
         assertThat(vacancyService).isNotNull();
     }
 
     @Test
-    public void test_Valid_GetAll() {
+    public void testValidGetAll() {
         assertFalse(vacancyService.getAll().isEmpty(),
                 "All vacancies list must be not empty.");
         assertEquals(vacancies, vacancyService.getAll(),
@@ -61,7 +61,7 @@ public class VacancyServiceTests {
     }
 
     @Test
-    public void test_Valid_Create() {
+    public void testValidCreate() {
         long ownerId = 2L;
 
         Vacancy expected = new Vacancy();
@@ -87,7 +87,7 @@ public class VacancyServiceTests {
     }
 
     @Test
-    public void test_Invalid_Create() {
+    public void testInvalidCreate() {
         Vacancy vacancy = vacancyService.readById(2L);
         long ownerId = 1L;
 
@@ -108,7 +108,7 @@ public class VacancyServiceTests {
     }
 
     @Test
-    public void test_Valid_ReadById() {
+    public void testValidReadById() {
         long id = 4L;
 
         Vacancy expected = vacancies
@@ -124,13 +124,13 @@ public class VacancyServiceTests {
     }
 
     @Test
-    public void test_Invalid_ReadById() {
+    public void testInvalidReadById() {
         assertThrows(EntityNotFoundException.class, () -> vacancyService.readById(0),
                 "Entity not found exception will be thrown because we have no vacancy with id 0.");
     }
 
     @Test
-    public void test_Valid_Update() {
+    public void testValidUpdate() {
         long vacancyId = 3L;
         String newLookingFor = "Look for Python..";
 
@@ -166,13 +166,13 @@ public class VacancyServiceTests {
     }
 
     @Test
-    public void test_Invalid_Update() {
+    public void testInvalidUpdate() {
         assertThrows(NullPointerException.class, () -> vacancyService.update(2L, null),
                 "Null pointer exception will be thrown because we pass in update method null vacancy");
     }
 
     @Test
-    public void test_Valid_Delete() {
+    public void testValidDelete() {
         long id = 5L;
 
         vacancyService.delete(id);
@@ -184,13 +184,13 @@ public class VacancyServiceTests {
     }
 
     @Test
-    public void test_Invalid_Delete() {
+    public void testInvalidDelete() {
         assertThrows(EntityNotFoundException.class, () -> vacancyService.delete(0),
                 "Entity not found exception will be thrown because we have no vacancy with id 0.");
     }
 
     @Test
-    public void test_GetSorted() {
+    public void testGetSorted() {
         Sort sort = Sort.by(Sort.Direction.fromString("desc"), "postedAt");
         Pageable pageable = PageRequest.of(0, 10, sort);
 
@@ -207,7 +207,7 @@ public class VacancyServiceTests {
     }
 
     @Test
-    public void test_Valid_GetAllByEmployerProfileId() {
+    public void testValidGetAllByEmployerProfileId() {
         long employerId = 3L;
 
         List<Vacancy> expected = vacancyService.getAll()
@@ -221,7 +221,7 @@ public class VacancyServiceTests {
     }
 
     @Test
-    public void test_Invalid_GetAllByEmployerProfileId() {
+    public void testInvalidGetAllByEmployerProfileId() {
         assertTrue(vacancyService.getAllByEmployerProfileId(0).isEmpty(),
                 "Here must be empty list because we have no employer with id 0.");
     }
