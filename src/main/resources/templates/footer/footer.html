@@ -1,0 +1,36 @@
+<html  xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <style>
+        .logo-footer {
+            width: 150px;
+            height: 150px;
+        }
+
+        .text-style {
+            font-family: Brush_Script, cursive
+        }
+    </style>
+</head>
+<body>
+<div class="row">
+    <div class="col-md-8">
+        <div class="col-md-6">
+            <h1 class="text-style">Find Yourself</h1>
+            <p class="text-style">Your dream job🏢</p>
+            <p class="text-style">Candidate interested in an important job⚒️</p>
+        </div>
+        <div class="col-md-6">
+            <img class="logo-footer" th:src="@{|/api/users/0/images/logo|}" alt="Logo">
+            <p>© 2023 Korniev</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <h3 class="text-style">Contact Us:</h3>
+        <p class="text-style">Email: maksimkarulet8@gmail.com</p>
+        <p class="text-style">Phone: +38(068)-862-40-50</p>
+        <p class="text-style">Telegram: @mskdrttt</p>
+    </div>
+</div>
+</body>
+</html>

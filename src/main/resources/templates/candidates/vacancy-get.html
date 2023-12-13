@@ -40,6 +40,15 @@
         .container {
             margin-top: 120px;
         }
+
+        #footer-id {
+            text-align: center;
+            padding: 3px;
+            background-color: #333333;
+            position: relative;
+            bottom: 0;
+            width: 1875px;
+        }
     </style>
 </head>
 <body>
@@ -134,6 +143,10 @@
         </div>
     </div>
 </div>
+
+<footer id="footer-id">
+    <div th:replace="~{footer/footer.html}"></div>
+</footer>
 
 <script>
     function replaceButtonWithTextarea() {

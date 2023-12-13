@@ -100,6 +100,15 @@
         .col-sm-8 {
             margin-top: 100px;
         }
+
+        #footer-id {
+            text-align: center;
+            padding: 3px;
+            background-color: #333333;
+            position: relative;
+            bottom: 0;
+            width: 1875px;
+        }
     </style>
 </head>
 <body>
@@ -112,128 +121,132 @@
 </div>
 
 <div class="container">
-<form class="form-horizontal"
-      th:action="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/${vacancy.id}/update|}"
-      method="post">
+    <form class="form-horizontal"
+          th:action="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/${vacancy.id}/update|}"
+          method="post">
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="lookingFor">Looking For:</label>
-        <div class="col-sm-10">
-            <input class="form-control" type="text" id="lookingFor"
-                   th:field="${vacancy.lookingFor}"/>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="lookingFor">Looking For:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="lookingFor"
+                       th:field="${vacancy.lookingFor}"/>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="country">Country:</label>
-        <div class="col-sm-10">
-            <input class="form-control" type="text" id="country"
-                   th:field="${vacancy.country}"/>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="country">Country:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="country"
+                       th:field="${vacancy.country}"/>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="city">City:</label>
-        <div class="col-sm-10">
-            <input class="form-control" type="text" id="city"
-                   th:field="${vacancy.city}"/>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="city">City:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="city"
+                       th:field="${vacancy.city}"/>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="salaryFrom">Salary From:</label>
-        <div class="col-sm-10">
-            <input class="form-control" type="text" id="salaryFrom"
-                   th:field="${vacancy.salaryFrom}"/>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="salaryFrom">Salary From:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="salaryFrom"
+                       th:field="${vacancy.salaryFrom}"/>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="salaryTo">Salary To:</label>
-        <div class="col-sm-10">
-            <input class="form-control" type="text" id="salaryTo"
-                   th:field="${vacancy.salaryTo}"/>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="salaryTo">Salary To:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="salaryTo"
+                       th:field="${vacancy.salaryTo}"/>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="workExperience">Work experience:</label>
-        <div class="col-sm-10">
-            <input class="form-control" type="text" id="workExperience"
-                   th:field="${vacancy.workExperience}"/>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="workExperience">Work experience:</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" id="workExperience"
+                       th:field="${vacancy.workExperience}"/>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="category"><strong>Category:</strong></label>
-        <div class="col-sm-10">
-            <select class="form-control" name="category" id="category">
-                <option th:each="category : ${categories}"
-                        th:value="${category}"
-                        th:text="${category}"
-                        th:selected="${category == vacancy.category}">
-                </option>
-            </select>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="category"><strong>Category:</strong></label>
+            <div class="col-sm-10">
+                <select class="form-control" name="category" id="category">
+                    <option th:each="category : ${categories}"
+                            th:value="${category}"
+                            th:text="${category}"
+                            th:selected="${category == vacancy.category}">
+                    </option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="work_mode"><strong>Work Mode:</strong></label>
-        <div class="col-sm-10">
-            <select class="form-control" name="workMode" id="work_mode">
-                <option th:each="work_mode : ${workModes}"
-                        th:value="${work_mode}"
-                        th:text="${work_mode}"
-                        th:selected="${work_mode == vacancy.workMode}">
-                </option>
-            </select>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="work_mode"><strong>Work Mode:</strong></label>
+            <div class="col-sm-10">
+                <select class="form-control" name="workMode" id="work_mode">
+                    <option th:each="work_mode : ${workModes}"
+                            th:value="${work_mode}"
+                            th:text="${work_mode}"
+                            th:selected="${work_mode == vacancy.workMode}">
+                    </option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="domain"><strong>Domain:</strong></label>
-        <div class="col-sm-10">
-            <select class="form-control" name="domain" id="domain">
-                <option th:each="domain : ${domains}"
-                        th:value="${domain}"
-                        th:text="${domain}"
-                        th:selected="${domain == vacancy.domain}">
-                </option>
-            </select>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="domain"><strong>Domain:</strong></label>
+            <div class="col-sm-10">
+                <select class="form-control" name="domain" id="domain">
+                    <option th:each="domain : ${domains}"
+                            th:value="${domain}"
+                            th:text="${domain}"
+                            th:selected="${domain == vacancy.domain}">
+                    </option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="englishLevel"><strong>English Level:</strong></label>
-        <div class="col-sm-10">
-            <select class="form-control" name="englishLevel" id="englishLevel">
-                <option th:each="eng_level : ${eng_levels}"
-                        th:value="${eng_level}"
-                        th:text="${eng_level}"
-                        th:selected="${eng_level == vacancy.englishLevel}"/>
-            </select>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="englishLevel"><strong>English Level:</strong></label>
+            <div class="col-sm-10">
+                <select class="form-control" name="englishLevel" id="englishLevel">
+                    <option th:each="eng_level : ${eng_levels}"
+                            th:value="${eng_level}"
+                            th:text="${eng_level}"
+                            th:selected="${eng_level == vacancy.englishLevel}"/>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="detailDescription">Detail Description:</label>
-        <div class="col-sm-10">
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="detailDescription">Detail Description:</label>
+            <div class="col-sm-10">
                 <textarea class="form-control" id="detailDescription" rows="9"
                           th:field="${vacancy.detailDescription}"
                           style="width: 60%; box-sizing: border-box;"></textarea>
+            </div>
         </div>
-    </div>
-    <hr>
+        <hr>
 
-    <div class="form-group text-center">
-        <div class="col-sm-10">
-            <input type="submit" class="btn btn-purple" value="Edit"/>
-            <input type="reset" class="btn btn-clear" value="Reset"/>
-            <a class="btn btn-delete"
-               th:href="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/${vacancy.id}/delete|}">Remove</a>
+        <div class="form-group text-center">
+            <div class="col-sm-10">
+                <input type="submit" class="btn btn-purple" value="Edit"/>
+                <input type="reset" class="btn btn-clear" value="Reset"/>
+                <a class="btn btn-delete"
+                   th:href="@{|/api/users/${owner.id}/employer-profile/${owner.employerProfile.id}/vacancies/${vacancy.id}/delete|}">Remove</a>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
 </div>
+
+<footer id="footer-id">
+    <div th:replace="~{footer/footer.html}"></div>
+</footer>
 </body>
 </html>
