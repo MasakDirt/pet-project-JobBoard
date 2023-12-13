@@ -25,13 +25,13 @@ public class AuthFeedbackServiceTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjected_Component() {
         assertNotNull(authFeedbackService);
         assertNotNull(feedbackService);
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
+    public void testTrueIsUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
         long ownerId = 3L;
         long messengerId = 2L;
         String feedbackId = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
@@ -49,7 +49,7 @@ public class AuthFeedbackServiceTests {
     }
 
     @Test
-    public void test_False_isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
+    public void testFalseIsUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
         long messengerId = 2L;
         String feedbackId = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()
@@ -74,7 +74,7 @@ public class AuthFeedbackServiceTests {
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
+    public void testTrueIsUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
         long messengerId = 1L;
         String feedbackId = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()
@@ -90,7 +90,7 @@ public class AuthFeedbackServiceTests {
     }
 
     @Test
-    public void test_False_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
+    public void testFalseIsUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessengerAndMessengerContainFeedbackAndUserOwnerOfFeedback() {
         long messengerId = 1L;
         String feedbackId = feedbackService.getAllVacancyMessengerFeedbacks(messengerId)
                 .stream()

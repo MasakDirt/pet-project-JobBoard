@@ -22,12 +22,12 @@ public class AuthMessengerServiceTestsForVacanciesReply {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         assertNotNull(authMessengerService);
     }
 
     @Test
-    public void test_True_isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger() {
+    public void testTrueIsUserAdminOrUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger() {
         assertTrue(authMessengerService
                         .isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger
                                 (0, 0, 0, "admin@mail.co"),
@@ -41,7 +41,7 @@ public class AuthMessengerServiceTestsForVacanciesReply {
     }
 
     @Test
-    public void test_False_isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger() {
+    public void testFalseIsUserAdminOrUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger() {
         assertFalse(authMessengerService
                         .isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger
                                 (1L, 4L, 4L, "helen@mail.co"),
@@ -60,7 +60,7 @@ public class AuthMessengerServiceTestsForVacanciesReply {
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger() {
+    public void testTrueIsUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger() {
         assertTrue(authMessengerService
                         .isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger
                                 (3L, 2L, 2L, "nikole@mail.co"),
@@ -69,7 +69,7 @@ public class AuthMessengerServiceTestsForVacanciesReply {
     }
 
     @Test
-    public void test_False_isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger() {
+    public void testFalseIsUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger() {
         assertFalse(authMessengerService
                         .isUsersSameByIdAndUserOwnerCandidateProfileAndCandidateProfileContainMessenger
                                 (1L, 4L, 4L, "helen@mail.co"),
@@ -88,7 +88,7 @@ public class AuthMessengerServiceTestsForVacanciesReply {
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger() {
+    public void testTrueIsUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger() {
         assertTrue(authMessengerService
                         .isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger
                                 (6L, 3L, 8L, 1L, "violet@mail.co"),
@@ -97,7 +97,7 @@ public class AuthMessengerServiceTestsForVacanciesReply {
     }
 
     @Test
-    public void test_False_isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger() {
+    public void testFalseIsUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger() {
         assertFalse(authMessengerService
                         .isUsersSameByIdAndUserOwnerEmployerProfileAndEmployerOwnerVacancyAndVacancyContainMessenger
                                 (1L, 2L, 5L, 4L,"helen@mail.co"),

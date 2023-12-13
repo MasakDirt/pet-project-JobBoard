@@ -22,19 +22,19 @@ public class AuthEmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_Injected_Component() {
+    public void testInjectedComponent() {
         assertNotNull(authEmployerCompanyService);
     }
 
     @Test
-    public void test_True_isUsersSameByIdAndUserOwnerEmployerCompany() {
+    public void testTrueIsUsersSameByIdAndUserOwnerEmployerCompany() {
         assertTrue(authEmployerCompanyService
                         .isUsersSameByIdAndUserOwnerEmployerCompany(2L, 2L, "larry@mail.co"),
                 "Here must be true because user is sames and he owner of employer company.");
     }
 
     @Test
-    public void test_False_IsUsersSameByIdAndUserOwnerCandidateProfile() {
+    public void testFalseIsUsersSameByIdAndUserOwnerCandidateProfile() {
         assertFalse(authEmployerCompanyService
                         .isUsersSameByIdAndUserOwnerEmployerCompany(2L, 1L, "admin@mail.co"),
                 "Here must be false because user is not sames.");
@@ -45,7 +45,7 @@ public class AuthEmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_True_isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfile() {
+    public void testTrueIsUserAdminOrUsersSameByIdAndUserOwnerCandidateProfile() {
         assertTrue(authEmployerCompanyService
                         .isUserAdminOrUsersSameByIdAndUserOwnerEmployerCompany(0, 0, "admin@mail.co"),
                 "Here must be true because user is admin.");
@@ -56,7 +56,7 @@ public class AuthEmployerCompanyServiceTests {
     }
 
     @Test
-    public void test_False_isUserAdminOrUsersSameByIdAndUserOwnerCandidateProfile() {
+    public void testFalseIsUserAdminOrUsersSameByIdAndUserOwnerCandidateProfile() {
         assertFalse(authEmployerCompanyService
                         .isUserAdminOrUsersSameByIdAndUserOwnerEmployerCompany(3L, 3L, "violet@mail.co"),
                 "Here must be false because user is not sames.");
