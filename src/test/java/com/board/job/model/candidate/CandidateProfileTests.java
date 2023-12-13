@@ -36,13 +36,13 @@ public class CandidateProfileTests {
     }
 
     @Test
-    public void test_Valid_CandidateProfile() {
+    public void testValidCandidateProfile() {
         assertEquals(0, getViolation(candidateProfile).size());
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_CandidateProfile_Position(String position, String error) {
+    public void testInvalidCandidateProfilePosition(String position, String error) {
         candidateProfile.setPosition(position);
 
         assertEquals(1, getViolation(candidateProfile).size());
@@ -54,7 +54,7 @@ public class CandidateProfileTests {
     }
 
     @Test
-    public void test_Invalid_CandidateProfile_SalaryExpectations() {
+    public void testInvalidCandidateProfileSalaryExpectations() {
         candidateProfile.setSalaryExpectations(-5);
 
         assertEquals(1, getViolation(candidateProfile).size());
@@ -65,7 +65,7 @@ public class CandidateProfileTests {
     }
 
     @Test
-    public void test_Invalid_CandidateProfile_WorkExperience() {
+    public void testInvalidCandidateProfileWorkExperience() {
         candidateProfile.setWorkExperience(-0.1);
 
         assertEquals(1, getViolation(candidateProfile).size());
@@ -77,7 +77,7 @@ public class CandidateProfileTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_CandidateProfile_CountryOfResidence(String countryOfResidence, String error) {
+    public void testInvalidCandidateProfileCountryOfResidence(String countryOfResidence, String error) {
         candidateProfile.setCountryOfResidence(countryOfResidence);
 
         assertEquals(1, getViolation(candidateProfile).size());
@@ -90,7 +90,7 @@ public class CandidateProfileTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_CandidateProfile_CityOfResidence(String cityOfResidence, String error) {
+    public void testInvalidCandidateProfileCityOfResidence(String cityOfResidence, String error) {
         candidateProfile.setCityOfResidence(cityOfResidence);
 
         assertEquals(1, getViolation(candidateProfile).size());
@@ -102,7 +102,7 @@ public class CandidateProfileTests {
     }
 
     @Test
-    public void test_Invalid_CandidateProfile_Category() {
+    public void testInvalidCandidateProfileCategory() {
         candidateProfile.setCategory(null);
 
         assertEquals(1, getViolation(candidateProfile).size());
@@ -113,7 +113,7 @@ public class CandidateProfileTests {
     }
 
     @Test
-    public void test_Invalid_CandidateProfile_EnglishLevel() {
+    public void testInvalidCandidateProfileEnglishLevel() {
         candidateProfile.setEnglishLevel(null);
 
         assertEquals(1, getViolation(candidateProfile).size());
@@ -124,7 +124,7 @@ public class CandidateProfileTests {
     }
 
     @Test
-    public void test_Invalid_CandidateProfile_UkrainianLevel() {
+    public void testInvalidCandidateProfileUkrainianLevel() {
         candidateProfile.setUkrainianLevel(null);
 
         assertEquals(1, getViolation(candidateProfile).size());
@@ -136,7 +136,7 @@ public class CandidateProfileTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_CandidateProfile_ExperienceExplanation(String experience, String error) {
+    public void testInvalidCandidateProfileExperienceExplanation(String experience, String error) {
         candidateProfile.setExperienceExplanation(experience);
 
         assertEquals(1, getViolation(candidateProfile).size());

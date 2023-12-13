@@ -25,13 +25,13 @@ public class RoleTests {
     }
 
     @Test
-    public void test_Valid_Role() {
+    public void testValidRole() {
         assertEquals(0, getViolation(role).size());
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForName")
-    public void test_Invalid_Role_Name(String name, String error) {
+    public void testInvalidRoleName(String name, String error) {
         role.setName(name);
 
         assertEquals(1, getViolation(role).size());

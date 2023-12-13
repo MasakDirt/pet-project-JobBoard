@@ -31,13 +31,13 @@ public class CandidateContactTests {
     }
 
     @Test
-    public void test_Valid_CandidateContacts() {
+    public void testValidCandidateContacts() {
         assertEquals(0, getViolation(candidateContact).size());
     }
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_CandidateContacts_CandidateName(String candidateName, String error) {
+    public void testInvalidCandidateContactsCandidateName(String candidateName, String error) {
         candidateContact.setCandidateName(candidateName);
 
         assertEquals(1, getViolation(candidateContact).size());
@@ -50,7 +50,7 @@ public class CandidateContactTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForEmail")
-    public void test_Invalid_Email(String email, String error) {
+    public void testInvalidEmail(String email, String error) {
         candidateContact.setEmail(email);
 
         assertEquals(1, getViolation(candidateContact).size());
@@ -63,7 +63,7 @@ public class CandidateContactTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForStrings")
-    public void test_Invalid_CandidateContacts_Phone(String phone, String error) {
+    public void testInvalidCandidateContactsPhone(String phone, String error) {
         candidateContact.setPhone(phone);
 
         assertEquals(1, getViolation(candidateContact).size());
@@ -76,7 +76,7 @@ public class CandidateContactTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForTelegram")
-    public void test_Invalid_CandidateContacts_Telegram(String telegram, String error) {
+    public void testInvalidCandidateContactsTelegram(String telegram, String error) {
         candidateContact.setTelegram(telegram);
 
         assertEquals(1, getViolation(candidateContact).size());
@@ -89,7 +89,7 @@ public class CandidateContactTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForLinkedIn")
-    public void test_Invalid_CandidateContacts_LinkedIn(String linkedIn, String error) {
+    public void testInvalidCandidateContactsLinkedIn(String linkedIn, String error) {
         candidateContact.setLinkedInProfile(linkedIn);
 
         assertEquals(1, getViolation(candidateContact).size());
@@ -102,7 +102,7 @@ public class CandidateContactTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForGitHub")
-    public void test_Invalid_CandidateContacts_GitHub(String github, String error) {
+    public void testInvalidCandidateContactsGitHub(String github, String error) {
         candidateContact.setGithubUrl(github);
 
         assertEquals(1, getViolation(candidateContact).size());
@@ -115,7 +115,7 @@ public class CandidateContactTests {
 
     @ParameterizedTest
     @MethodSource("argumentsForPortfolio")
-    public void test_Invalid_CandidateContacts_Portfolio(String portfolio, String error) {
+    public void testInvalidCandidateContactsPortfolio(String portfolio, String error) {
         candidateContact.setPortfolioUrl(portfolio);
 
         assertEquals(1, getViolation(candidateContact).size());
