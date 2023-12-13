@@ -26,6 +26,11 @@ import static com.board.job.controller.ControllerHelper.*;
 public class ImageController {
     private final ImageService imageService;
 
+    @GetMapping("/images/logo")
+    public Resource getLogo() throws IOException {
+        return new ByteArrayResource(Files.toByteArray(new File("files/photos/logo/logo.png")));
+    }
+
     @GetMapping("/images/no-image")
     public Resource getNoImage() throws IOException {
         return new ByteArrayResource(Files.toByteArray(new File("files/photos/noUserPhoto.jpg")));
