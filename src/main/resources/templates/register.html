@@ -58,10 +58,19 @@
             font-size: 3rem;
             margin-bottom: 20px;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <button class="btn btn-back" th:onclick="window.history.back()">⬅️Back</button>
 </header>
 <div class="col-md-offset-2 col-sm-8">

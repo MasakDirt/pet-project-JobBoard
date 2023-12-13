@@ -42,10 +42,19 @@
             font-size: 3rem;
             margin-bottom: 20px;
         }
+
+        #header-id {
+            background-color: #333333;
+            width: 2000px;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
     </style>
 </head>
 <body>
-<header>
+<header id="header-id">
     <div th:replace="~{headers/header.html}"></div>
 </header>
 <div class="col-md-offset-2 col-sm-8">
