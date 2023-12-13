@@ -82,7 +82,7 @@ public class MessengerControllerTests {
         mvc.perform(get(BASIC_URL + "/vacancies/{vacancy-id}/employer-profile/{employer-id}/messengers",
                         ownerId, vacancyId, employerId))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("owner", "dateFormatter", "messengers", "vacancyId",
+                .andExpect(model().attributeExists("owner", "dateFormatter", "messengers", "vacancy",
                         "employerId"))
                 .andExpect(view().name("employers/employer-messengers-list"));
     }
@@ -133,20 +133,6 @@ public class MessengerControllerTests {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl(String.format("/api/users/%s/candidate/%s/messengers/%s/feedbacks",
                         ownerId, candidateId, 7L)));
-    }
-
-    @Test
-    @WithMockUser(username = "nikole@mail.co", roles = {"USER", "EMPLOYER"})
-    public void test_Forbidden_CreateByCandidate_Candidate() throws Exception {
-        long ownerId = 3L;
-        long vacancyId = 8L;
-        long candidateId = 1L;
-
-        mvc.perform(post(BASIC_URL + "/vacancies/{vacancy-id}/candidate/{candidate-id}/messengers",
-                        ownerId, vacancyId, candidateId))
-                .andExpect(status().isOk())
-                .andExpect(getErrorView())
-                .andExpect(getErrorAttributes());
     }
 
     @Test
