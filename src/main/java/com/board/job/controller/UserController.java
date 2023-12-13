@@ -37,6 +37,7 @@ public class UserController {
     @GetMapping
     @PreAuthorize("@authRolesService.hasRole(authentication.name, 'ADMIN')")
     public ModelAndView getAll(Authentication authentication, ModelMap map) {
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
         map.addAttribute("users", userService.getAll()
                 .stream()
                 .map(mapper::getUserResponseFromUser)
@@ -53,6 +54,7 @@ public class UserController {
         var userResponse = mapper.getUserResponseFromUser(user);
         map.addAttribute("isAdmin", userAuthService.isAdmin(userResponse.getEmail()));
         map.addAttribute("user", userResponse);
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
         map.addAttribute("isGoogleUser", user.getProvider().equals(Provider.GOOGLE));
         log.info("=== GET-USER-ID === {} === {}", getAuthorities(authentication), authentication.getName());
 
@@ -65,6 +67,7 @@ public class UserController {
         var user = mapper.getUserResponseFromUser(userService.readByEmail(email));
         map.addAttribute("isAdmin", userAuthService.isAdmin(user.getEmail()));
         map.addAttribute("user", user);
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
         log.info("=== GET-USER-EMAIL === {} === {}", getAuthorities(authentication), authentication.getName());
 
         return new ModelAndView("user-get", map);
@@ -72,8 +75,9 @@ public class UserController {
 
     @GetMapping("/create-admin")
     @PreAuthorize("@authRolesService.hasRole(authentication.name, 'ADMIN')")
-    public ModelAndView getCreateRequest(ModelMap map) {
+    public ModelAndView getCreateRequest(ModelMap map, Authentication authentication) {
         map.addAttribute("createRequest", new UserCreateRequest());
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
 
         return new ModelAndView("user-create", map);
     }
@@ -93,9 +97,10 @@ public class UserController {
 
     @GetMapping("/{id}/update")
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
-    public ModelAndView getUpdateRequest(@PathVariable long id, ModelMap map) {
+    public ModelAndView getUpdateRequest(@PathVariable long id, ModelMap map, Authentication authentication) {
         map.addAttribute("id", id);
         map.addAttribute("updateRequest", new UserUpdateRequestWithPassword());
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
 
         return new ModelAndView("user-update", map);
     }
@@ -114,9 +119,10 @@ public class UserController {
 
     @GetMapping("/names/{id}/update")
     @PreAuthorize("@userAuthService.isUserAdminOrUsersSameById(#id, authentication.name)")
-    public ModelAndView getUpdateNamesRequest(@PathVariable long id, ModelMap map) {
+    public ModelAndView getUpdateNamesRequest(@PathVariable long id, ModelMap map, Authentication authentication) {
         map.addAttribute("id", id);
         map.addAttribute("updateRequest", new UserUpdateRequest());
+        map.addAttribute("ownerId", userService.readByEmail(authentication.getName()).getId());
 
         return new ModelAndView("user-update-names", map);
     }
